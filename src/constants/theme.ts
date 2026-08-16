@@ -1,65 +1,54 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
-import '@/global.css';
-
-import { Platform } from 'react-native';
-
-export const Colors = {
-  light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-  },
+export const colors = {
+  canvas: "#F4F1EC",
+  surface: "#FFFFFF",
+  text: "#17131C",
+  textMuted: "#574F5D",
+  primary: "#7135C5",
+  primaryStrong: "#52208F",
+  primarySoft: "#F0E9FA",
+  border: "#DDD3E6",
+  success: "#177C57",
+  danger: "#B74455",
+  voiceCanvas: "#32145D",
+  voiceGlow: "#9A68DF",
 } as const;
 
-export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
-
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
-  },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
-  web: {
-    sans: 'var(--font-display)',
-    serif: 'var(--font-serif)',
-    rounded: 'var(--font-rounded)',
-    mono: 'var(--font-mono)',
-  },
-});
-
-export const Spacing = {
-  half: 2,
-  one: 4,
-  two: 8,
-  three: 16,
-  four: 24,
-  five: 32,
-  six: 64,
+export const spacing = {
+  xxs: 4,
+  xs: 8,
+  sm: 12,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  xxl: 48,
 } as const;
 
-export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
-export const MaxContentWidth = 800;
+export const fontFamily = {
+  display: "Outfit_600SemiBold",
+  displayMedium: "Outfit_500Medium",
+  body: "PlusJakartaSans_400Regular",
+  bodyMedium: "PlusJakartaSans_500Medium",
+  bodySemibold: "PlusJakartaSans_600SemiBold",
+  bodyStrong: "PlusJakartaSans_700Bold",
+} as const;
+
+export const layout = {
+  compactMax: 599,
+  mediumMax: 839,
+  expandedMin: 840,
+  contentMax: 720,
+  readingMax: 560,
+  touchTarget: 48,
+  tabBarHeight: 72,
+  compactGutter: 16,
+  mediumGutter: 24,
+  expandedGutter: 32,
+} as const;
+
+export const motion = {
+  launchEntrance: 500,
+  launchHold: 0,
+  launchExit: 150,
+  launchWave: 560,
+  reduced: 150,
+} as const;

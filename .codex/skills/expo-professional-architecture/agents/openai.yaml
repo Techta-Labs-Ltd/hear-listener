@@ -1,0 +1,4 @@
+interface:
+  display_name: "Professional Expo Architecture"
+  short_description: "Structure production Expo TypeScript applications"
+  default_prompt: "Use $expo-professional-architecture to structure this Expo React Native app professionally."

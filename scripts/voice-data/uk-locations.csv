@@ -1,0 +1,5599 @@
+id,name,normalized,weight
+1826000002,Woolpit,woolpit,1
+1826000004,Peterculter,peterculter,1
+1826000007,North Mundham,north mundham,1
+1826000009,Maidstone,maidstone,1
+1826000010,Armagh,armagh,1
+1826000012,Skewen,skewen,1
+1826000013,Moston,moston,1
+1826000016,Alfreton,alfreton,1
+1826000017,Swineshead,swineshead,1
+1826000018,Raynes Park,raynes park,1
+1826000022,Morpeth,morpeth,1
+1826000023,Hawley,hawley,1
+1826000037,Spondon,spondon,1
+1826000038,Hengoed,hengoed,1
+1826000040,Freuchie,freuchie,1
+1826000042,Astley,astley,1
+1826000045,Bapchild,bapchild,1
+1826000051,Balfron,balfron,1
+1826000056,Hampsthwaite,hampsthwaite,1
+1826000057,Market Lavington,market lavington,1
+1826000058,Keele,keele,1
+1826000059,Sully,sully,1
+1826000060,Nutfield,nutfield,1
+1826000065,Deal,deal,1
+1826000067,Westbury,westbury,1
+1826000072,Halberton,halberton,1
+1826000076,Girton,girton,1
+1826000078,Keelby,keelby,1
+1826000080,Bellaghy,bellaghy,1
+1826000081,Haydon Bridge,haydon bridge,1
+1826000082,Thrybergh,thrybergh,1
+1826000086,Castledawson,castledawson,1
+1826000089,Linlithgow,linlithgow,1
+1826000093,Faversham,faversham,1
+1826000094,Severn Beach,severn beach,1
+1826000100,Hutton,hutton,1
+1826000129,Cardenden,cardenden,1
+1826000495,Marple,marple,1
+1826000526,Knaresborough,knaresborough,1
+1826000615,Mablethorpe,mablethorpe,1
+1826000785,Morchard Bishop,morchard bishop,1
+1826000803,Broughty Ferry,broughty ferry,1
+1826000850,Killamarsh,killamarsh,1
+1826000917,Pelynt,pelynt,1
+1826001135,Lexden,lexden,1
+1826001471,Gilberdike,gilberdike,1
+1826002020,Wanstead,wanstead,1
+1826002475,Ludgvan,ludgvan,1
+1826002510,Marsden,marsden,1
+1826002522,Thornton Heath,thornton heath,1
+1826002528,Banham,banham,1
+1826002700,Little Bookham,little bookham,1
+1826002814,Dartmouth,dartmouth,1
+1826003493,Grays,grays,1
+1826003703,Framfield,framfield,1
+1826003833,Wookey,wookey,1
+1826003984,Dulverton,dulverton,1
+1826004598,Burton Latimer,burton latimer,1
+1826004646,Coddington,coddington,1
+1826004892,Townhill,townhill,1
+1826005217,Kirkheaton,kirkheaton,1
+1826005455,Runswick,runswick,1
+1826005601,Sandiacre,sandiacre,1
+1826005719,Trehafod,trehafod,1
+1826005729,Gresford,gresford,1
+1826005730,Chelsfield,chelsfield,1
+1826005756,Pill,pill,1
+1826005868,Kingswear,kingswear,1
+1826005912,Llanharan,llanharan,1
+1826005956,Copford,copford,1
+1826006235,Bulkington,bulkington,1
+1826006259,Horsforth,horsforth,1
+1826006533,Necton,necton,1
+1826006875,Bunwell,bunwell,1
+1826006958,Sealand,sealand,1
+1826007133,Porlock,porlock,1
+1826007274,Kempston,kempston,1
+1826007490,Blundellsands,blundellsands,1
+1826007615,Usk,usk,1
+1826007863,Attleborough,attleborough,1
+1826007894,Sutton,sutton,1
+1826008044,Exmouth,exmouth,1
+1826008057,Clipstone,clipstone,1
+1826008483,Sion Mills,sion mills,1
+1826008524,Alford,alford,1
+1826008544,Dorridge,dorridge,1
+1826009007,Penclawdd,penclawdd,1
+1826009148,Brooke,brooke,1
+1826009218,Warkworth,warkworth,1
+1826009346,Ely,ely,1
+1826009511,Middle Tysoe,middle tysoe,1
+1826009668,Rugeley,rugeley,1
+1826009826,Exhall,exhall,1
+1826009890,Walthamstow,walthamstow,1
+1826009984,Fauldhouse,fauldhouse,1
+1826010259,Benson,benson,1
+1826010778,Ellesmere,ellesmere,1
+1826011003,Balloch,balloch,1
+1826011016,Kirdford,kirdford,1
+1826011179,Lansallos,lansallos,1
+1826011269,Saint Day,saint day,1
+1826011275,Caernarfon,caernarfon,1
+1826011394,Glanamman,glanamman,1
+1826011571,Bryn,bryn,1
+1826011797,Conwy,conwy,1
+1826011948,Royal Tunbridge Wells,royal tunbridge wells,1
+1826012448,Blanefield,blanefield,1
+1826012552,Barford,barford,1
+1826012560,Nursling,nursling,1
+1826012652,Toddington,toddington,1
+1826012790,Felpham,felpham,1
+1826013112,Wakefield,wakefield,1
+1826013167,Hordle,hordle,1
+1826013179,Kilkhampton,kilkhampton,1
+1826013201,Milngavie,milngavie,1
+1826013262,Waddington,waddington,1
+1826013551,Forth,forth,1
+1826013830,Saughall,saughall,1
+1826013919,Builth Wells,builth wells,1
+1826013933,Cowley,cowley,1
+1826014004,Elm,elm,1
+1826014502,Keswick,keswick,1
+1826014873,Hinckley,hinckley,1
+1826014946,Barton,barton,1
+1826015487,North Cave,north cave,1
+1826015750,Haverhill,haverhill,1
+1826015917,Lesbury,lesbury,1
+1826016049,Sale,sale,1
+1826016166,Dunholme,dunholme,1
+1826016307,Great Ryburgh,great ryburgh,1
+1826016361,Keyingham,keyingham,1
+1826016703,Bildeston,bildeston,1
+1826016781,Boddicott,boddicott,1
+1826016795,Snaith,snaith,1
+1826016853,Brixton,brixton,1
+1826016942,Lochwinnoch,lochwinnoch,1
+1826017216,Cheam,cheam,1
+1826017217,Hadston,hadston,1
+1826017259,Ringwould,ringwould,1
+1826018292,Kirknewton,kirknewton,1
+1826018308,Cambusbarron,cambusbarron,1
+1826018327,Wavendon,wavendon,1
+1826018359,Great Burstead,great burstead,1
+1826018389,Newport,newport,1
+1826018401,Buckhurst Hill,buckhurst hill,1
+1826018472,Swanscombe,swanscombe,1
+1826018478,Preston,preston,1
+1826018789,Horsham,horsham,1
+1826018837,Barwell,barwell,1
+1826018889,Newport,newport,1
+1826018926,Weston,weston,1
+1826019381,Llangeler,llangeler,1
+1826019580,Lydney,lydney,1
+1826019848,Harvington,harvington,1
+1826020128,Westerham,westerham,1
+1826020331,Leuchars,leuchars,1
+1826020354,Anstruther,anstruther,1
+1826020355,Ballymena,ballymena,1
+1826020969,Totternhoe,totternhoe,1
+1826021097,Crooklands,crooklands,1
+1826021315,Standon,standon,1
+1826021847,Chellaston,chellaston,1
+1826022031,Cuckfield,cuckfield,1
+1826022616,Higham,higham,1
+1826022663,Atherton,atherton,1
+1826022955,Tarvin,tarvin,1
+1826022976,Thornton,thornton,1
+1826023346,Ash Vale,ash vale,1
+1826023623,Dunlop,dunlop,1
+1826023724,Scotby,scotby,1
+1826023831,Halesworth,halesworth,1
+1826024227,Earlswood,earlswood,1
+1826024683,Aylesford,aylesford,1
+1826024883,Myddle,myddle,1
+1826024955,Huntington,huntington,1
+1826025325,Saint Just,saint just,1
+1826025467,Isleham,isleham,1
+1826025784,Kirkburton,kirkburton,1
+1826025796,South Tawton,south tawton,1
+1826025811,Holmfirth,holmfirth,1
+1826026065,Pirbright,pirbright,1
+1826026093,Llanystumdwy,llanystumdwy,1
+1826026333,Kingsley,kingsley,1
+1826026639,Wishaw,wishaw,1
+1826026689,Little Paxton,little paxton,1
+1826027091,Weston,weston,1
+1826027250,West Grinstead,west grinstead,1
+1826027326,Buckingham,buckingham,1
+1826027534,Great Bowden,great bowden,1
+1826027670,Kentford,kentford,1
+1826027710,Mulbarton,mulbarton,1
+1826027712,Leslie,leslie,1
+1826027715,Ashton,ashton,1
+1826027984,Crayford,crayford,1
+1826028555,Halstead,halstead,1
+1826028894,Kingston upon Hull,kingston upon hull,1
+1826029065,Oldmeldrum,oldmeldrum,1
+1826029110,Washington,washington,1
+1826029228,Fairlie,fairlie,1
+1826029487,Redhill,redhill,1
+1826029538,Brynna,brynna,1
+1826029798,Boxley,boxley,1
+1826029820,Rushall,rushall,1
+1826029970,Malvern Wells,malvern wells,1
+1826030000,Bramley,bramley,1
+1826030035,East Bergholt,east bergholt,1
+1826030109,Newark upon Trent,newark upon trent,1
+1826030690,Great Oakley,great oakley,1
+1826030758,Angmering,angmering,1
+1826031515,Llanengan,llanengan,1
+1826031627,Bilsthorpe,bilsthorpe,1
+1826031748,Durham,durham,1
+1826032864,Draycott in the Moors,draycott in the moors,1
+1826032893,Ashcott,ashcott,1
+1826033048,Fern Down,fern down,1
+1826033634,Stalham,stalham,1
+1826033713,Swillington,swillington,1
+1826033886,Clydach,clydach,1
+1826034062,Brenchley,brenchley,1
+1826034374,Sutton Coldfield,sutton coldfield,1
+1826034617,Cuddington,cuddington,1
+1826034771,Ushaw Moor,ushaw moor,1
+1826035034,Great Hormead,great hormead,1
+1826035686,Potton,potton,1
+1826035835,Ballywalter,ballywalter,1
+1826035968,Manea,manea,1
+1826036030,Newtonhill,newtonhill,1
+1826036240,Bushbury,bushbury,1
+1826036870,Deri,deri,1
+1826037087,Warrenpoint,warrenpoint,1
+1826037239,Wanborough,wanborough,1
+1826037293,Aldeburgh,aldeburgh,1
+1826037459,Batley,batley,1
+1826037566,Seend,seend,1
+1826037600,Cymmer,cymmer,1
+1826037734,Berwick-Upon-Tweed,berwick upon tweed,1
+1826038344,Brinscall,brinscall,1
+1826038632,Swannington,swannington,1
+1826038883,Cottesmore,cottesmore,1
+1826039041,Fleet,fleet,1
+1826039724,Stock,stock,1
+1826039806,Rainham,rainham,1
+1826039946,Church Stretton,church stretton,1
+1826040320,Ponteland,ponteland,1
+1826040598,Godmanchester,godmanchester,1
+1826040642,Upton,upton,1
+1826040909,Grantham,grantham,1
+1826041730,East Leake,east leake,1
+1826041922,Chapel en le Frith,chapel en le frith,1
+1826042211,Ahoghill,ahoghill,1
+1826042835,Kea,kea,1
+1826043083,Ambleside,ambleside,1
+1826043190,Althorpe,althorpe,1
+1826043639,Largs,largs,1
+1826043822,Wickham,wickham,1
+1826043837,Shoeburyness,shoeburyness,1
+1826044031,Thornton,thornton,1
+1826044477,Llanedy,llanedy,1
+1826044537,Culcheth,culcheth,1
+1826044595,Clacton-on-Sea,clacton on sea,1
+1826045154,Wivelsfield,wivelsfield,1
+1826045315,Swaffham,swaffham,1
+1826045496,Cherry Hinton,cherry hinton,1
+1826045634,Seacroft,seacroft,1
+1826045748,Ashford,ashford,1
+1826046113,Halling,halling,1
+1826046390,Hullavington,hullavington,1
+1826046416,Bickley,bickley,1
+1826046508,Queenborough,queenborough,1
+1826046510,Newport Pagnell,newport pagnell,1
+1826046663,Kinghorn,kinghorn,1
+1826046762,Portknockie,portknockie,1
+1826046988,Long Melford,long melford,1
+1826047283,Kinvere,kinvere,1
+1826047642,Congresbury,congresbury,1
+1826047757,East Horsley,east horsley,1
+1826047922,Cold Norton,cold norton,1
+1826048317,Raunds,raunds,1
+1826048876,Edgware,edgware,1
+1826049220,Boosbeck,boosbeck,1
+1826049386,Claverdon,claverdon,1
+1826050705,Willaston,willaston,1
+1826050909,Longtown,longtown,1
+1826051384,Ystalyfera,ystalyfera,1
+1826051466,Poulton le Fylde,poulton le fylde,1
+1826051938,Wimborne Minster,wimborne minster,1
+1826052030,Kidderminster,kidderminster,1
+1826052083,Teignmouth,teignmouth,1
+1826052234,Menheniot,menheniot,1
+1826052476,Hendon,hendon,1
+1826052825,Pentyrch,pentyrch,1
+1826052828,Dudley,dudley,1
+1826052830,Gosforth,gosforth,1
+1826052891,Buckden,buckden,1
+1826052911,Alford,alford,1
+1826053191,Bratton Fleming,bratton fleming,1
+1826053329,Great Ellingham,great ellingham,1
+1826053509,Cotgrave,cotgrave,1
+1826053667,Highley,highley,1
+1826053841,Saint Albans,saint albans,1
+1826053843,Chilwell,chilwell,1
+1826053930,Ashover,ashover,1
+1826053994,Cumnock,cumnock,1
+1826054005,Wittersham,wittersham,1
+1826055105,Wickham Bishops,wickham bishops,1
+1826055214,Milverton,milverton,1
+1826055646,Swadlincote,swadlincote,1
+1826055735,Blaby,blaby,1
+1826055876,Swallowfield,swallowfield,1
+1826056040,Cowbit,cowbit,1
+1826056264,Weaverham,weaverham,1
+1826056520,Budleigh Salterton,budleigh salterton,1
+1826056565,South Cave,south cave,1
+1826056604,Shipley,shipley,1
+1826056613,Drayton,drayton,1
+1826056862,Wickersley,wickersley,1
+1826057542,Magor,magor,1
+1826057824,Whitford,whitford,1
+1826058068,Brixton,brixton,1
+1826058080,East Markham,east markham,1
+1826058082,Clifton upon Dunsmore,clifton upon dunsmore,1
+1826058388,Carluke,carluke,1
+1826058750,Leek,leek,1
+1826058847,East Challow,east challow,1
+1826059003,Lyminge,lyminge,1
+1826059431,Castle Hedingham,castle hedingham,1
+1826059832,Frampton,frampton,1
+1826059950,Shardlow,shardlow,1
+1826060407,Wingerworth,wingerworth,1
+1826060707,Pangbourne,pangbourne,1
+1826060826,South Hayling,south hayling,1
+1826061381,Kilbarchan,kilbarchan,1
+1826061405,Southam,southam,1
+1826061601,Bovey Tracey,bovey tracey,1
+1826061912,Totnes,totnes,1
+1826061990,Wendover,wendover,1
+1826062889,Whitburn,whitburn,1
+1826062895,Frimley,frimley,1
+1826063569,Basford,basford,1
+1826064259,Methley,methley,1
+1826064656,Rudbaxton,rudbaxton,1
+1826064737,Crick,crick,1
+1826064833,Treoes,treoes,1
+1826065116,Bearsden,bearsden,1
+1826065120,Rainow,rainow,1
+1826065675,Elstead,elstead,1
+1826065849,Beckley,beckley,1
+1826065859,Kessingland,kessingland,1
+1826066368,Garvagh,garvagh,1
+1826066371,Muir of Ord,muir of ord,1
+1826066553,Ormskirk,ormskirk,1
+1826066956,Martlesham,martlesham,1
+1826066957,Minchinhampton,minchinhampton,1
+1826067023,Longridge,longridge,1
+1826067412,Overton,overton,1
+1826067450,Walkden,walkden,1
+1826068717,Trentham,trentham,1
+1826068987,Saint Clears,saint clears,1
+1826069131,Kirby Muxloe,kirby muxloe,1
+1826069321,Borden,borden,1
+1826069725,Aberfeldy,aberfeldy,1
+1826069842,Hartlepool,hartlepool,1
+1826070028,Cronton,cronton,1
+1826070141,Stonehouse,stonehouse,1
+1826070184,Highcliffe,highcliffe,1
+1826070338,Cavendish,cavendish,1
+1826070355,Buntingford,buntingford,1
+1826070525,Wrangle,wrangle,1
+1826070541,Mortimer Common,mortimer common,1
+1826070711,Deanshanger,deanshanger,1
+1826070856,Wootton,wootton,1
+1826070994,Boscombe,boscombe,1
+1826071052,Drumnadrochit,drumnadrochit,1
+1826071613,Winford,winford,1
+1826071812,Sherfield upon Loddon,sherfield upon loddon,1
+1826071852,Chipperfield,chipperfield,1
+1826071973,Orlestone,orlestone,1
+1826072169,Tipton,tipton,1
+1826072689,Sutton Bonington,sutton bonington,1
+1826072891,Ampthill,ampthill,1
+1826072985,Haxby,haxby,1
+1826073217,Bradpole,bradpole,1
+1826073923,Royton,royton,1
+1826073965,Whimple,whimple,1
+1826075063,Morton,morton,1
+1826075236,Crewkerne,crewkerne,1
+1826075491,Letham,letham,1
+1826075993,Saltford,saltford,1
+1826076361,Belhelvie,belhelvie,1
+1826076720,Ballinamallard,ballinamallard,1
+1826076924,Bloxham,bloxham,1
+1826077053,Croston,croston,1
+1826077083,The Mumbles,the mumbles,1
+1826077098,Dumbarton,dumbarton,1
+1826077378,Hillside,hillside,1
+1826077466,Stoke D’Abernon,stoke d abernon,1
+1826077491,Cheadle Hulme,cheadle hulme,1
+1826078154,Tregaron,tregaron,1
+1826078283,Epsom,epsom,1
+1826078292,Thornton Dale,thornton dale,1
+1826078587,Wootton,wootton,1
+1826078876,Southill,southill,1
+1826079932,Cornsay,cornsay,1
+1826080230,Stoke Hammond,stoke hammond,1
+1826080391,Pyle,pyle,1
+1826080554,Trysull,trysull,1
+1826080657,Cilgerran,cilgerran,1
+1826080662,Birkenhead,birkenhead,1
+1826081355,Kenley,kenley,1
+1826081366,Melton Mowbray,melton mowbray,1
+1826081456,Theale,theale,1
+1826081674,Perth,perth,1
+1826081759,Lower Kingswood,lower kingswood,1
+1826081904,Great Bricett,great bricett,1
+1826082081,Maghull,maghull,1
+1826082314,Loose,loose,1
+1826082488,Tankersley,tankersley,1
+1826082781,Chipping Sodbury,chipping sodbury,1
+1826083730,Tydd Saint Mary,tydd saint mary,1
+1826084068,Tarrant Monkton,tarrant monkton,1
+1826084160,Tredegar,tredegar,1
+1826084679,Ardglass,ardglass,1
+1826085165,Great Billing,great billing,1
+1826085574,Stowmarket,stowmarket,1
+1826085922,Horsell,horsell,1
+1826085984,Pitmedden,pitmedden,1
+1826086062,Arboe,arboe,1
+1826086234,Shenley Brook End,shenley brook end,1
+1826086280,Bickleigh,bickleigh,1
+1826086523,North Bradley,north bradley,1
+1826086541,Crewe,crewe,1
+1826087105,Selston,selston,1
+1826087180,Cranwell,cranwell,1
+1826087458,Knowle,knowle,1
+1826087555,Upwell,upwell,1
+1826087729,Thursby,thursby,1
+1826087743,Troedyrhiw,troedyrhiw,1
+1826087960,Staveley,staveley,1
+1826088347,Stafford,stafford,1
+1826088355,Thorpe le Soken,thorpe le soken,1
+1826088502,Ventnor,ventnor,1
+1826088706,Chiddingstone,chiddingstone,1
+1826088769,Shorne,shorne,1
+1826088964,Rendlesham,rendlesham,1
+1826089326,Frensham,frensham,1
+1826089604,Frizington,frizington,1
+1826089785,Stanford in the Vale,stanford in the vale,1
+1826089932,Wilpshire,wilpshire,1
+1826090052,Sutton Courtenay,sutton courtenay,1
+1826090130,Hammersmith,hammersmith,1
+1826090280,Methven,methven,1
+1826090297,Long Whatton,long whatton,1
+1826090772,Leavesden Green,leavesden green,1
+1826091473,Darrington,darrington,1
+1826091550,Weston,weston,1
+1826091673,Cairneyhill,cairneyhill,1
+1826091796,Waunarlwydd,waunarlwydd,1
+1826092519,Forres,forres,1
+1826092779,Redlynch,redlynch,1
+1826093175,Blackpool,blackpool,1
+1826093400,Gwalchmai,gwalchmai,1
+1826093437,Wembury,wembury,1
+1826093731,Hurst,hurst,1
+1826093831,Helmshore,helmshore,1
+1826093917,Hitchin,hitchin,1
+1826094061,Canterbury,canterbury,1
+1826094322,Buxted,buxted,1
+1826094457,Pitlochry,pitlochry,1
+1826094721,Funtington,funtington,1
+1826094735,Stanmore,stanmore,1
+1826094792,Donhead Saint Mary,donhead saint mary,1
+1826094848,Caersws,caersws,1
+1826095200,Rowlands Castle,rowlands castle,1
+1826095235,Perranzabuloe,perranzabuloe,1
+1826096014,Kirriemuir,kirriemuir,1
+1826096073,Littlehampton,littlehampton,1
+1826096107,Thornbury,thornbury,1
+1826096263,Newport,newport,1
+1826096747,Neston,neston,1
+1826096822,Crowle,crowle,1
+1826096971,Sherburn in Elmet,sherburn in elmet,1
+1826097044,Drayton,drayton,1
+1826097314,Hurley,hurley,1
+1826097919,Swanmore,swanmore,1
+1826098155,Old Kilpatrick,old kilpatrick,1
+1826098296,Wigton,wigton,1
+1826098302,Tiptree,tiptree,1
+1826098742,Sarratt,sarratt,1
+1826098823,Dromore,dromore,1
+1826099421,Berriew,berriew,1
+1826099481,Finchingfield,finchingfield,1
+1826099635,Doddington,doddington,1
+1826099661,Portishead,portishead,1
+1826099748,Pitsea,pitsea,1
+1826100021,Llangoed,llangoed,1
+1826100022,Nottage,nottage,1
+1826100157,Radstock,radstock,1
+1826100170,Aughton,aughton,1
+1826100514,Northenden,northenden,1
+1826100533,Upholland,upholland,1
+1826101287,Ravenstone,ravenstone,1
+1826101730,Sedgley,sedgley,1
+1826101777,Porth,porth,1
+1826101868,Woodcote,woodcote,1
+1826102019,Great Sankey,great sankey,1
+1826102051,Clayhanger,clayhanger,1
+1826103226,Portaferry,portaferry,1
+1826103303,Siddington,siddington,1
+1826103829,Newbury,newbury,1
+1826104027,Braughing,braughing,1
+1826104107,Penwortham,penwortham,1
+1826104215,Cockenzie,cockenzie,1
+1826104718,Longfield,longfield,1
+1826105342,South Hetton,south hetton,1
+1826105381,Rearsby,rearsby,1
+1826105714,Moira,moira,1
+1826105745,Dobwalls,dobwalls,1
+1826105801,Soberton,soberton,1
+1826105940,Dollar,dollar,1
+1826106257,Mevagissey,mevagissey,1
+1826106322,Glyncorrwg,glyncorrwg,1
+1826106384,Bishopsteignton,bishopsteignton,1
+1826106438,Snitterfield,snitterfield,1
+1826106581,Emneth,emneth,1
+1826106593,Darton,darton,1
+1826106606,Fowey,fowey,1
+1826106950,Offenham,offenham,1
+1826107196,Workington,workington,1
+1826107244,Callow End,callow end,1
+1826107476,Glenavy,glenavy,1
+1826107505,Nonington,nonington,1
+1826107553,Sleights,sleights,1
+1826107710,Sawtry,sawtry,1
+1826107914,Hawkesbury,hawkesbury,1
+1826108042,Heacham,heacham,1
+1826108290,Countesthorpe,countesthorpe,1
+1826108948,Higher Walton,higher walton,1
+1826108960,Rawcliffe,rawcliffe,1
+1826108996,Evington,evington,1
+1826109188,Griston,griston,1
+1826109200,Shillington,shillington,1
+1826109306,Mytholmroyd,mytholmroyd,1
+1826109660,Cowes,cowes,1
+1826109964,Elstree,elstree,1
+1826110047,Ramsden Heath,ramsden heath,1
+1826110317,Keith,keith,1
+1826110470,Wickhambrook,wickhambrook,1
+1826110529,Hoylake,hoylake,1
+1826110918,Seaham,seaham,1
+1826111075,Lyneham,lyneham,1
+1826111207,Littleton,littleton,1
+1826111722,Kelsall,kelsall,1
+1826111798,Annesley Woodhouse,annesley woodhouse,1
+1826111900,Killinghall,killinghall,1
+1826112224,Marham,marham,1
+1826112236,Etwall,etwall,1
+1826112344,Crook,crook,1
+1826112735,Ynysybwl,ynysybwl,1
+1826112944,Carshalton,carshalton,1
+1826113041,Saint Agnes,saint agnes,1
+1826113048,Govilon,govilon,1
+1826113088,Tintwistle,tintwistle,1
+1826113232,Purton,purton,1
+1826113413,Northill,northill,1
+1826113472,Blagdon,blagdon,1
+1826114311,Gosberton,gosberton,1
+1826114395,Lanark,lanark,1
+1826114854,Netherton,netherton,1
+1826114975,Hambledon,hambledon,1
+1826115137,Risca,risca,1
+1826115303,Rampton,rampton,1
+1826115786,Birchington,birchington,1
+1826116194,Huntington,huntington,1
+1826116234,Wombourn,wombourn,1
+1826116344,Wimblington,wimblington,1
+1826116508,Pilsley,pilsley,1
+1826116739,Hanslope,hanslope,1
+1826116893,Southwell,southwell,1
+1826117042,South Petherton,south petherton,1
+1826117124,Falmouth,falmouth,1
+1826117345,Elderslie,elderslie,1
+1826117600,Barns Green,barns green,1
+1826117667,Stevenage,stevenage,1
+1826117709,Little Dean,little dean,1
+1826117968,Turriff,turriff,1
+1826117988,Holker,holker,1
+1826118248,Altarnun,altarnun,1
+1826118277,Walton,walton,1
+1826118381,Alveston,alveston,1
+1826118622,Lutterworth,lutterworth,1
+1826118815,Willaston,willaston,1
+1826119387,Coltishall,coltishall,1
+1826119486,Llandyrnog,llandyrnog,1
+1826119506,Stedham,stedham,1
+1826119514,Parkstone,parkstone,1
+1826119659,Rhostyllen,rhostyllen,1
+1826119762,Hayton,hayton,1
+1826119874,Long Lawford,long lawford,1
+1826120221,Bacup,bacup,1
+1826120365,Stanwell Moor,stanwell moor,1
+1826120463,Patna,patna,1
+1826120671,Long Ashton,long ashton,1
+1826120781,Dore,dore,1
+1826121933,Kingsclere,kingsclere,1
+1826122027,Northwich,northwich,1
+1826122062,Newbold Verdon,newbold verdon,1
+1826122201,Teddington,teddington,1
+1826122597,Nottingham,nottingham,1
+1826122992,Curdworth,curdworth,1
+1826123248,Dacre,dacre,1
+1826123345,Kew Green,kew green,1
+1826123670,Hoddlesden,hoddlesden,1
+1826123681,Great Waltham,great waltham,1
+1826123790,Wantage,wantage,1
+1826124007,Chinnor,chinnor,1
+1826124444,Heather,heather,1
+1826124502,Billingshurst,billingshurst,1
+1826124711,Coaltown of Balgonie,coaltown of balgonie,1
+1826124765,Newcastle under Lyme,newcastle under lyme,1
+1826124794,Maddiston,maddiston,1
+1826124855,Oswaldtwistle,oswaldtwistle,1
+1826125018,Creigiau,creigiau,1
+1826125130,Ormesby,ormesby,1
+1826125584,East Barnet,east barnet,1
+1826125667,Tranent,tranent,1
+1826125812,Laurieston,laurieston,1
+1826126081,Maxey,maxey,1
+1826126150,Withnell,withnell,1
+1826126366,King’s Lynn,king s lynn,1
+1826126497,Newton Abbot,newton abbot,1
+1826126675,Croydon,croydon,1
+1826126712,Alloa,alloa,1
+1826126753,Bridport,bridport,1
+1826126926,Cobham,cobham,1
+1826126945,Ellon,ellon,1
+1826127059,Kirton,kirton,1
+1826127331,Hinxhill,hinxhill,1
+1826127611,Pontefract,pontefract,1
+1826127786,Picket Piece,picket piece,1
+1826128169,Upavon,upavon,1
+1826128620,Marlborough,marlborough,1
+1826128637,Radley,radley,1
+1826128701,Kineton,kineton,1
+1826129560,Trimley St Martin,trimley st martin,1
+1826129584,Wootton,wootton,1
+1826129934,Rowington,rowington,1
+1826130096,Highworth,highworth,1
+1826130184,Upper Poppleton,upper poppleton,1
+1826130380,Stromness,stromness,1
+1826130836,Bournville,bournville,1
+1826130998,Llandudno,llandudno,1
+1826131125,Stoke-sub-Hamdon,stoke sub hamdon,1
+1826131737,Sudbury,sudbury,1
+1826131820,Northborough,northborough,1
+1826132004,Saint Ives,saint ives,1
+1826132195,Harpur Hill,harpur hill,1
+1826132453,Sherborne Saint John,sherborne saint john,1
+1826132458,Rettendon,rettendon,1
+1826132662,Westquarter,westquarter,1
+1826132773,Aberlour,aberlour,1
+1826132857,Netley,netley,1
+1826133084,Wistaston,wistaston,1
+1826133113,Childwall,childwall,1
+1826133194,Lindford,lindford,1
+1826133238,Darlaston,darlaston,1
+1826133300,Hayfield,hayfield,1
+1826133567,Newtownhamilton,newtownhamilton,1
+1826133583,Milnrow,milnrow,1
+1826133589,Netherton,netherton,1
+1826133609,Woodley,woodley,1
+1826133887,Bradninch,bradninch,1
+1826134165,Hollesley,hollesley,1
+1826134256,Balderton,balderton,1
+1826134453,Westhoughton,westhoughton,1
+1826134474,Washingborough,washingborough,1
+1826134860,Cilcain,cilcain,1
+1826135120,Baddesley Ensor,baddesley ensor,1
+1826135129,East Preston,east preston,1
+1826135226,Pitstone,pitstone,1
+1826135276,Southwater,southwater,1
+1826135344,Bodelwyddan,bodelwyddan,1
+1826135370,Llandefaelog,llandefaelog,1
+1826135439,Armoy,armoy,1
+1826135741,Waverton,waverton,1
+1826135745,Bickerstaffe,bickerstaffe,1
+1826135769,Llanwenog,llanwenog,1
+1826136123,Hopton on Sea,hopton on sea,1
+1826136219,Abersoch,abersoch,1
+1826136607,Silsden,silsden,1
+1826136638,Manston,manston,1
+1826136644,Witney,witney,1
+1826136696,Staveley,staveley,1
+1826136838,Horsepath,horsepath,1
+1826136924,Mountnessing,mountnessing,1
+1826137124,Rufford,rufford,1
+1826137201,Tutbury,tutbury,1
+1826137560,Silkstone Common,silkstone common,1
+1826138074,Church Gresley,church gresley,1
+1826138078,Alness,alness,1
+1826138121,Morley,morley,1
+1826138331,Rotherfield,rotherfield,1
+1826138343,Billingham,billingham,1
+1826138490,Southbourne,southbourne,1
+1826138494,Audenshaw,audenshaw,1
+1826138727,Saint Germans,saint germans,1
+1826138992,Nether Heyford,nether heyford,1
+1826138997,Bonds,bonds,1
+1826139013,Hale,hale,1
+1826139297,Eccles,eccles,1
+1826139353,Burnham on Crouch,burnham on crouch,1
+1826139727,Ffestiniog,ffestiniog,1
+1826140010,Gislingham,gislingham,1
+1826140205,Porthleven,porthleven,1
+1826140461,Newchurch,newchurch,1
+1826140539,Lea,lea,1
+1826140688,Castlerock,castlerock,1
+1826140756,Guyhirn,guyhirn,1
+1826141026,Birstall,birstall,1
+1826141068,Westbury on Severn,westbury on severn,1
+1826141452,Bentley,bentley,1
+1826141992,Askern,askern,1
+1826141999,Caistor,caistor,1
+1826142035,Brimington,brimington,1
+1826142051,Clifton,clifton,1
+1826142319,Gourock,gourock,1
+1826142691,Crossmaglen,crossmaglen,1
+1826143197,Dousland,dousland,1
+1826143874,Tolleshunt Knights,tolleshunt knights,1
+1826143891,Shephall,shephall,1
+1826143972,Danbury,danbury,1
+1826144116,Merlin's Bridge,merlin s bridge,1
+1826144147,Bozeat,bozeat,1
+1826144377,Claudy,claudy,1
+1826144643,Tring,tring,1
+1826144927,South Wootton,south wootton,1
+1826144957,Bannockburn,bannockburn,1
+1826144961,Belford,belford,1
+1826145255,Chambercombe,chambercombe,1
+1826145501,Lydbrook,lydbrook,1
+1826145556,Tilehurst,tilehurst,1
+1826145613,Bishops Castle,bishops castle,1
+1826145872,Banknock,banknock,1
+1826146057,Deeping Saint James,deeping saint james,1
+1826146136,Tilbury,tilbury,1
+1826146139,Hebburn,hebburn,1
+1826146164,Ponsanooth,ponsanooth,1
+1826146185,Broughton Astley,broughton astley,1
+1826146230,Wisborough Green,wisborough green,1
+1826146319,Bexhill-on-Sea,bexhill on sea,1
+1826146665,Fleckney,fleckney,1
+1826147589,Overton,overton,1
+1826148279,Tillicoultry,tillicoultry,1
+1826148324,Carleton-in-Craven,carleton in craven,1
+1826148491,Locharbriggs,locharbriggs,1
+1826149081,Washington,washington,1
+1826149454,Kirkconnel,kirkconnel,1
+1826149902,North Hinksey,north hinksey,1
+1826149980,York,york,1
+1826149980,York,yuck,6
+1826150194,Bournmoor,bournmoor,1
+1826150383,Cleland,cleland,1
+1826150870,Brundall,brundall,1
+1826150988,Flockton,flockton,1
+1826151628,Kirkstall,kirkstall,1
+1826151855,Hailsham,hailsham,1
+1826152039,Cramlington,cramlington,1
+1826152071,Hamworthy,hamworthy,1
+1826152098,Llangarren,llangarren,1
+1826152141,Holywell,holywell,1
+1826152382,Dalkeith,dalkeith,1
+1826152389,Ochiltree,ochiltree,1
+1826152393,Bidford-on-Avon,bidford on avon,1
+1826152445,Abercynon,abercynon,1
+1826152489,Stanhope,stanhope,1
+1826152884,Halesowen,halesowen,1
+1826152928,Hillingdon,hillingdon,1
+1826153593,Pennard,pennard,1
+1826153599,Mepal,mepal,1
+1826153961,Stone,stone,1
+1826154035,Nafferton,nafferton,1
+1826154152,Llanllyfni,llanllyfni,1
+1826154246,Westhill,westhill,1
+1826154327,Woldingham,woldingham,1
+1826154508,Orrell,orrell,1
+1826154635,Harthill,harthill,1
+1826154772,Baltonsborough,baltonsborough,1
+1826154947,Dreghorn,dreghorn,1
+1826155303,Kingsbridge,kingsbridge,1
+1826155497,Newton-with-Scales,newton with scales,1
+1826155846,Broad Clyst,broad clyst,1
+1826155857,Chapeltown,chapeltown,1
+1826155918,Stocksfield,stocksfield,1
+1826156041,Wistow,wistow,1
+1826156064,Reepham,reepham,1
+1826156250,Yaxley,yaxley,1
+1826156596,Oakley,oakley,1
+1826156666,Hawick,hawick,1
+1826156796,Amroth,amroth,1
+1826156977,Keady,keady,1
+1826157075,Trull,trull,1
+1826157194,Castlewellan,castlewellan,1
+1826157197,Claverley,claverley,1
+1826157333,Bretforton,bretforton,1
+1826157369,Amesbury,amesbury,1
+1826157453,Newtown Saint Boswells,newtown saint boswells,1
+1826157550,Clevedon,clevedon,1
+1826157627,Saint Ishmael,saint ishmael,1
+1826157690,Newbold on Stour,newbold on stour,1
+1826158052,Bishops Itchington,bishops itchington,1
+1826158287,Himley,himley,1
+1826158363,Dunbar,dunbar,1
+1826158793,Hucknall under Huthwaite,hucknall under huthwaite,1
+1826158795,East Peckham,east peckham,1
+1826158829,Wyke Regis,wyke regis,1
+1826158925,Pontlliw,pontlliw,1
+1826159052,Golspie,golspie,1
+1826159228,Cudworth,cudworth,1
+1826159390,Donaghcloney,donaghcloney,1
+1826159536,Connahs Quay,connahs quay,1
+1826159687,Ardingly,ardingly,1
+1826159708,Llay,llay,1
+1826159986,Llanfairpwllgwyngyll,llanfairpwllgwyngyll,1
+1826160003,Brantham,brantham,1
+1826160167,Crowthorne,crowthorne,1
+1826160201,Middleton,middleton,1
+1826160520,Snettisham,snettisham,1
+1826160660,High Shincliffe,high shincliffe,1
+1826160685,Lubenham,lubenham,1
+1826160977,Bellingham,bellingham,1
+1826161019,Inverness,inverness,1
+1826161175,Wrington,wrington,1
+1826161375,Overseal,overseal,1
+1826161396,Great Dunmow,great dunmow,1
+1826161626,Lavenham,lavenham,1
+1826161684,Wisbech,wisbech,1
+1826162034,Bontnewydd,bontnewydd,1
+1826162045,Dawley,dawley,1
+1826162243,Shebbear,shebbear,1
+1826162263,Shaldon,shaldon,1
+1826162599,Lower Penn,lower penn,1
+1826162676,Melbourn,melbourn,1
+1826162905,Canklow,canklow,1
+1826163211,Great Easton,great easton,1
+1826163493,Hughenden,hughenden,1
+1826163555,Ballater,ballater,1
+1826163933,Wheatley,wheatley,1
+1826164050,Hutton,hutton,1
+1826164253,East Marton,east marton,1
+1826164401,Aylesham,aylesham,1
+1826164651,Eaglesham,eaglesham,1
+1826164730,Dawlish,dawlish,1
+1826164785,Hinderwell,hinderwell,1
+1826165038,Royston,royston,1
+1826165198,Modbury,modbury,1
+1826165560,Feltham,feltham,1
+1826165735,Pencoed,pencoed,1
+1826166333,Backworth,backworth,1
+1826166469,Amble,amble,1
+1826166610,Market Drayton,market drayton,1
+1826166697,Colsterworth,colsterworth,1
+1826167017,Huntly,huntly,1
+1826167139,Shadwell,shadwell,1
+1826167274,Hazel Grove,hazel grove,1
+1826167301,Sundon,sundon,1
+1826167307,Hellifield,hellifield,1
+1826167362,Otford,otford,1
+1826167465,Broadstairs,broadstairs,1
+1826167520,Rushden,rushden,1
+1826167830,Cleobury Mortimer,cleobury mortimer,1
+1826167893,Rothesay,rothesay,1
+1826168242,Urchfont,urchfont,1
+1826168500,Potterne,potterne,1
+1826168689,Leavenheath,leavenheath,1
+1826168850,Matlock,matlock,1
+1826168972,Hartley,hartley,1
+1826169216,Auchtermuchty,auchtermuchty,1
+1826169417,Lapford,lapford,1
+1826169446,Goldsithney,goldsithney,1
+1826169659,Bishopton,bishopton,1
+1826169974,Shrivenham,shrivenham,1
+1826170096,Gurnard,gurnard,1
+1826170099,Robertsbridge,robertsbridge,1
+1826170121,Laurencekirk,laurencekirk,1
+1826170694,Hevingham,hevingham,1
+1826170888,Wardle,wardle,1
+1826171227,Rainworth,rainworth,1
+1826171263,Great Missenden,great missenden,1
+1826171317,Wallsend,wallsend,1
+1826171573,Saint Athan,saint athan,1
+1826171684,Wroughton,wroughton,1
+1826171790,Pontywaun,pontywaun,1
+1826171988,Lesmahagow,lesmahagow,1
+1826172324,Lingwood,lingwood,1
+1826172454,Wadhurst,wadhurst,1
+1826172505,Eggborough,eggborough,1
+1826172568,Hendy,hendy,1
+1826172602,Cowling,cowling,1
+1826172682,Greasby,greasby,1
+1826172888,Bidborough,bidborough,1
+1826173025,Stanton Harcourt,stanton harcourt,1
+1826173055,Greenham,greenham,1
+1826173305,Cleadon,cleadon,1
+1826173396,Belton,belton,1
+1826173539,Milkwall,milkwall,1
+1826173712,Kinmel,kinmel,1
+1826173864,Barnbrough,barnbrough,1
+1826173931,Rosyth,rosyth,1
+1826174497,Haltwhistle,haltwhistle,1
+1826174568,Narborough,narborough,1
+1826174652,Whittlesey,whittlesey,1
+1826174742,Fenwick,fenwick,1
+1826174913,Reedham,reedham,1
+1826174953,Innellan,innellan,1
+1826174957,Kirkcaldy,kirkcaldy,1
+1826174986,Treeton,treeton,1
+1826175295,Denby Dale,denby dale,1
+1826175502,Langho,langho,1
+1826176136,Holme upon Spalding Moor,holme upon spalding moor,1
+1826176719,Eccleston,eccleston,1
+1826177078,Yeovil,yeovil,1
+1826177082,Seven Sisters,seven sisters,1
+1826177227,Saint Austell,saint austell,1
+1826177477,Cawthorne,cawthorne,1
+1826177488,Broughshane,broughshane,1
+1826177631,Burneside,burneside,1
+1826177655,Eversley Centre,eversley centre,1
+1826177807,Stithians,stithians,1
+1826177835,Hollinwood,hollinwood,1
+1826177889,Cove,cove,1
+1826178077,West Malling,west malling,1
+1826178157,Radford Semele,radford semele,1
+1826178299,Mellor,mellor,1
+1826178374,Hauxton,hauxton,1
+1826178379,Heage,heage,1
+1826178454,Walton on the Hill,walton on the hill,1
+1826178480,Turners Hill,turners hill,1
+1826178724,Heysham,heysham,1
+1826178800,Penbryn,penbryn,1
+1826178817,Hermitage,hermitage,1
+1826178822,Clent,clent,1
+1826178884,Slimbridge,slimbridge,1
+1826178888,Llandovery,llandovery,1
+1826178927,Droylsden,droylsden,1
+1826179016,Ormesby Saint Margaret,ormesby saint margaret,1
+1826179214,Evenwood,evenwood,1
+1826179229,Streatley,streatley,1
+1826179551,Byfleet,byfleet,1
+1826179788,Acton Trussell,acton trussell,1
+1826179810,St Mary's Bay,st mary s bay,1
+1826179920,Stalmine,stalmine,1
+1826180344,Cambois,cambois,1
+1826180390,Rowley Regis,rowley regis,1
+1826180448,Praa Sands,praa sands,1
+1826180591,East Finchley,east finchley,1
+1826181785,Windermere,windermere,1
+1826182197,Kidlington,kidlington,1
+1826182209,Ringstead,ringstead,1
+1826182364,Aspull,aspull,1
+1826182378,Haxey,haxey,1
+1826182465,Newburgh,newburgh,1
+1826182529,Irchester,irchester,1
+1826182540,Llanddulas,llanddulas,1
+1826182553,Ilfracombe,ilfracombe,1
+1826182592,Cwm,cwm,1
+1826182728,Coundon,coundon,1
+1826182736,Torrisholme,torrisholme,1
+1826182911,Kintore,kintore,1
+1826183004,Coylton,coylton,1
+1826183168,Chorleywood,chorleywood,1
+1826183267,Felbridge,felbridge,1
+1826183316,Farcet,farcet,1
+1826183393,Carnwath,carnwath,1
+1826183399,Caddington,caddington,1
+1826183483,Millhouse Green,millhouse green,1
+1826183501,Milford,milford,1
+1826183668,Brandesburton,brandesburton,1
+1826183803,Fortuneswell,fortuneswell,1
+1826184081,Upton upon Severn,upton upon severn,1
+1826184185,Campbeltown,campbeltown,1
+1826184984,Great Totham,great totham,1
+1826185150,Finningley,finningley,1
+1826185482,Templepatrick,templepatrick,1
+1826185608,Hulland,hulland,1
+1826185661,Galashiels,galashiels,1
+1826185767,Burwell,burwell,1
+1826185883,Chatburn,chatburn,1
+1826186113,Saint Ives,saint ives,1
+1826186661,Cleehill,cleehill,1
+1826186707,Newton Longville,newton longville,1
+1826187003,Welwyn,welwyn,1
+1826187084,Pakefield,pakefield,1
+1826187331,Peterchurch,peterchurch,1
+1826187608,Streethouse,streethouse,1
+1826187706,Roose,roose,1
+1826187766,Greasley,greasley,1
+1826187889,Basing,basing,1
+1826188018,Llanilar,llanilar,1
+1826188140,Coalburn,coalburn,1
+1826188255,Shipton Bellinger,shipton bellinger,1
+1826188492,Axbridge,axbridge,1
+1826188587,Stanion,stanion,1
+1826189357,Ketton,ketton,1
+1826189435,Waddesdon,waddesdon,1
+1826189671,Balerno,balerno,1
+1826189795,Weston-super-Mare,weston super mare,1
+1826189962,Taibach,taibach,1
+1826190104,Great Hockham,great hockham,1
+1826190179,Melling,melling,1
+1826190361,Leeming,leeming,1
+1826190397,Lower Brailes,lower brailes,1
+1826190731,Cemaes Bay,cemaes bay,1
+1826190740,Stonehaven,stonehaven,1
+1826191397,Saint David’s,saint david s,1
+1826191626,Ruskington,ruskington,1
+1826191652,Felsted,felsted,1
+1826191797,Utley,utley,1
+1826191966,Buxton,buxton,1
+1826192698,Troon,troon,1
+1826192725,Roydon,roydon,1
+1826192905,Ballycastle,ballycastle,1
+1826193047,Felixstowe,felixstowe,1
+1826193126,Haynes,haynes,1
+1826193146,Netheravon,netheravon,1
+1826193766,Cliffsend,cliffsend,1
+1826193866,Cosby,cosby,1
+1826194023,Welsh Bicknor,welsh bicknor,1
+1826194202,Hemswell Cliff,hemswell cliff,1
+1826194258,Loughborough,loughborough,1
+1826194626,Ruabon,ruabon,1
+1826194907,Market Hill,market hill,1
+1826194958,East Bridgford,east bridgford,1
+1826195057,Burghead,burghead,1
+1826195474,Point Clear,point clear,1
+1826195534,Kendal,kendal,1
+1826195961,Lickey End,lickey end,1
+1826196022,Callington,callington,1
+1826196297,Hempnall,hempnall,1
+1826196312,Alyth,alyth,1
+1826196483,Caldy,caldy,1
+1826196532,Dennyloanhead,dennyloanhead,1
+1826196892,Maryport,maryport,1
+1826196984,Standish,standish,1
+1826197132,Nether Stowey,nether stowey,1
+1826197197,Ottery Saint Mary,ottery saint mary,1
+1826197341,Lancaster,lancaster,1
+1826197366,Bagshot,bagshot,1
+1826197737,Chelmondiston,chelmondiston,1
+1826198624,Allington,allington,1
+1826198793,Peasedown Saint John,peasedown saint john,1
+1826198887,Benenden,benenden,1
+1826199391,Winkfield,winkfield,1
+1826199975,Carmunnock,carmunnock,1
+1826200393,Partridge Green,partridge green,1
+1826200649,Mid Calder,mid calder,1
+1826200772,Skipton,skipton,1
+1826200856,Farncombe,farncombe,1
+1826200974,Arlecdon,arlecdon,1
+1826201025,Scole,scole,1
+1826201087,East Rainton,east rainton,1
+1826201347,Moneymore,moneymore,1
+1826201607,Kelso,kelso,1
+1826201708,Pulloxhill,pulloxhill,1
+1826202056,Charlesworth,charlesworth,1
+1826202112,Prudhoe,prudhoe,1
+1826202807,Holmesfield,holmesfield,1
+1826203098,Wigginton,wigginton,1
+1826203172,Cornwood,cornwood,1
+1826203559,Saint Bees,saint bees,1
+1826203695,Ashford,ashford,1
+1826204208,Sedlescombe,sedlescombe,1
+1826204570,Eckington,eckington,1
+1826204769,Rawtenstall,rawtenstall,1
+1826204982,Leigh,leigh,1
+1826205117,East Goscote,east goscote,1
+1826205148,Redditch,redditch,1
+1826205427,Woking,woking,1
+1826205482,Checkley,checkley,1
+1826205499,Chilbolton,chilbolton,1
+1826205713,Irthlingborough,irthlingborough,1
+1826205723,Great Blakenham,great blakenham,1
+1826205784,Hundon,hundon,1
+1826205804,Cheddleton,cheddleton,1
+1826205951,Penistone,penistone,1
+1826206135,Burgh by Sands,burgh by sands,1
+1826206358,Dedham,dedham,1
+1826206381,Spilsby,spilsby,1
+1826206537,Bickenhill,bickenhill,1
+1826206556,Llandegai,llandegai,1
+1826206568,Chailey,chailey,1
+1826206708,Renton,renton,1
+1826206889,Hatherleigh,hatherleigh,1
+1826207056,Markinch,markinch,1
+1826207080,Carlyon Bay,carlyon bay,1
+1826207135,Pensford,pensford,1
+1826207226,Bideford,bideford,1
+1826207266,Stoke upon Tern,stoke upon tern,1
+1826207324,Bardney,bardney,1
+1826207398,Boxted,boxted,1
+1826207806,Stoke Poges,stoke poges,1
+1826208253,Scalby,scalby,1
+1826208416,Steeple Morden,steeple morden,1
+1826208429,Llanfoist,llanfoist,1
+1826208674,Hebden Bridge,hebden bridge,1
+1826208698,Kirkwall,kirkwall,1
+1826209001,Portrush,portrush,1
+1826209101,Chillington,chillington,1
+1826209257,Penryn,penryn,1
+1826209275,Polperro,polperro,1
+1826209684,Stogursey,stogursey,1
+1826210124,Mayobridge,mayobridge,1
+1826210235,Crowle,crowle,1
+1826210272,Dormans Land,dormans land,1
+1826210408,Guiseley,guiseley,1
+1826210739,Weeley,weeley,1
+1826210843,Barlestone,barlestone,1
+1826211416,Partington,partington,1
+1826211552,Over Wallop,over wallop,1
+1826211683,Banff,banff,1
+1826211698,Delabole,delabole,1
+1826211741,Ashwell,ashwell,1
+1826211775,Gosfield,gosfield,1
+1826211860,Rothley,rothley,1
+1826211899,Llanyre,llanyre,1
+1826212144,Northop Hall,northop hall,1
+1826212195,Merriott,merriott,1
+1826212366,High Bentham,high bentham,1
+1826213003,Hollingbourne,hollingbourne,1
+1826213063,Newton in Makerfield,newton in makerfield,1
+1826213221,Thorner,thorner,1
+1826213402,Ryton on Dunsmore,ryton on dunsmore,1
+1826214059,Dyserth,dyserth,1
+1826214236,Egham,egham,1
+1826214371,Houston,houston,1
+1826214509,Felling,felling,1
+1826214574,Coalsnaughton,coalsnaughton,1
+1826214619,Kidwelly,kidwelly,1
+1826214738,Danderhall,danderhall,1
+1826214859,Thornliebank,thornliebank,1
+1826214875,Yeadon,yeadon,1
+1826215350,Blackwell,blackwell,1
+1826215413,Brixworth,brixworth,1
+1826215639,Batheaston,batheaston,1
+1826215882,Arundel,arundel,1
+1826216139,Seacombe,seacombe,1
+1826216380,Holme,holme,1
+1826216468,Garforth,garforth,1
+1826216570,Lemington,lemington,1
+1826216697,Maiden Newton,maiden newton,1
+1826216728,Oving,oving,1
+1826217435,Northchurch,northchurch,1
+1826217552,Bolton le Sands,bolton le sands,1
+1826218242,Abbots Bromley,abbots bromley,1
+1826218422,Abernethy,abernethy,1
+1826218432,East Linton,east linton,1
+1826218483,Saint Budeaux,saint budeaux,1
+1826218528,Adderbury,adderbury,1
+1826218558,Ham Street,ham street,1
+1826219016,Llangunnor,llangunnor,1
+1826219068,Church Leigh,church leigh,1
+1826219127,Pontardawe,pontardawe,1
+1826219493,Linkinhorne,linkinhorne,1
+1826219705,Evercreech,evercreech,1
+1826220162,Radbourne,radbourne,1
+1826220347,Godalming,godalming,1
+1826220456,Forden,forden,1
+1826220510,Bucklebury,bucklebury,1
+1826220623,Datchworth,datchworth,1
+1826220666,Smarden,smarden,1
+1826220685,Stainton,stainton,1
+1826221011,Towcester,towcester,1
+1826221040,Maesteg,maesteg,1
+1826221059,Deeping Saint Nicholas,deeping saint nicholas,1
+1826221070,Great Glen,great glen,1
+1826221113,Weston,weston,1
+1826221213,Horndon on the Hill,horndon on the hill,1
+1826221289,Ilkley,ilkley,1
+1826222188,Awre,awre,1
+1826222229,Potten End,potten end,1
+1826222339,Clay Cross,clay cross,1
+1826222456,Muirkirk,muirkirk,1
+1826222487,Galston,galston,1
+1826222531,Carlton in Lindrick,carlton in lindrick,1
+1826222557,Millbrook,millbrook,1
+1826222797,Sapcote,sapcote,1
+1826222825,Llanfair Caereinion,llanfair caereinion,1
+1826223367,Sprotbrough,sprotbrough,1
+1826223522,Rothbury,rothbury,1
+1826223984,Bromborough,bromborough,1
+1826224120,Goudhurst,goudhurst,1
+1826224149,Stewarton,stewarton,1
+1826224455,Tuxford,tuxford,1
+1826224667,Efail Isaf,efail isaf,1
+1826224897,Criccieth,criccieth,1
+1826225023,North Mimms,north mimms,1
+1826225201,Smalley,smalley,1
+1826225222,Aslockton,aslockton,1
+1826225511,Gotham,gotham,1
+1826225569,Worthington,worthington,1
+1826225646,Langtoft,langtoft,1
+1826225709,Mayfield,mayfield,1
+1826225863,Lauder,lauder,1
+1826225909,Richmond,richmond,1
+1826225943,Oxspring,oxspring,1
+1826226246,Aspatria,aspatria,1
+1826226857,Gwernymynydd,gwernymynydd,1
+1826227657,Eastwood,eastwood,1
+1826227818,Battle,battle,1
+1826227978,Midsomer Norton,midsomer norton,1
+1826228303,Stockport,stockport,1
+1826228459,Flimby,flimby,1
+1826228952,Longniddry,longniddry,1
+1826229039,Cockermouth,cockermouth,1
+1826229131,Ottershaw,ottershaw,1
+1826229585,Sutton Scotney,sutton scotney,1
+1826229713,Cambridge,cambridge,1
+1826229863,Llantrisant,llantrisant,1
+1826230025,Seaton Carew,seaton carew,1
+1826230570,Colne,colne,1
+1826230641,Esher,esher,1
+1826230837,Denstone,denstone,1
+1826231407,Milton,milton,1
+1826231559,Forton,forton,1
+1826231773,West Bromwich,west bromwich,1
+1826232011,Tideswell,tideswell,1
+1826232015,Saint Brides Major,saint brides major,1
+1826232308,Sandwich,sandwich,1
+1826232392,Gnosall,gnosall,1
+1826232822,Horley,horley,1
+1826232962,Bottesford,bottesford,1
+1826232965,Far Forest,far forest,1
+1826233059,Jaywick,jaywick,1
+1826233090,Boston,boston,1
+1826233272,Hucclecote,hucclecote,1
+1826233528,Dunton,dunton,1
+1826233581,Bailleston,bailleston,1
+1826233814,Handsworth,handsworth,1
+1826234838,Epping,epping,1
+1826234904,Seer Green,seer green,1
+1826234952,Buckfastleigh,buckfastleigh,1
+1826235034,Fulford,fulford,1
+1826235398,Rudloe,rudloe,1
+1826235732,Wells,wells,1
+1826235840,Murston,murston,1
+1826235843,Earlestown,earlestown,1
+1826235864,Whittlesford,whittlesford,1
+1826235913,Baglan,baglan,1
+1826236122,Whyteleafe,whyteleafe,1
+1826236387,Great Meols,great meols,1
+1826236540,Betchworth,betchworth,1
+1826236836,Bacton,bacton,1
+1826236942,Bicester,bicester,1
+1826236947,Chigwell Row,chigwell row,1
+1826237409,Wingate,wingate,1
+1826237568,Crynant,crynant,1
+1826237635,Lambley,lambley,1
+1826237650,Whiteparish,whiteparish,1
+1826237809,Shepton Mallet,shepton mallet,1
+1826237901,Luddenden Foot,luddenden foot,1
+1826238045,Harlescott,harlescott,1
+1826238656,Brampton,brampton,1
+1826238780,Olney,olney,1
+1826238808,Moulton,moulton,1
+1826239140,Bakewell,bakewell,1
+1826239327,Malpas,malpas,1
+1826239603,Dodleston,dodleston,1
+1826239698,Monkseaton,monkseaton,1
+1826240117,Caldercruix,caldercruix,1
+1826240239,Puriton,puriton,1
+1826240370,Nuneaton,nuneaton,1
+1826240471,Knutsford,knutsford,1
+1826240589,Barnard Castle,barnard castle,1
+1826240625,Cleveleys,cleveleys,1
+1826240875,Addiewell,addiewell,1
+1826241240,Bourton on the Water,bourton on the water,1
+1826241670,Foulsham,foulsham,1
+1826241730,Hawes,hawes,1
+1826241764,Esh Winning,esh winning,1
+1826242065,Anstey,anstey,1
+1826242195,Bury,bury,1
+1826242325,Goodwick,goodwick,1
+1826242602,Watlington,watlington,1
+1826242853,Kings Cliffe,kings cliffe,1
+1826242968,Broad Blunsdon,broad blunsdon,1
+1826243181,Castleton,castleton,1
+1826243374,Dearham,dearham,1
+1826243781,Ealand,ealand,1
+1826243789,Farningham,farningham,1
+1826243852,Newry,newry,1
+1826243930,Crymych,crymych,1
+1826244149,Low Bradley,low bradley,1
+1826244451,Great Driffield,great driffield,1
+1826244586,Mersham,mersham,1
+1826244828,Middleton St George,middleton st george,1
+1826244892,Ludgershall,ludgershall,1
+1826244910,Toll Bar,toll bar,1
+1826244957,Caythorpe,caythorpe,1
+1826244979,Llanfair-Dyffryn-Clwyd,llanfair dyffryn clwyd,1
+1826245157,Highnam,highnam,1
+1826245336,Cantley,cantley,1
+1826245369,Billericay,billericay,1
+1826245614,Woodcroft,woodcroft,1
+1826245705,Hixon,hixon,1
+1826245987,Stanwell,stanwell,1
+1826246098,Rowde,rowde,1
+1826246108,Oswestry,oswestry,1
+1826246190,Barnet,barnet,1
+1826246335,Manchester,manchester,1
+1826246486,Bassingbourn,bassingbourn,1
+1826247178,Fakenham,fakenham,1
+1826247244,Farnborough,farnborough,1
+1826247369,Toton,toton,1
+1826247882,Sutton in Ashfield,sutton in ashfield,1
+1826247955,Malborough,malborough,1
+1826248140,Blofield,blofield,1
+1826248211,Ore,ore,1
+1826248292,Ingleton,ingleton,1
+1826248890,Mayfield,mayfield,1
+1826248928,Ancaster,ancaster,1
+1826249047,Thurgoland,thurgoland,1
+1826249097,Nant-y-moel,nant y moel,1
+1826249123,Gunton,gunton,1
+1826249332,Hale,hale,1
+1826249398,Wragby,wragby,1
+1826249689,Yoxall,yoxall,1
+1826249919,Rockwell Green,rockwell green,1
+1826249984,Fulford,fulford,1
+1826250027,Rock Ferry,rock ferry,1
+1826250514,South Littleton,south littleton,1
+1826250958,London Colney,london colney,1
+1826251165,Bere Alston,bere alston,1
+1826251310,High Legh,high legh,1
+1826251340,Coupar Angus,coupar angus,1
+1826251430,Great Eccleston,great eccleston,1
+1826251524,Markfield,markfield,1
+1826251696,Broadbridge Heath,broadbridge heath,1
+1826251906,Tregarth,tregarth,1
+1826252067,Griffithstown,griffithstown,1
+1826252325,Grundisburgh,grundisburgh,1
+1826252332,Hugh Town,hugh town,1
+1826252568,Little Hadham,little hadham,1
+1826252637,Clutton,clutton,1
+1826252641,Wetheringsett,wetheringsett,1
+1826252714,Thurso,thurso,1
+1826253052,Burton Joyce,burton joyce,1
+1826253288,Phoenix Green,phoenix green,1
+1826253292,Ambrosden,ambrosden,1
+1826253359,Addlestone,addlestone,1
+1826253371,Charlton,charlton,1
+1826253660,Bilston,bilston,1
+1826254216,Endmoor,endmoor,1
+1826254442,Rhuthun,rhuthun,1
+1826254518,Lacock,lacock,1
+1826254599,Otley,otley,1
+1826255361,Loudwater,loudwater,1
+1826255607,Appledore,appledore,1
+1826255711,Witheridge,witheridge,1
+1826256143,Weeting,weeting,1
+1826256340,Hassocks,hassocks,1
+1826256512,Creswell,creswell,1
+1826256692,Storrington,storrington,1
+1826256759,Ribchester,ribchester,1
+1826256805,Milford on Sea,milford on sea,1
+1826257066,Quainton,quainton,1
+1826257074,Farnworth,farnworth,1
+1826257230,Folkestone,folkestone,1
+1826257341,Bury Saint Edmunds,bury saint edmunds,1
+1826257375,New Cumnock,new cumnock,1
+1826257812,Steynton,steynton,1
+1826258031,Buckhaven,buckhaven,1
+1826258060,Presteign,presteign,1
+1826258318,Market Bosworth,market bosworth,1
+1826258373,Lee-on-the-Solent,lee on the solent,1
+1826258561,Tandragee,tandragee,1
+1826258602,Redruth,redruth,1
+1826258829,Taff’s Well,taff s well,1
+1826259011,Catford,catford,1
+1826259356,Kibblesworth,kibblesworth,1
+1826259578,Stratton,stratton,1
+1826259788,Bilston,bilston,1
+1826259802,Stockton-on-Tees,stockton on tees,1
+1826260470,Shoreham-by-Sea,shoreham by sea,1
+1826260476,Clophill,clophill,1
+1826260567,Meltham,meltham,1
+1826260717,Stoke Mandeville,stoke mandeville,1
+1826261114,Ropsley,ropsley,1
+1826261245,Hambleden,hambleden,1
+1826261276,Pilning,pilning,1
+1826261422,Elmstead Market,elmstead market,1
+1826261536,Henfield,henfield,1
+1826261547,Warrington,warrington,1
+1826261674,Barrow,barrow,1
+1826261756,Narberth,narberth,1
+1826261763,Llandegfan,llandegfan,1
+1826261845,Llansannan,llansannan,1
+1826262162,Weston Rhyn,weston rhyn,1
+1826263242,Upper Caldecote,upper caldecote,1
+1826263280,Littlebourne,littlebourne,1
+1826263309,Kirby Cross,kirby cross,1
+1826263534,Cromer,cromer,1
+1826263581,Arbroath,arbroath,1
+1826263642,Llanberis,llanberis,1
+1826263785,Brown Edge,brown edge,1
+1826263896,Sheerness,sheerness,1
+1826264046,Great Bedwyn,great bedwyn,1
+1826264078,Pembroke Dock,pembroke dock,1
+1826264267,Carron,carron,1
+1826264316,Odcombe,odcombe,1
+1826264463,Tatworth,tatworth,1
+1826264755,Shipham,shipham,1
+1826265113,Northop,northop,1
+1826265291,Rhayader,rhayader,1
+1826265768,Haverigg,haverigg,1
+1826265851,Skidby,skidby,1
+1826265955,Knebworth,knebworth,1
+1826265966,Annfield Plain,annfield plain,1
+1826266080,Berechurch,berechurch,1
+1826266168,Tasburgh,tasburgh,1
+1826266401,Kiveton Park,kiveton park,1
+1826266518,Bluntisham,bluntisham,1
+1826266984,Saint Boswells,saint boswells,1
+1826267348,Great Wakering,great wakering,1
+1826267371,Little Hallingbury,little hallingbury,1
+1826267490,Lavendon,lavendon,1
+1826267524,Hinstock,hinstock,1
+1826267550,Bourne,bourne,1
+1826267741,Coity,coity,1
+1826267810,Islington,islington,1
+1826268056,Morriston,morriston,1
+1826268487,Walesby,walesby,1
+1826268746,Gamlingay,gamlingay,1
+1826268835,Leconfield,leconfield,1
+1826268936,Hartshill,hartshill,1
+1826269195,Ifield,ifield,1
+1826269304,Bassingham,bassingham,1
+1826269548,Waterfoot,waterfoot,1
+1826269632,Kinnerley,kinnerley,1
+1826269659,Totton,totton,1
+1826269898,Clogh Mills,clogh mills,1
+1826270044,Glenrothes,glenrothes,1
+1826270642,Newburn,newburn,1
+1826270823,Houghton,houghton,1
+1826270852,West Parley,west parley,1
+1826271020,Biddenham,biddenham,1
+1826271091,Speen,speen,1
+1826271387,Southport,southport,1
+1826271894,Datchet,datchet,1
+1826271896,Worlingham,worlingham,1
+1826272364,Kirkby in Ashfield,kirkby in ashfield,1
+1826272551,West Thurrock,west thurrock,1
+1826272793,Tumble,tumble,1
+1826272901,Burscough,burscough,1
+1826273033,Bradwell,bradwell,1
+1826273412,Burgh le Marsh,burgh le marsh,1
+1826273920,Broughton,broughton,1
+1826273972,Chadwell St Mary,chadwell st mary,1
+1826274032,Market Rasen,market rasen,1
+1826274043,South Brent,south brent,1
+1826274087,Skirlaugh,skirlaugh,1
+1826274261,Hurst Green,hurst green,1
+1826274449,New Marske,new marske,1
+1826274475,Verwood,verwood,1
+1826274943,Thame,thame,1
+1826275101,Painswick,painswick,1
+1826275133,Blaydon,blaydon,1
+1826276011,Upper Clatford,upper clatford,1
+1826276035,Hardwick,hardwick,1
+1826276603,Plumstead,plumstead,1
+1826276626,Kempsford,kempsford,1
+1826276627,Annesley,annesley,1
+1826277161,Cookstown,cookstown,1
+1826277216,Swindon,swindon,1
+1826277294,Kirkby Lonsdale,kirkby lonsdale,1
+1826277512,Carlton,carlton,1
+1826277626,Tackley,tackley,1
+1826277627,Watton at Stone,watton at stone,1
+1826277763,Cawood,cawood,1
+1826277799,Westonzoyland,westonzoyland,1
+1826277851,Ashbourne,ashbourne,1
+1826277905,Camblesforth,camblesforth,1
+1826277952,Dwygyfylchi,dwygyfylchi,1
+1826277987,Andover,andover,1
+1826278074,Laughton en le Morthen,laughton en le morthen,1
+1826278207,East Wittering,east wittering,1
+1826278245,Horrabridge,horrabridge,1
+1826278285,Carey Park,carey park,1
+1826278494,Armadale,armadale,1
+1826278899,Ramsgate,ramsgate,1
+1826278903,East Grinstead,east grinstead,1
+1826278943,Desford,desford,1
+1826279156,Swanland,swanland,1
+1826279601,Alton,alton,1
+1826280322,Kirk of Shotts,kirk of shotts,1
+1826280426,Altrincham,altrincham,1
+1826280446,Great Bentley,great bentley,1
+1826280450,Pinchbeck,pinchbeck,1
+1826280606,Dinas Powys,dinas powys,1
+1826281028,Watchet,watchet,1
+1826281582,Brighstone,brighstone,1
+1826282057,Little Lever,little lever,1
+1826282262,Bangor,bangor,1
+1826282422,Flexbury,flexbury,1
+1826282578,Garnant,garnant,1
+1826282652,Auchinleck,auchinleck,1
+1826282725,Cheveley,cheveley,1
+1826282948,Bewdley,bewdley,1
+1826282974,Stonesfield,stonesfield,1
+1826282977,Petersfield,petersfield,1
+1826282994,Kimberley,kimberley,1
+1826283137,Shrewsbury,shrewsbury,1
+1826283717,Wolston,wolston,1
+1826283953,Lenham,lenham,1
+1826284052,Bar Hill,bar hill,1
+1826284283,Hawkhurst,hawkhurst,1
+1826284360,Llanfyllin,llanfyllin,1
+1826284462,Great Paxton,great paxton,1
+1826284593,Parkgate,parkgate,1
+1826285073,Porton,porton,1
+1826285169,Harwich,harwich,1
+1826285391,Blunsdon Saint Andrew,blunsdon saint andrew,1
+1826286160,Mountsorrel,mountsorrel,1
+1826286228,Wooburn,wooburn,1
+1826286334,Outlane,outlane,1
+1826286558,Livingston,livingston,1
+1826286611,West Felton,west felton,1
+1826286712,Dingle,dingle,1
+1826286744,Chillaton,chillaton,1
+1826287319,Westfield,westfield,1
+1826287343,Houghton,houghton,1
+1826287410,Inchinnan,inchinnan,1
+1826287861,Gwithian,gwithian,1
+1826288025,Overtown,overtown,1
+1826288054,Longton,longton,1
+1826288303,Horton Kirby,horton kirby,1
+1826288697,Sunniside,sunniside,1
+1826288712,Helsby,helsby,1
+1826289110,Willand,willand,1
+1826289111,Bickershaw,bickershaw,1
+1826289115,Newtown Limford,newtown limford,1
+1826289447,Bromham,bromham,1
+1826289571,Kirby-le-Soken,kirby le soken,1
+1826289852,Sheffield,sheffield,1
+1826289918,Eynsford,eynsford,1
+1826289943,Ilkeston,ilkeston,1
+1826289984,Hanley Swan,hanley swan,1
+1826290265,Waterlooville,waterlooville,1
+1826290531,Scartho,scartho,1
+1826290974,Somersham,somersham,1
+1826291114,Wallyford,wallyford,1
+1826291167,Cinderford,cinderford,1
+1826291745,Milton Keynes,milton keynes,1
+1826291753,North Weald,north weald,1
+1826291904,Wealdstone,wealdstone,1
+1826292101,Braunston,braunston,1
+1826292109,Tantobie,tantobie,1
+1826292177,Smithton,smithton,1
+1826292220,Newcastle,newcastle,1
+1826292521,Claygate,claygate,1
+1826292544,Market Harborough,market harborough,1
+1826292869,Great Stukeley,great stukeley,1
+1826292876,Flixton,flixton,1
+1826292971,Mistley,mistley,1
+1826293113,Ebchester,ebchester,1
+1826293239,Tenterden,tenterden,1
+1826293377,Alderbury,alderbury,1
+1826293505,Crigglestone,crigglestone,1
+1826293517,Worfield,worfield,1
+1826293813,Woodchester,woodchester,1
+1826294025,Briston,briston,1
+1826294044,Lockerbie,lockerbie,1
+1826294614,Mereworth,mereworth,1
+1826294615,Salcombe,salcombe,1
+1826295048,Auckley,auckley,1
+1826295343,Wick,wick,1
+1826295621,Scaynes Hill,scaynes hill,1
+1826295661,Twyford,twyford,1
+1826295670,Odiham,odiham,1
+1826295675,Airth,airth,1
+1826295809,Haslingden,haslingden,1
+1826296040,Middleton-on-Sea,middleton on sea,1
+1826296193,Swanwick,swanwick,1
+1826296238,Dickleburgh,dickleburgh,1
+1826296430,Simister,simister,1
+1826296458,Sturton by Stow,sturton by stow,1
+1826296791,Thorpe Saint Andrew,thorpe saint andrew,1
+1826296892,Stainforth,stainforth,1
+1826297176,Pontesbury,pontesbury,1
+1826297411,Great Linford,great linford,1
+1826297954,Shurdington,shurdington,1
+1826298470,Coggeshall,coggeshall,1
+1826298877,Todwick,todwick,1
+1826299190,Rogiet,rogiet,1
+1826299258,Caerwent,caerwent,1
+1826299389,Saltburn-by-the-Sea,saltburn by the sea,1
+1826299477,Churchdown,churchdown,1
+1826299810,Sheldon,sheldon,1
+1826300033,Theydon Bois,theydon bois,1
+1826300128,High Halden,high halden,1
+1826300495,Paddock Wood,paddock wood,1
+1826301030,Saint Dogmaels,saint dogmaels,1
+1826301114,West Melton,west melton,1
+1826301318,Helston,helston,1
+1826301712,Kings Hill,kings hill,1
+1826301791,Thrapston,thrapston,1
+1826301941,Ightham,ightham,1
+1826302127,Stroud,stroud,1
+1826302142,Irvinestown,irvinestown,1
+1826302280,Tycroes,tycroes,1
+1826302596,Cowpen,cowpen,1
+1826303060,Ladybank,ladybank,1
+1826303123,North Petherton,north petherton,1
+1826303168,Heighington,heighington,1
+1826303176,Aberford,aberford,1
+1826303470,Portchester,portchester,1
+1826303482,Wingrave,wingrave,1
+1826303675,Great Barton,great barton,1
+1826303681,Ross on Wye,ross on wye,1
+1826303898,Fishbourne,fishbourne,1
+1826304006,Findon,findon,1
+1826304042,Chelford,chelford,1
+1826304225,Brede,brede,1
+1826304322,Sidlesham,sidlesham,1
+1826304328,Salisbury,salisbury,1
+1826304398,Ashby de la Zouch,ashby de la zouch,1
+1826304414,Nether Poppleton,nether poppleton,1
+1826304464,Ashtead,ashtead,1
+1826304694,Feering,feering,1
+1826304857,Weston under Penyard,weston under penyard,1
+1826305482,Aveley,aveley,1
+1826305518,New Pitsligo,new pitsligo,1
+1826305553,Charfield,charfield,1
+1826305628,Dunkeswell,dunkeswell,1
+1826305898,Burbage,burbage,1
+1826306190,Borrowash,borrowash,1
+1826306238,Kincardine,kincardine,1
+1826306290,Burry Port,burry port,1
+1826306536,Colwyn Bay,colwyn bay,1
+1826306635,Strensall,strensall,1
+1826306645,Claines,claines,1
+1826306905,West Row,west row,1
+1826306929,Brotton,brotton,1
+1826307044,Healing,healing,1
+1826307072,North Queensferry,north queensferry,1
+1826307216,Mark,mark,1
+1826307282,Great Leighs,great leighs,1
+1826308165,Marlow,marlow,1
+1826308364,Dinnington,dinnington,1
+1826308426,Pulborough,pulborough,1
+1826308689,Handforth,handforth,1
+1826308767,Lennoxtown,lennoxtown,1
+1826309016,Four Marks,four marks,1
+1826309219,Crediton,crediton,1
+1826309620,Whittle-le-Woods,whittle le woods,1
+1826309835,Grenoside,grenoside,1
+1826310013,Hazlemere,hazlemere,1
+1826310085,Friskney,friskney,1
+1826310349,Acomb,acomb,1
+1826310448,Saxmundham,saxmundham,1
+1826310753,Fradley,fradley,1
+1826311115,Gerrards Cross,gerrards cross,1
+1826311133,Hartley,hartley,1
+1826311359,Bampton,bampton,1
+1826311398,Barrhead,barrhead,1
+1826311507,Slaugham,slaugham,1
+1826311597,Stickney,stickney,1
+1826311607,Lisnaskea,lisnaskea,1
+1826311764,Blairgowrie,blairgowrie,1
+1826311843,Conisbrough,conisbrough,1
+1826312183,Swinton,swinton,1
+1826312184,Sudbrooke,sudbrooke,1
+1826312218,Enstone,enstone,1
+1826312289,Woburn Sands,woburn sands,1
+1826312383,Coseley,coseley,1
+1826312527,Betley,betley,1
+1826312620,Earley,earley,1
+1826312701,Urpeth,urpeth,1
+1826312785,Lincoln,lincoln,1
+1826313162,Hethersett,hethersett,1
+1826313241,Waterbeach,waterbeach,1
+1826313797,Capel Hendre,capel hendre,1
+1826313893,Wickford,wickford,1
+1826313937,Broughton,broughton,1
+1826314037,Tacolneston,tacolneston,1
+1826314150,Grain,grain,1
+1826314267,West Auckland,west auckland,1
+1826314312,Wilstead,wilstead,1
+1826314381,Howwood,howwood,1
+1826314478,North Woolwich,north woolwich,1
+1826314508,Balmedie,balmedie,1
+1826315012,Grove,grove,1
+1826315133,Penllyn,penllyn,1
+1826315331,Roby,roby,1
+1826315547,Johnston,johnston,1
+1826315735,Ballygowan,ballygowan,1
+1826315811,Johnstone,johnstone,1
+1826315907,Lympne,lympne,1
+1826316003,Durley,durley,1
+1826316501,Great Notley,great notley,1
+1826316600,Old Colwyn,old colwyn,1
+1826316742,Weymouth,weymouth,1
+1826316765,Stony Stratford,stony stratford,1
+1826316863,Bray,bray,1
+1826316982,Strathpeffer,strathpeffer,1
+1826317105,Saint Lawrence,saint lawrence,1
+1826317416,Hockwold cum Wilton,hockwold cum wilton,1
+1826317854,Stopsley,stopsley,1
+1826318617,Ynysddu,ynysddu,1
+1826318947,Ewell,ewell,1
+1826318972,Llanhilleth,llanhilleth,1
+1826318980,Shipley,shipley,1
+1826319019,Leagrave,leagrave,1
+1826319424,Fernhurst,fernhurst,1
+1826320254,Uckfield,uckfield,1
+1826320300,Grangetown,grangetown,1
+1826320499,Ardleigh,ardleigh,1
+1826320670,Bootle,bootle,1
+1826320805,West Rainton,west rainton,1
+1826320924,Milton of Campsie,milton of campsie,1
+1826320957,Bovingdon,bovingdon,1
+1826321806,Abbotskerswell,abbotskerswell,1
+1826321995,Church,church,1
+1826322192,Chipstead,chipstead,1
+1826322199,Coppull,coppull,1
+1826322296,Brynamman,brynamman,1
+1826322375,Morton,morton,1
+1826322589,Cromford,cromford,1
+1826322639,Caerphilly,caerphilly,1
+1826322742,Dudleston Heath,dudleston heath,1
+1826323213,Shifnal,shifnal,1
+1826324115,Swanton Morley,swanton morley,1
+1826324306,Aberdeen,aberdeen,1
+1826324377,Ryton,ryton,1
+1826324436,Roslin,roslin,1
+1826324854,High Littleton,high littleton,1
+1826324961,Downley,downley,1
+1826325087,Belfast,belfast,1
+1826325119,Youlgreave,youlgreave,1
+1826325282,Lymington,lymington,1
+1826325349,Cranswick,cranswick,1
+1826325436,Neilston,neilston,1
+1826325520,Itchingfield,itchingfield,1
+1826325556,Cam,cam,1
+1826325568,Bucksburn,bucksburn,1
+1826325611,Little Plumstead,little plumstead,1
+1826325701,Stainton,stainton,1
+1826325950,Bitton,bitton,1
+1826326716,Cummersdale,cummersdale,1
+1826326745,Sawston,sawston,1
+1826326763,Aldingham,aldingham,1
+1826326804,Pudsey,pudsey,1
+1826326951,Stondon,stondon,1
+1826327053,Netherbury,netherbury,1
+1826327357,Dunipace,dunipace,1
+1826327910,Chedgrave,chedgrave,1
+1826327971,Tedburn Saint Mary,tedburn saint mary,1
+1826328021,Ince-in-Makerfield,ince in makerfield,1
+1826328081,Mawdesley,mawdesley,1
+1826328125,Dummer,dummer,1
+1826328266,Mosstodloch,mosstodloch,1
+1826328267,Brentford,brentford,1
+1826328454,Fishtoft,fishtoft,1
+1826328811,Burwash,burwash,1
+1826328876,Halstead,halstead,1
+1826328903,Little Eversden,little eversden,1
+1826328984,Upper Langwith,upper langwith,1
+1826329091,Prescot,prescot,1
+1826329195,Saint Annes on the Sea,saint annes on the sea,1
+1826329294,Sendmarsh,sendmarsh,1
+1826329398,Balham,balham,1
+1826329415,Charlton Marshall,charlton marshall,1
+1826329593,Barnt Green,barnt green,1
+1826329660,Belton,belton,1
+1826329770,Stoke Gabriel,stoke gabriel,1
+1826329806,Temple Cloud,temple cloud,1
+1826329978,Harton,harton,1
+1826330058,Ibstock,ibstock,1
+1826330438,Gosport,gosport,1
+1826330462,Port Glasgow,port glasgow,1
+1826330555,Abergwili,abergwili,1
+1826330632,Pentraeth,pentraeth,1
+1826330949,Swarkeston,swarkeston,1
+1826331091,Baxenden,baxenden,1
+1826331223,Bo’ness,bo ness,1
+1826331260,Torton,torton,1
+1826331367,Banbridge,banbridge,1
+1826331569,Bramford,bramford,1
+1826331647,Winscombe and Sandford,winscombe and sandford,1
+1826331782,Brockworth,brockworth,1
+1826331856,Blyth,blyth,1
+1826332200,Lanivet,lanivet,1
+1826332206,Wrenbury,wrenbury,1
+1826332641,Barnoldswick,barnoldswick,1
+1826332679,Failsworth,failsworth,1
+1826332774,Grimston,grimston,1
+1826332892,Dolgellau,dolgellau,1
+1826333148,North Collingham,north collingham,1
+1826333168,Temple Ewell,temple ewell,1
+1826333206,Shepherdswell,shepherdswell,1
+1826333350,Blyth,blyth,1
+1826333435,Derby,derby,1
+1826333446,Sandycroft,sandycroft,1
+1826333757,Bedale,bedale,1
+1826334139,Brackley,brackley,1
+1826334203,Hodnet,hodnet,1
+1826334339,Ickenham,ickenham,1
+1826334596,Grovesend,grovesend,1
+1826334661,Liversedge,liversedge,1
+1826334758,West Calder,west calder,1
+1826334847,Brightons,brightons,1
+1826335263,Colwell,colwell,1
+1826335334,Clehonger,clehonger,1
+1826335465,Hilton,hilton,1
+1826335622,New Tredegar,new tredegar,1
+1826335881,Queensferry,queensferry,1
+1826335951,Spalding,spalding,1
+1826336002,Draycott,draycott,1
+1826336258,Salph End,salph end,1
+1826336275,Eastergate,eastergate,1
+1826336314,Ponders End,ponders end,1
+1826336417,Grantown on Spey,grantown on spey,1
+1826336424,Witham,witham,1
+1826336436,Southall,southall,1
+1826336439,Tamworth,tamworth,1
+1826336612,Hilgay,hilgay,1
+1826336642,Horncastle,horncastle,1
+1826336830,Newtownstewart,newtownstewart,1
+1826337090,Mitcheldean,mitcheldean,1
+1826337833,Aldbourne,aldbourne,1
+1826338202,Guston,guston,1
+1826338626,Attleborough,attleborough,1
+1826338747,Brechin,brechin,1
+1826338893,Farnham,farnham,1
+1826338903,Bittaford,bittaford,1
+1826338951,Dorking,dorking,1
+1826338973,Northam,northam,1
+1826338992,Shuttlewood,shuttlewood,1
+1826339213,Loanhead,loanhead,1
+1826339225,Pirton,pirton,1
+1826339323,Thornhill,thornhill,1
+1826339378,Saint Erth,saint erth,1
+1826339484,Byfield,byfield,1
+1826340047,Rode,rode,1
+1826340302,Castle Bromwich,castle bromwich,1
+1826340455,Worplesdon,worplesdon,1
+1826340559,Warfield,warfield,1
+1826340712,Oakenshaw,oakenshaw,1
+1826341214,Peasmarsh,peasmarsh,1
+1826341267,Park Street,park street,1
+1826341290,Renishaw,renishaw,1
+1826341448,Leigh,leigh,1
+1826341693,Garden City,garden city,1
+1826342266,Over Stratton,over stratton,1
+1826342296,Warton,warton,1
+1826342354,North Thoresby,north thoresby,1
+1826342367,Steeple Claydon,steeple claydon,1
+1826342589,Bishop Sutton,bishop sutton,1
+1826342850,Little Waltham,little waltham,1
+1826343069,Bredbury,bredbury,1
+1826343147,Tingewick,tingewick,1
+1826343513,Carew,carew,1
+1826343963,Leeds,leads,6
+1826343963,Leeds,leeds,1
+1826343970,Laxfield,laxfield,1
+1826344307,Berwick Hill,berwick hill,1
+1826344531,Curry Rivel,curry rivel,1
+1826344632,Milborne Port,milborne port,1
+1826344747,Marldon,marldon,1
+1826344897,Mosbrough,mosbrough,1
+1826345215,Yarm,yarm,1
+1826345266,Chew Magna,chew magna,1
+1826345299,Kingston upon Thames,kingston upon thames,1
+1826345366,Fareham,fareham,1
+1826345498,Welwyn Garden City,welwyn garden city,1
+1826345595,Gildersome,gildersome,1
+1826345706,Thurmaston,thurmaston,1
+1826345759,Charlton Kings,charlton kings,1
+1826345862,Llangerniew,llangerniew,1
+1826345953,Viewpark,viewpark,1
+1826346116,Tattenhall,tattenhall,1
+1826346214,Shieldhill,shieldhill,1
+1826346365,New Inn,new inn,1
+1826346406,Bathampton,bathampton,1
+1826346553,Llysfaen,llysfaen,1
+1826346672,Prestbury,prestbury,1
+1826346688,Ifold,ifold,1
+1826346821,Corsham,corsham,1
+1826346839,Husbands Bosworth,husbands bosworth,1
+1826346861,Bridgwater,bridgwater,1
+1826346991,Llanbradach,llanbradach,1
+1826346999,Seaton Burn,seaton burn,1
+1826347011,Frodsham,frodsham,1
+1826347015,Rowhedge,rowhedge,1
+1826347308,Saintfield,saintfield,1
+1826347383,Streetly,streetly,1
+1826347644,Inchture,inchture,1
+1826347778,Tanfield,tanfield,1
+1826347870,Chapelhall,chapelhall,1
+1826347961,Fremington,fremington,1
+1826347968,Willerby,willerby,1
+1826348097,Hurworth-on-Tees,hurworth on tees,1
+1826348165,Piddington,piddington,1
+1826348650,Hurley,hurley,1
+1826348969,Great Chart,great chart,1
+1826349049,Forest Row,forest row,1
+1826349131,Windygates,windygates,1
+1826349439,Runcorn,runcorn,1
+1826350182,Formby,formby,1
+1826350336,Kirkleatham,kirkleatham,1
+1826350645,Mochdre,mochdre,1
+1826350658,Yate,yate,1
+1826350697,Greenfield,greenfield,1
+1826350805,Wymeswold,wymeswold,1
+1826351087,Paulton,paulton,1
+1826351193,Stockton-on-the-Forest,stockton on the forest,1
+1826351687,Brough,brough,1
+1826351822,Elsenham,elsenham,1
+1826351999,Maulden,maulden,1
+1826352003,Eglinton,eglinton,1
+1826352277,Haslington,haslington,1
+1826352398,Portreath,portreath,1
+1826352539,Kerry,kerry,1
+1826352599,Barrow in Furness,barrow in furness,1
+1826352714,Swffryd,swffryd,1
+1826352889,Lingdale,lingdale,1
+1826353052,Southminster,southminster,1
+1826353353,Treuddyn,treuddyn,1
+1826353530,Banwell,banwell,1
+1826353545,Catterick,catterick,1
+1826353989,South Woodham Ferrers,south woodham ferrers,1
+1826354080,Long Hanborough,long hanborough,1
+1826354283,Dewsbury,dewsbury,1
+1826354390,Marple Bridge,marple bridge,1
+1826354552,Baguley,baguley,1
+1826354816,Lossiemouth,lossiemouth,1
+1826355055,Rosehearty,rosehearty,1
+1826355161,Heybridge,heybridge,1
+1826355187,Charlwood,charlwood,1
+1826355317,Barkisland,barkisland,1
+1826355414,Brinsley,brinsley,1
+1826355624,Menston,menston,1
+1826355765,Blean,blean,1
+1826355959,Lower Halstow,lower halstow,1
+1826356095,Bromsgrove,bromsgrove,1
+1826356320,Eastbourne,eastbourne,1
+1826356432,East Wemyss,east wemyss,1
+1826356667,Beeford,beeford,1
+1826356787,Stebbing,stebbing,1
+1826356941,Pimperne,pimperne,1
+1826356992,Ffair-fâch,ffair fach,1
+1826357082,Bedwas,bedwas,1
+1826357284,Awsworth,awsworth,1
+1826358464,Stanton,stanton,1
+1826358488,New Earswick,new earswick,1
+1826358540,Upchurch,upchurch,1
+1826358547,New Hey,new hey,1
+1826358552,Embsay,embsay,1
+1826358723,Shenley,shenley,1
+1826358764,Mundford,mundford,1
+1826358905,Bersted,bersted,1
+1826359411,Costessey,costessey,1
+1826359576,Mansfield,mansfield,1
+1826359836,Blackfordby,blackfordby,1
+1826360081,Shotley,shotley,1
+1826360472,Boldre,boldre,1
+1826361335,Queensferry,queensferry,1
+1826361391,Thurnscoe,thurnscoe,1
+1826361426,Chalfont Saint Giles,chalfont saint giles,1
+1826361640,North Tawton,north tawton,1
+1826362404,Abergavenny,abergavenny,1
+1826362409,Enfield,enfield,1
+1826362422,Caerdydd,caerdydd,1
+1826363081,Haddington,haddington,1
+1826363162,Cheddar,cheddar,1
+1826363364,Sidcup,sidcup,1
+1826363411,Warnham,warnham,1
+1826363463,Maldon,maldon,1
+1826363543,Dagenham,dagenham,1
+1826363711,Bubwith,bubwith,1
+1826363758,Walmersley,walmersley,1
+1826363785,Brailsford,brailsford,1
+1826363859,Longwick,longwick,1
+1826363902,Rottingdean,rottingdean,1
+1826364424,Brent Knoll,brent knoll,1
+1826364530,Foxhole,foxhole,1
+1826364605,Roxwell,roxwell,1
+1826364660,Charlbury,charlbury,1
+1826364673,Broxburn,broxburn,1
+1826364723,Norton,norton,1
+1826364933,Rolleston on Dove,rolleston on dove,1
+1826365312,Glastonbury,glastonbury,1
+1826365358,Hagley,hagley,1
+1826365501,Kingsley,kingsley,1
+1826366091,Landrake,landrake,1
+1826366149,Metheringham,metheringham,1
+1826366203,Girvan,girvan,1
+1826366210,Chiddingly,chiddingly,1
+1826366225,Winslow,winslow,1
+1826366263,Furness Vale,furness vale,1
+1826366288,Caldicot,caldicot,1
+1826366350,Whitburn,whitburn,1
+1826366508,Darenth,darenth,1
+1826366552,Churt,churt,1
+1826366579,Penicuik,penicuik,1
+1826367547,Perranuthnoe,perranuthnoe,1
+1826367611,Perranporth,perranporth,1
+1826367738,Cirencester,cirencester,1
+1826367852,Upper Basildon,upper basildon,1
+1826368029,Wrafton,wrafton,1
+1826368392,Fleet,fleet,1
+1826368634,Hedon,hedon,1
+1826368914,Donaghadee,donaghadee,1
+1826369417,Doddinghurst,doddinghurst,1
+1826369645,Yiewsley,yiewsley,1
+1826369701,West Ham,west ham,1
+1826369927,Hullbridge,hullbridge,1
+1826370783,Sampford Peverell,sampford peverell,1
+1826370809,Bierton,bierton,1
+1826370911,Saint Breward,saint breward,1
+1826370915,Little Stukeley,little stukeley,1
+1826371168,Haskayne,haskayne,1
+1826371451,Cranfield,cranfield,1
+1826371492,Condover,condover,1
+1826371818,Brixham,brixham,1
+1826372031,Symington,symington,1
+1826372140,Fishguard,fishguard,1
+1826372190,Blackheath,blackheath,1
+1826372211,Crofty,crofty,1
+1826373264,West Buckland,west buckland,1
+1826373302,West Byfleet,west byfleet,1
+1826373385,Thannington,thannington,1
+1826373748,Coulsdon,coulsdon,1
+1826373789,Cloghy,cloghy,1
+1826374171,Horsted Keynes,horsted keynes,1
+1826374228,Lowton,lowton,1
+1826374388,Eastham,eastham,1
+1826374508,Luxulian,luxulian,1
+1826374738,Ditchling,ditchling,1
+1826374836,Hemel Hempstead,hemel hempstead,1
+1826374919,Muxton,muxton,1
+1826374990,Bicton,bicton,1
+1826375262,Uttoxeter,uttoxeter,1
+1826375272,Meare,meare,1
+1826375407,Portlethen,portlethen,1
+1826375703,Great Horwood,great horwood,1
+1826376026,Gawsworth,gawsworth,1
+1826376129,Debenham,debenham,1
+1826376286,Eye,eye,1
+1826376765,Hunston,hunston,1
+1826377504,Marden,marden,1
+1826377674,Longhope,longhope,1
+1826377998,Saint Cyrus,saint cyrus,1
+1826378026,Edenfield,edenfield,1
+1826378167,Ogbourne Maizey,ogbourne maizey,1
+1826378273,Helensburgh,helensburgh,1
+1826378582,Wingates,wingates,1
+1826379315,Ewhurst,ewhurst,1
+1826379429,Monmouth,monmouth,1
+1826379512,Stanley,stanley,1
+1826379714,Wymondham,wymondham,1
+1826379738,Poole,poole,1
+1826379827,Sabden,sabden,1
+1826380021,Beenham,beenham,1
+1826380098,Sharnbrook,sharnbrook,1
+1826380138,Hampton,hampton,1
+1826380611,Aberdour,aberdour,1
+1826380643,Llanarth,llanarth,1
+1826380790,Whetstone,whetstone,1
+1826380894,Pembroke,pembroke,1
+1826380949,Keynsham,keynsham,1
+1826381000,Ilford,ilford,1
+1826381416,Emley,emley,1
+1826381597,Braunstone,braunstone,1
+1826382015,Llandybie,llandybie,1
+1826382174,Witchford,witchford,1
+1826382276,Ecclesfield,ecclesfield,1
+1826382629,Holyhead,holyhead,1
+1826382700,Sanderstead,sanderstead,1
+1826383119,Tibshelf,tibshelf,1
+1826383149,Sherborne,sherborne,1
+1826383293,Stoke Saint Gregory,stoke saint gregory,1
+1826383381,Sutton on Trent,sutton on trent,1
+1826383764,Barwick-in-Elmet,barwick in elmet,1
+1826383788,Farnborough,farnborough,1
+1826383822,Cranleigh,cranleigh,1
+1826383865,Barton under Needwood,barton under needwood,1
+1826383937,Warwick,warwick,1
+1826384578,Marshfield,marshfield,1
+1826384751,Kilburn,kilburn,1
+1826385040,Addingham,addingham,1
+1826385558,Cubbington,cubbington,1
+1826385764,Bromley,bromley,1
+1826385836,Roos,roos,1
+1826385940,Westbury,westbury,1
+1826386055,Elgin,elgin,1
+1826386174,Pencarreg,pencarreg,1
+1826386301,Wimbledon,wimbledon,1
+1826386613,Saint Blazey,saint blazey,1
+1826386907,Attenborough,attenborough,1
+1826386915,Pencaitland,pencaitland,1
+1826387022,Carbis Bay,carbis bay,1
+1826387077,Rhyl,rhyl,1
+1826387440,Trevor,trevor,1
+1826387573,Gilfach Goch,gilfach goch,1
+1826387596,Southwark,southwark,1
+1826387634,Wheldrake,wheldrake,1
+1826387868,Galleywood,galleywood,1
+1826387928,Gedling,gedling,1
+1826388034,Grassmoor,grassmoor,1
+1826388212,Bangor-on-Dee,bangor on dee,1
+1826388225,Launceston,launceston,1
+1826388438,Cannington,cannington,1
+1826388691,Burstwick,burstwick,1
+1826388860,Shirland,shirland,1
+1826389021,Alfold,alfold,1
+1826389458,Donisthorpe,donisthorpe,1
+1826389460,Locks Heath,locks heath,1
+1826389707,Greasbrough,greasbrough,1
+1826390040,Littlestone-on-Sea,littlestone on sea,1
+1826390302,Magheralin,magheralin,1
+1826390341,Horsmonden,horsmonden,1
+1826390370,Lazonby,lazonby,1
+1826390562,Saint Briavels,saint briavels,1
+1826390746,Newhaven,newhaven,1
+1826390925,Murton,murton,1
+1826391272,Cullen,cullen,1
+1826391298,Aylesbury,aylesbury,1
+1826391610,Barnack,barnack,1
+1826392165,Coxheath,coxheath,1
+1826392221,Hampton in Arden,hampton in arden,1
+1826392246,Haven Street,haven street,1
+1826392523,Arborfield Cross,arborfield cross,1
+1826393060,Springside,springside,1
+1826393351,Eckington,eckington,1
+1826393854,Worcester,worcester,1
+1826394184,Ewelme,ewelme,1
+1826394332,Farnsfield,farnsfield,1
+1826394437,Charing,charing,1
+1826394509,Head of Muir,head of muir,1
+1826394663,West Horsley,west horsley,1
+1826394806,Corfe Castle,corfe castle,1
+1826394826,Ashfordby,ashfordby,1
+1826394827,Weston Turville,weston turville,1
+1826394997,Langham,langham,1
+1826395321,Pensarn,pensarn,1
+1826395475,Sheriff Hutton,sheriff hutton,1
+1826395529,North Molton,north molton,1
+1826395540,Fairlands,fairlands,1
+1826395736,South Zeal,south zeal,1
+1826396004,South Shields,south shields,1
+1826396182,Chasetown,chasetown,1
+1826396441,Madley,madley,1
+1826396556,Llangorse,llangorse,1
+1826396748,Gartcosh,gartcosh,1
+1826396769,Allestree,allestree,1
+1826396804,Newhall,newhall,1
+1826397021,Hawkesbury,hawkesbury,1
+1826397042,Ellistown,ellistown,1
+1826397230,Monk Fryston,monk fryston,1
+1826397253,Goodmayes,goodmayes,1
+1826397295,Corwen,corwen,1
+1826397626,Shaw,shaw,1
+1826398035,Minsterley,minsterley,1
+1826398479,Spixworth,spixworth,1
+1826398567,Welford-on-Avon,welford on avon,1
+1826398668,Beaumaris,beaumaris,1
+1826398821,Gillingham,gillingham,1
+1826398897,Prees Higher Heath,prees higher heath,1
+1826399454,Kingston Bagpuze,kingston bagpuze,1
+1826399455,Northwood,northwood,1
+1826399707,Poynton,poynton,1
+1826399711,Trumpington,trumpington,1
+1826399950,Marchington,marchington,1
+1826400040,Duxford,duxford,1
+1826400391,East Keswick,east keswick,1
+1826400739,Bishops Lydeard,bishops lydeard,1
+1826401303,Woodford,woodford,1
+1826401356,Ruspidge,ruspidge,1
+1826401665,Horbury,horbury,1
+1826401847,Weedon Beck,weedon beck,1
+1826402410,Barrow,barrow,1
+1826402713,Moretonhampstead,moretonhampstead,1
+1826402923,Morningside,morningside,1
+1826403460,Haselbury Bryan,haselbury bryan,1
+1826403588,Llangennech,llangennech,1
+1826404186,Ainsdale,ainsdale,1
+1826404205,Stratton,stratton,1
+1826404239,Rudgwick,rudgwick,1
+1826405172,Edgmond,edgmond,1
+1826405182,Hoddesdon,hoddesdon,1
+1826405528,Cow Honeybourne,cow honeybourne,1
+1826405646,Woodgreen,woodgreen,1
+1826405766,Calstock,calstock,1
+1826406107,Yeovilton,yeovilton,1
+1826406328,Mintlaw,mintlaw,1
+1826406356,Blackwater,blackwater,1
+1826406735,Hexham,hexham,1
+1826407031,Pattishall,pattishall,1
+1826407067,Middlesbrough,middlesbrough,1
+1826407089,Errol,errol,1
+1826407462,Brasted,brasted,1
+1826407699,Grimethorpe,grimethorpe,1
+1826407773,Gainford,gainford,1
+1826407829,Steyning,steyning,1
+1826407870,Ossett,ossett,1
+1826407882,Golborne,golborne,1
+1826407948,Balmullo,balmullo,1
+1826408007,Potters Bar,potters bar,1
+1826408734,Gorslas,gorslas,1
+1826408789,Skelmorlie,skelmorlie,1
+1826409397,Threemilestone,threemilestone,1
+1826409555,Ferndale,ferndale,1
+1826409679,Appley Bridge,appley bridge,1
+1826409728,Millisle,millisle,1
+1826409897,Comberton,comberton,1
+1826409979,Battlesbridge,battlesbridge,1
+1826410112,Sling,sling,1
+1826410149,Walkern,walkern,1
+1826410577,Holbeach,holbeach,1
+1826410688,Aberaeron,aberaeron,1
+1826411389,Ryhall,ryhall,1
+1826411445,Kenton,kenton,1
+1826411797,Shirenewton,shirenewton,1
+1826411965,Stakeford,stakeford,1
+1826412114,Southgate,southgate,1
+1826412463,Stoney Stanton,stoney stanton,1
+1826412526,Pendeen,pendeen,1
+1826412704,Bude,bude,1
+1826412941,Steventon,steventon,1
+1826412979,Guisborough,guisborough,1
+1826412985,Goole,goole,1
+1826413119,Wellington,wellington,1
+1826413180,Romsley,romsley,1
+1826413202,Hackney,hackney,1
+1826413238,Altofts,altofts,1
+1826413296,Knighton,knighton,1
+1826413503,Sundridge,sundridge,1
+1826413776,Halifax,halifax,1
+1826413996,Adwick le Street,adwick le street,1
+1826414032,Shelford,shelford,1
+1826414120,Cullompton,cullompton,1
+1826414164,Gilwern,gilwern,1
+1826414171,Sproatley,sproatley,1
+1826414826,Tawstock,tawstock,1
+1826415325,Rothwell,rothwell,1
+1826415335,Keinton Mandeville,keinton mandeville,1
+1826415370,Gunness,gunness,1
+1826415834,Wateringbury,wateringbury,1
+1826416030,Prees,prees,1
+1826416176,Bricket Wood,bricket wood,1
+1826416633,Flamstead,flamstead,1
+1826416645,Pensilva,pensilva,1
+1826417028,Layer de la Haye,layer de la haye,1
+1826417336,Purfleet,purfleet,1
+1826417367,Newquay,newquay,1
+1826417394,Sunbury,sunbury,1
+1826417577,Guilsfield,guilsfield,1
+1826417791,Tonypandy,tonypandy,1
+1826418104,Frampton on Severn,frampton on severn,1
+1826418141,Haydock,haydock,1
+1826418487,Jedburgh,jedburgh,1
+1826418537,Surbiton,surbiton,1
+1826418567,Newton Grange,newton grange,1
+1826418856,Dowlais,dowlais,1
+1826419030,Willington,willington,1
+1826419096,Alrewas,alrewas,1
+1826419368,Harbledown,harbledown,1
+1826419499,Dalton in Furness,dalton in furness,1
+1826419818,Hove,hove,1
+1826419858,Lowestoft,lowestoft,1
+1826419998,Halkyn,halkyn,1
+1826420017,Verwick,verwick,1
+1826420380,Blackridge,blackridge,1
+1826420477,Aberystwyth,aberystwyth,1
+1826420723,Wilmington,wilmington,1
+1826420919,Balcombe,balcombe,1
+1826421027,Bishton,bishton,1
+1826421152,Pateley Bridge,pateley bridge,1
+1826421509,Aiskew,aiskew,1
+1826421510,Carbrooke,carbrooke,1
+1826421525,Cheswardine,cheswardine,1
+1826421720,Beyton,beyton,1
+1826421740,Saint Monance,saint monance,1
+1826422128,Monifieth,monifieth,1
+1826422248,Crail,crail,1
+1826422343,Reigate,reigate,1
+1826422379,Oadby,oadby,1
+1826422421,South Ockendon,south ockendon,1
+1826422529,Oxshott,oxshott,1
+1826422730,Bishop Auckland,bishop auckland,1
+1826422742,Woolmer Green,woolmer green,1
+1826422923,Southery,southery,1
+1826423213,Birmingham,birmingham,4
+1826423217,Barkham,barkham,1
+1826423251,Newland,newland,1
+1826423349,Mancetter,mancetter,1
+1826423474,Larkhall,larkhall,1
+1826423522,Stannington,stannington,1
+1826423609,Headcorn,headcorn,1
+1826423641,Pelton,pelton,1
+1826423757,Scone,scone,1
+1826423766,Trimdon Colliery,trimdon colliery,1
+1826423824,Hapton,hapton,1
+1826424119,Cheadle,cheadle,1
+1826424154,Lower Largo,lower largo,1
+1826424344,Saffron Walden,saffron walden,1
+1826424354,Dunfermline,dunfermline,1
+1826424951,Barlby,barlby,1
+1826424968,Hope,hope,1
+1826425203,Saint Helens,saint helens,1
+1826425232,Upper Halliford,upper halliford,1
+1826425467,Wirksworth,wirksworth,1
+1826425909,Crossgates,crossgates,1
+1826426199,Brora,brora,1
+1826426225,North Shields,north shields,1
+1826426375,Lydiard Millicent,lydiard millicent,1
+1826426455,Spennymoor,spennymoor,1
+1826426520,Whitfield,whitfield,1
+1826426584,Powick,powick,1
+1826426714,Llanymynech,llanymynech,1
+1826426885,Bulphan,bulphan,1
+1826426902,Clavering,clavering,1
+1826426946,Seaford,seaford,1
+1826427134,Tenby,tenby,1
+1826427216,Princes Risborough,princes risborough,1
+1826427231,Henstridge,henstridge,1
+1826427306,Medstead,medstead,1
+1826427353,Baldock,baldock,1
+1826427395,Aberdare,aberdare,1
+1826427483,Alton,alton,1
+1826427560,Latchford,latchford,1
+1826427596,Beckingham,beckingham,1
+1826427848,Stretton,stretton,1
+1826427873,Cullybackey,cullybackey,1
+1826428141,Langley Park,langley park,1
+1826428149,Denham,denham,1
+1826428159,Harringay,harringay,1
+1826429345,Wool,wool,1
+1826429408,Cawston,cawston,1
+1826429841,Tatsfield,tatsfield,1
+1826429856,Moreton in Marsh,moreton in marsh,1
+1826429900,Templecombe,templecombe,1
+1826430700,Ayr,ayr,1
+1826431167,Leyburn,leyburn,1
+1826431364,Buckland Monachorum,buckland monachorum,1
+1826431473,Merrow,merrow,1
+1826431619,Wetherby,wetherby,1
+1826431946,Leicester,leicester,1
+1826431946,Leicester,lester,6
+1826431983,Shilbottle,shilbottle,1
+1826432020,Burnaston,burnaston,1
+1826432060,Wheathampstead,wheathampstead,1
+1826432326,Dale Abbey,dale abbey,1
+1826432335,Clayton,clayton,1
+1826432599,Mortehoe,mortehoe,1
+1826432677,Brookmans Park,brookmans park,1
+1826432702,Waterhouses,waterhouses,1
+1826432819,Elland,elland,1
+1826432958,Cawston,cawston,1
+1826432966,Llannon,llannon,1
+1826433022,Loughor,loughor,1
+1826433059,Leasingham,leasingham,1
+1826433235,Timsbury,timsbury,1
+1826433267,Shildon,shildon,1
+1826433309,Dunvant,dunvant,1
+1826433403,Borehamwood,borehamwood,1
+1826433552,Wibsey,wibsey,1
+1826433714,Hessle,hessle,1
+1826433965,Marlow Bottom,marlow bottom,1
+1826434460,Wedmore,wedmore,1
+1826434691,Llansantffraid-ym-Mechain,llansantffraid ym mechain,1
+1826434760,Aston,aston,1
+1826435034,Hesketh Bank,hesketh bank,1
+1826435089,Kings Langley,kings langley,1
+1826435274,Nuthurst,nuthurst,1
+1826435473,Hextable,hextable,1
+1826435844,Bedworth,bedworth,1
+1826436049,Lenzie,lenzie,1
+1826436345,Withernsea,withernsea,1
+1826436399,Mynydd Marian,mynydd marian,1
+1826436422,Ashgill,ashgill,1
+1826436601,Wincanton,wincanton,1
+1826436728,Loughton,loughton,1
+1826436896,Newton-le-Willows,newton le willows,1
+1826436931,Ovenden,ovenden,1
+1826437095,Barrowford,barrowford,1
+1826437146,Malvern Link,malvern link,1
+1826437196,Charminster,charminster,1
+1826437553,Shirebrook,shirebrook,1
+1826437673,Newhouse,newhouse,1
+1826438133,Coleshill,coleshill,1
+1826438211,Weybridge,weybridge,1
+1826438254,Bures Saint Mary,bures saint mary,1
+1826438736,Chard,chard,1
+1826438752,Hinton,hinton,1
+1826438887,Freshwater,freshwater,1
+1826439036,Whitnash,whitnash,1
+1826439269,Holt,holt,1
+1826439452,Hedge End,hedge end,1
+1826439600,Thornton,thornton,1
+1826440275,Plumpton Green,plumpton green,1
+1826440617,Tarporley,tarporley,1
+1826440705,Bishops Stortford,bishops stortford,1
+1826440883,Penkridge,penkridge,1
+1826441033,Deysbrook,deysbrook,1
+1826441208,Kewstoke,kewstoke,1
+1826441386,Saint Leonards,saint leonards,1
+1826441410,Yapton,yapton,1
+1826441495,Saint Neots,saint neots,1
+1826441668,Chester,chester,1
+1826441883,Ferryden,ferryden,1
+1826442051,Maghera,maghera,1
+1826442072,Sholden,sholden,1
+1826442554,Sutton Valence,sutton valence,1
+1826442570,Oakham,oakham,1
+1826442575,Eaton Bray,eaton bray,1
+1826443100,Publow,publow,1
+1826443226,Hamble-le-Rice,hamble le rice,1
+1826443326,Farnworth,farnworth,1
+1826443803,Wallingford,wallingford,1
+1826443893,Govan,govan,1
+1826443898,Loftus,loftus,1
+1826443938,Hornsey,hornsey,1
+1826444018,Lighthorne Heath,lighthorne heath,1
+1826444022,Looe,looe,1
+1826444057,Stowupland,stowupland,1
+1826444113,Hockley,hockley,1
+1826444688,Chulmleigh,chulmleigh,1
+1826444773,Olveston,olveston,1
+1826444860,Brecon,brecon,1
+1826444910,Blackhall Colliery,blackhall colliery,1
+1826445077,Dunblane,dunblane,1
+1826445240,Westbourne,westbourne,1
+1826445296,Marchwood,marchwood,1
+1826445684,Caversham,caversham,1
+1826445836,Thurston,thurston,1
+1826445913,Stanwick,stanwick,1
+1826445971,Tynemouth,tynemouth,1
+1826446345,Tillingham,tillingham,1
+1826446682,Purleigh,purleigh,1
+1826446940,Kingskerswell,kingskerswell,1
+1826447113,Chipping Norton,chipping norton,1
+1826447166,Penarth,penarth,1
+1826447360,Skelton,skelton,1
+1826447391,Eton,eton,1
+1826447746,Osbaldwick,osbaldwick,1
+1826447832,Hucknall,hucknall,1
+1826448192,Romanby,romanby,1
+1826448318,Downton,downton,1
+1826448406,South Normanton,south normanton,1
+1826448969,Linslade,linslade,1
+1826449051,Scalloway,scalloway,1
+1826449219,Moneyneany,moneyneany,1
+1826449376,Hugglescote,hugglescote,1
+1826449524,Cressing,cressing,1
+1826449622,Wenvoe,wenvoe,1
+1826449654,Skellingthorpe,skellingthorpe,1
+1826449879,Charvil,charvil,1
+1826450308,Cookham,cookham,1
+1826450733,Iwade,iwade,1
+1826451055,Stainland,stainland,1
+1826451209,Llandudno Junction,llandudno junction,1
+1826451458,Beckermet,beckermet,1
+1826451613,North Elmsall,north elmsall,1
+1826451997,Broughton,broughton,1
+1826453228,Stilton,stilton,1
+1826453556,Billingborough,billingborough,1
+1826453586,Rutherglen,rutherglen,1
+1826453774,Woodford,woodford,1
+1826453946,Darlington,darlington,1
+1826454038,Glen Parva,glen parva,1
+1826454060,West Hallam,west hallam,1
+1826454069,Herne Bay,herne bay,1
+1826454075,Harrington,harrington,1
+1826454094,Olton,olton,1
+1826454541,Eglwys-Brewis,eglwys brewis,1
+1826454550,Inkberrow,inkberrow,1
+1826454701,Ratho,ratho,1
+1826454995,Ingatestone,ingatestone,1
+1826455398,Speen,speen,1
+1826455512,Colnbrook,colnbrook,1
+1826455551,Abbots Langley,abbots langley,1
+1826455741,Saltash,saltash,1
+1826455835,Oaklands,oaklands,1
+1826456012,Maresfield,maresfield,1
+1826456140,Bridge,bridge,1
+1826456422,Northolt,northolt,1
+1826456427,Aston-on-Trent,aston on trent,1
+1826456632,New Mills,new mills,1
+1826456948,Misterton,misterton,1
+1826457196,Selborne,selborne,1
+1826457235,West Hill,west hill,1
+1826457934,Rhymney,rhymney,1
+1826458002,Thorngumbald,thorngumbald,1
+1826458138,Hanley Castle,hanley castle,1
+1826458545,Petworth,petworth,1
+1826458567,Burton,burton,1
+1826458581,Codicote,codicote,1
+1826458707,Kilwinning,kilwinning,1
+1826458841,Alnwick,alnwick,1
+1826459485,Church Fenton,church fenton,1
+1826459532,Wolsingham,wolsingham,1
+1826459836,High Halstow,high halstow,1
+1826459899,Colney Heath,colney heath,1
+1826459932,Crosskeys,crosskeys,1
+1826459935,Goffs Oak,goffs oak,1
+1826460204,Evanton,evanton,1
+1826460529,Higher Bebington,higher bebington,1
+1826460533,Billy Row,billy row,1
+1826460602,Bingley,bingley,1
+1826460632,Sudbury,sudbury,1
+1826460873,Silverton,silverton,1
+1826460932,Egremont,egremont,1
+1826461054,Patrington,patrington,1
+1826461068,Earby,earby,1
+1826461185,Banchory,banchory,1
+1826461349,Skelmanthorpe,skelmanthorpe,1
+1826461548,Euxton,euxton,1
+1826461578,Little Eaton,little eaton,1
+1826461610,Denaby Main,denaby main,1
+1826461714,Longbridge,longbridge,1
+1826461740,Morfa Nefyn,morfa nefyn,1
+1826462023,Coatbridge,coatbridge,1
+1826462092,Llwydcoed,llwydcoed,1
+1826462691,Lytham St Annes,lytham st annes,1
+1826462710,Clarborough,clarborough,1
+1826462795,Kirk Ella,kirk ella,1
+1826462891,Prestonpans,prestonpans,1
+1826463076,Bamford,bamford,1
+1826463101,South Wonston,south wonston,1
+1826463257,Chippenham,chippenham,1
+1826463453,Kennoway,kennoway,1
+1826463941,Westerleigh,westerleigh,1
+1826464200,Holsworthy,holsworthy,1
+1826464411,Fulbourn,fulbourn,1
+1826464469,Burton upon Stather,burton upon stather,1
+1826464470,Hellesdon,hellesdon,1
+1826464543,Perry Barr,perry barr,1
+1826464742,Morton,morton,1
+1826464812,Portavogie,portavogie,1
+1826464817,Bebington,bebington,1
+1826464973,Llithfaen,llithfaen,1
+1826465101,Riccall,riccall,1
+1826465290,Lamlash,lamlash,1
+1826465421,Stratford,stratford,1
+1826465552,Talbot Green,talbot green,1
+1826465785,Coleraine,coleraine,1
+1826466334,Balsham,balsham,1
+1826466478,Pinner,pinner,1
+1826466691,Fowlmere,fowlmere,1
+1826466701,Ruddington,ruddington,1
+1826467205,Earls Barton,earls barton,1
+1826467438,Dyce,dyce,1
+1826467517,Chinley,chinley,1
+1826467697,Crowan,crowan,1
+1826467767,Chipping Campden,chipping campden,1
+1826467940,Strathaven,strathaven,1
+1826467973,Ascot,ascot,1
+1826468150,Lewannick,lewannick,1
+1826468324,West Moors,west moors,1
+1826468444,Abergele,abergele,1
+1826468505,Aldbrough,aldbrough,1
+1826468676,Saint Stephen,saint stephen,1
+1826468854,Methil,methil,1
+1826469118,East Williamston,east williamston,1
+1826469174,Towyn,towyn,1
+1826469458,Hendreforgan,hendreforgan,1
+1826469767,Woodmansey,woodmansey,1
+1826469795,Misterton,misterton,1
+1826470017,Cogenhoe,cogenhoe,1
+1826470405,Nairn,nairn,1
+1826470487,Welham Green,welham green,1
+1826470599,Foleshill,foleshill,1
+1826470602,Chester-le-Street,chester le street,1
+1826470625,Whiston,whiston,1
+1826470693,Crawley,crawley,1
+1826470735,Riseley,riseley,1
+1826471379,Steep,steep,1
+1826471462,Winteringham,winteringham,1
+1826471602,Congleton,congleton,1
+1826471742,Market Weighton,market weighton,1
+1826471780,Gretna,gretna,1
+1826471908,Manorbier,manorbier,1
+1826472194,Topcliffe,topcliffe,1
+1826472647,Eccleshall,eccleshall,1
+1826472666,Kingskettle,kingskettle,1
+1826473020,Rudheath,rudheath,1
+1826473338,St Martin's,st martin s,1
+1826473663,Niton,niton,1
+1826473665,Copmanthorpe,copmanthorpe,1
+1826473673,Foulridge,foulridge,1
+1826473796,Llantwit Fardre,llantwit fardre,1
+1826473807,East Huntspill,east huntspill,1
+1826473864,Pershore,pershore,1
+1826474175,Sandhurst,sandhurst,1
+1826474275,Portskewett,portskewett,1
+1826474401,Eton Wick,eton wick,1
+1826474460,Honington,honington,1
+1826474464,Llanasa,llanasa,1
+1826474480,Eastriggs,eastriggs,1
+1826474759,Stannington,stannington,1
+1826474772,Duns,duns,1
+1826475167,Faringdon,faringdon,1
+1826475277,Hunstanton,hunstanton,1
+1826475339,Normandy,normandy,1
+1826475366,Little Oakley,little oakley,1
+1826475439,Easton-in-Gordano,easton in gordano,1
+1826475445,Burley in Wharfedale,burley in wharfedale,1
+1826475485,New Brancepeth,new brancepeth,1
+1826475568,Wilcote,wilcote,1
+1826475587,Lympstone,lympstone,1
+1826475602,Cwmbran,cwmbran,1
+1826475834,Draperstown,draperstown,1
+1826475864,Stonnall,stonnall,1
+1826476322,Gelligaer,gelligaer,1
+1826476420,Middle Winterslow,middle winterslow,1
+1826476476,Northfield,northfield,1
+1826476689,Llanbadarn-fawr,llanbadarn fawr,1
+1826477031,Wetheral,wetheral,1
+1826477238,Pengam,pengam,1
+1826477429,Kirkby Stephen,kirkby stephen,1
+1826477449,Oakley,oakley,1
+1826477579,Lostock Gralam,lostock gralam,1
+1826477610,Antrim,antrim,1
+1826477772,Featherstone,featherstone,1
+1826477782,Wednesfield,wednesfield,1
+1826477913,Chorley,chorley,1
+1826478043,Stratton Saint Margaret,stratton saint margaret,1
+1826478182,Cobham,cobham,1
+1826478293,Barnoldby le Beck,barnoldby le beck,1
+1826478427,Wing,wing,1
+1826478579,Kennington,kennington,1
+1826478798,Neston,neston,1
+1826478870,Barmouth,barmouth,1
+1826478885,Ledbury,ledbury,1
+1826478972,Frampton Cotterell,frampton cotterell,1
+1826479020,Woolwich,woolwich,1
+1826479433,Three Crosses,three crosses,1
+1826479903,Abertysswg,abertysswg,1
+1826479961,Lawford,lawford,1
+1826479969,Cilybebyll,cilybebyll,1
+1826480247,Maple Cross,maple cross,1
+1826480324,Hyde,hyde,1
+1826480737,Blunham,blunham,1
+1826480896,Esholt,esholt,1
+1826480960,Crowland,crowland,1
+1826481004,Basildon,basildon,1
+1826481279,Cringleford,cringleford,1
+1826482011,Westcott,westcott,1
+1826482164,Shenfield,shenfield,1
+1826482336,Westoning,westoning,1
+1826482621,Holywell,holywell,1
+1826482709,Pegswood,pegswood,1
+1826482925,Foxton,foxton,1
+1826483054,Upton,upton,1
+1826483264,Fochriw,fochriw,1
+1826483397,Llanegwad,llanegwad,1
+1826483528,Salfords,salfords,1
+1826483582,Beith,beith,1
+1826483601,Beeston,beeston,1
+1826483760,Earl Shilton,earl shilton,1
+1826483793,Randwick,randwick,1
+1826484290,Wrockwardine,wrockwardine,1
+1826484458,Witley,witley,1
+1826484672,Chickerell,chickerell,1
+1826484841,Moira,moira,1
+1826485638,Rawmarsh,rawmarsh,1
+1826485743,Sunningdale,sunningdale,1
+1826485890,Messingham,messingham,1
+1826486075,Cowfold,cowfold,1
+1826486102,Leighton Buzzard,leighton buzzard,1
+1826486249,Upwood,upwood,1
+1826486615,Westwoodside,westwoodside,1
+1826486724,Mickleton,mickleton,1
+1826486861,Shaftesbury,shaftesbury,1
+1826486906,Appleton,appleton,1
+1826487005,Hammerwich,hammerwich,1
+1826487036,Freethorpe,freethorpe,1
+1826487067,Seaton,seaton,1
+1826487258,Pleasley,pleasley,1
+1826487300,Broadmayne,broadmayne,1
+1826487395,Liss,liss,1
+1826487541,Beer,beer,1
+1826487904,East Calder,east calder,1
+1826488184,Sutton Saint James,sutton saint james,1
+1826488199,Hutton Cranswick,hutton cranswick,1
+1826488452,East Kilbride,east kilbride,1
+1826488792,Vange,vange,1
+1826488800,Thaxted,thaxted,1
+1826489600,Leverington,leverington,1
+1826489634,Bourne End,bourne end,1
+1826489764,Wilmcote,wilmcote,1
+1826489909,Uppermill,uppermill,1
+1826489955,Cricklade,cricklade,1
+1826490416,Wye,wye,1
+1826490534,Romiley,romiley,1
+1826490943,Neyland,neyland,1
+1826490981,Bowness-on-Windermere,bowness on windermere,1
+1826491001,Thorpe Willoughby,thorpe willoughby,1
+1826491042,Charlton Mackrell,charlton mackrell,1
+1826491220,Llandrinio,llandrinio,1
+1826491247,Langholm,langholm,1
+1826491249,Wheelock,wheelock,1
+1826491250,Rayleigh,rayleigh,1
+1826491311,Dufftown,dufftown,1
+1826491489,Audlem,audlem,1
+1826491547,Headley,headley,1
+1826491592,Baschurch,baschurch,1
+1826491821,Wideopen,wideopen,1
+1826491976,Tollesbury,tollesbury,1
+1826492004,Bloxwich,bloxwich,1
+1826492055,Old Stratford,old stratford,1
+1826492207,Mobberley,mobberley,1
+1826492212,Middleton,middleton,1
+1826492261,Lamesley,lamesley,1
+1826492420,Borough Green,borough green,1
+1826492464,Kirkby Moorside,kirkby moorside,1
+1826492520,Edinburgh,edinbrugh,6
+1826492520,Edinburgh,edinburgh,1
+1826492540,Broadstone,broadstone,1
+1826492590,Bottisham,bottisham,1
+1826492643,Lilleshall,lilleshall,1
+1826492775,Yalding,yalding,1
+1826492776,Caverswall,caverswall,1
+1826493288,Baildon,baildon,1
+1826493363,Elstow,elstow,1
+1826493467,Wollaston,wollaston,1
+1826493553,Dukinfield,dukinfield,1
+1826493628,Calverton,calverton,1
+1826493631,Ogmore Vale,ogmore vale,1
+1826493642,Thornhill,thornhill,1
+1826493686,Williton,williton,1
+1826494122,North Leigh,north leigh,1
+1826494621,Reydon,reydon,1
+1826494631,Horsehay,horsehay,1
+1826494784,North Curry,north curry,1
+1826495062,Farington,farington,1
+1826495229,Helen’s Bay,helen s bay,1
+1826495379,Great Malvern,great malvern,1
+1826495708,Bishopstoke,bishopstoke,1
+1826495814,Kesgrave,kesgrave,1
+1826495873,Warlingham,warlingham,1
+1826496846,Huncote,huncote,1
+1826497090,Dungiven,dungiven,1
+1826497318,Bampton,bampton,1
+1826497529,Haughton,haughton,1
+1826497596,Claypole,claypole,1
+1826497603,Kedington,kedington,1
+1826497679,Hightown,hightown,1
+1826498106,Swindon,swindon,1
+1826498228,Ystrad Mynach,ystrad mynach,1
+1826498236,Plean,plean,1
+1826498337,Warton,warton,1
+1826498372,Fintona,fintona,1
+1826498395,Hatton,hatton,1
+1826498722,Felton,felton,1
+1826498747,Beck Row,beck row,1
+1826499000,Barton-le-Clay,barton le clay,1
+1826499077,Spitalfields,spitalfields,1
+1826499241,Cliffe Woods,cliffe woods,1
+1826499267,Brynsadler,brynsadler,1
+1826499359,Castle Cary,castle cary,1
+1826499763,Hastings,hastings,1
+1826499764,West Thorney,west thorney,1
+1826500255,Whitminster,whitminster,1
+1826500429,Cole,cole,1
+1826500537,Farmborough,farmborough,1
+1826500991,Swainby,swainby,1
+1826501039,Ticehurst,ticehurst,1
+1826501201,Great Chesterford,great chesterford,1
+1826501258,Llansantffraid Glan Conwy,llansantffraid glan conwy,1
+1826501360,Muirhead,muirhead,1
+1826501391,Glynneath,glynneath,1
+1826501554,Barby,barby,1
+1826501863,Newton,newton,1
+1826502004,Meriden,meriden,1
+1826502121,Durrington,durrington,1
+1826502191,Hilton,hilton,1
+1826502330,Little Canfield,little canfield,1
+1826502368,Sanquhar,sanquhar,1
+1826502864,Falkirk,falkirk,1
+1826502940,Shawbury,shawbury,1
+1826502993,Capel,capel,1
+1826503442,Bembridge,bembridge,1
+1826504011,Dalston,dalston,1
+1826504182,Holyport,holyport,1
+1826504188,Holbury,holbury,1
+1826504320,Selby,selby,1
+1826504352,Hardingstone,hardingstone,1
+1826504633,Sandridge,sandridge,1
+1826504777,Portstewart,portstewart,1
+1826504781,Flint,flint,1
+1826505002,Balsall Common,balsall common,1
+1826505143,Wyke,wyke,1
+1826505234,Cullingworth,cullingworth,1
+1826505308,Uxbridge,uxbridge,1
+1826505762,Abercarn,abercarn,1
+1826506200,Brandon,brandon,1
+1826506895,Newtown,newtown,1
+1826506979,Rock,rock,1
+1826507288,Finchampstead,finchampstead,1
+1826507472,Swavesey,swavesey,1
+1826507579,Shawforth,shawforth,1
+1826507880,Halsall,halsall,1
+1826508164,Seamer,seamer,1
+1826508302,Kippen,kippen,1
+1826508502,Bempton,bempton,1
+1826508516,West Kirby,west kirby,1
+1826508556,Mickletown,mickletown,1
+1826508592,Bishop Middleham,bishop middleham,1
+1826509833,Gronant,gronant,1
+1826509993,Broughton,broughton,1
+1826510042,Trimley St Mary,trimley st mary,1
+1826510125,Slinfold,slinfold,1
+1826510139,Carrickfergus,carrickfergus,1
+1826510156,Kingstone,kingstone,1
+1826510350,Rogerstone,rogerstone,1
+1826510824,Southend,southend,1
+1826510888,Brompton-on-Swale,brompton on swale,1
+1826511267,Southwick,southwick,1
+1826511389,Kempsey,kempsey,1
+1826511945,Malmesbury,malmesbury,1
+1826512125,Epworth,epworth,1
+1826512133,Wilsden,wilsden,1
+1826512190,Milnathort,milnathort,1
+1826512301,Wombwell,wombwell,1
+1826512362,Woodville,woodville,1
+1826512517,Castleside,castleside,1
+1826512635,Marston Moretaine,marston moretaine,1
+1826512910,Ystradgynlais,ystradgynlais,1
+1826513127,Findern,findern,1
+1826513343,Shefford,shefford,1
+1826513356,Gedney,gedney,1
+1826513559,Ulverston,ulverston,1
+1826513639,Peterlee,peterlee,1
+1826514117,Gosmore,gosmore,1
+1826514131,Kings Worthy,kings worthy,1
+1826514327,Dyffryn Cellwen,dyffryn cellwen,1
+1826514343,Berry Pomeroy,berry pomeroy,1
+1826514526,Saint Mary Bourne,saint mary bourne,1
+1826514652,Shipston on Stour,shipston on stour,1
+1826514766,Hwlffordd,hwlffordd,1
+1826515115,Brislington,brislington,1
+1826515183,Blaenavon,blaenavon,1
+1826515401,Wootton Wawen,wootton wawen,1
+1826515635,Didcot,didcot,1
+1826515818,Cottingham,cottingham,1
+1826516080,Bradfield,bradfield,1
+1826516362,Pembridge,pembridge,1
+1826516755,Bisham,bisham,1
+1826516775,Y Felinheli,y felinheli,1
+1826517007,Stirling,stirling,1
+1826517116,Sidley,sidley,1
+1826517360,Esh,esh,1
+1826517928,Hemyock,hemyock,1
+1826518181,Takeley,takeley,1
+1826518414,High Ercall,high ercall,1
+1826518590,Blythebridge,blythebridge,1
+1826519097,Saint Enoder,saint enoder,1
+1826519195,Penygroes,penygroes,1
+1826519247,Burstow,burstow,1
+1826519471,Crays Hill,crays hill,1
+1826519616,Keadby,keadby,1
+1826519948,Haslemere,haslemere,1
+1826519979,Goring,goring,1
+1826520155,Ripley,ripley,1
+1826520233,Great Broughton,great broughton,1
+1826520236,Catterall,catterall,1
+1826520285,Rough Common,rough common,1
+1826520605,Beckenham,beckenham,1
+1826520631,Llandough,llandough,1
+1826521209,Blackwood,blackwood,1
+1826521236,Sywell,sywell,1
+1826521364,Bwlch,bwlch,1
+1826522137,Capel Saint Mary,capel saint mary,1
+1826522277,Macclesfield,macclesfield,1
+1826522615,Chattenden,chattenden,1
+1826522671,Tintagel,tintagel,1
+1826523018,Braithwell,braithwell,1
+1826523036,Pevensey,pevensey,1
+1826523613,West Boldon,west boldon,1
+1826523645,Worrall,worrall,1
+1826523717,Norton-sub-Hamdon,norton sub hamdon,1
+1826523739,Appleby-in-Westmorland,appleby in westmorland,1
+1826524058,Downside,downside,1
+1826524208,Southend,southend,1
+1826524492,Silsoe,silsoe,1
+1826524843,Stalybridge,stalybridge,1
+1826524974,Cheltenham,cheltenham,1
+1826525519,Harwell,harwell,1
+1826525805,Upper Beeding,upper beeding,1
+1826526010,Drongan,drongan,1
+1826526027,Heighington,heighington,1
+1826526380,Bridge of Weir,bridge of weir,1
+1826526411,Hook,hook,1
+1826526517,Hartford,hartford,1
+1826526673,Dingwall,dingwall,1
+1826526694,Palmers Green,palmers green,1
+1826527188,Forfar,forfar,1
+1826527232,Whitchurch,whitchurch,1
+1826527242,Kenton,kenton,1
+1826527292,Sandford,sandford,1
+1826527562,Holywell,holywell,1
+1826528147,Holytown,holytown,1
+1826528177,Chartham,chartham,1
+1826528530,Llantwit Major,llantwit major,1
+1826528579,Ashley Heath,ashley heath,1
+1826528624,Warmsworth,warmsworth,1
+1826528845,Fazakerley,fazakerley,1
+1826528871,Walton upon Thames,walton upon thames,1
+1826529656,Willington,willington,1
+1826529708,Rawdon,rawdon,1
+1826529872,Mylor Bridge,mylor bridge,1
+1826529951,Kidsgrove,kidsgrove,1
+1826529956,Stadhampton,stadhampton,1
+1826529962,East Retford,east retford,1
+1826530571,Oundle,oundle,1
+1826530884,Thatto Heath,thatto heath,1
+1826531050,Tetbury,tetbury,1
+1826531312,Dunkirk,dunkirk,1
+1826531323,Princetown,princetown,1
+1826531409,Startforth,startforth,1
+1826531596,Wivenhoe,wivenhoe,1
+1826531838,Long Stanton,long stanton,1
+1826532094,Tobermory,tobermory,1
+1826532199,Shafton,shafton,1
+1826532234,Padiham,padiham,1
+1826532241,Blewbury,blewbury,1
+1826532324,Little Gaddesden,little gaddesden,1
+1826533058,Castle Douglas,castle douglas,1
+1826533208,Hadfield,hadfield,1
+1826533315,Mickle Trafford,mickle trafford,1
+1826533599,Coalville,coalville,1
+1826533634,Sibford Gower,sibford gower,1
+1826533636,Sandgate,sandgate,1
+1826533812,Woodford Halse,woodford halse,1
+1826533997,Ashingdon,ashingdon,1
+1826535110,Dartford,dartford,1
+1826535163,Lindfield,lindfield,1
+1826535217,Dalrymple,dalrymple,1
+1826535316,Ickford,ickford,1
+1826535632,Abridge,abridge,1
+1826536539,Ingoldmells,ingoldmells,1
+1826536553,Whitehead,whitehead,1
+1826537050,Studham,studham,1
+1826537250,Newmarket,newmarket,1
+1826537973,Machen,machen,1
+1826538056,Rye,rye,1
+1826538121,Immingham,immingham,1
+1826538665,Bispham,bispham,1
+1826538674,Tottenham,tottenham,1
+1826538749,Gwennap,gwennap,1
+1826538788,Norton Fitzwarren,norton fitzwarren,1
+1826538822,Goostrey,goostrey,1
+1826538843,Tadley,tadley,1
+1826538976,Great Lumley,great lumley,1
+1826539158,Hayes,hayes,1
+1826539270,Standlake,standlake,1
+1826539664,Seascale,seascale,1
+1826539883,Limekilns,limekilns,1
+1826540058,Barling,barling,1
+1826540119,Wharncliffe Side,wharncliffe side,1
+1826540190,Lidlington,lidlington,1
+1826540290,Ollerton,ollerton,1
+1826540417,Branston,branston,1
+1826540486,Droitwich,droitwich,1
+1826540848,Bilton,bilton,1
+1826540863,Cromhall,cromhall,1
+1826540918,Newport,newport,1
+1826540974,Tadcaster,tadcaster,1
+1826541210,Hardwicke,hardwicke,1
+1826541304,Needham Market,needham market,1
+1826541568,Sibsey,sibsey,1
+1826542234,Simpson,simpson,1
+1826542275,Little Haywood,little haywood,1
+1826542301,Charnock Richard,charnock richard,1
+1826542328,Hersden,hersden,1
+1826542329,Torphins,torphins,1
+1826542357,South Nutfield,south nutfield,1
+1826542518,Oulton,oulton,1
+1826542654,Kimbolton,kimbolton,1
+1826542758,Great Waldingfield,great waldingfield,1
+1826542920,Porthmadog,porthmadog,1
+1826543368,Milton,milton,1
+1826544008,Hemingfield,hemingfield,1
+1826544095,Cemmaes Road,cemmaes road,1
+1826544218,Guilden Sutton,guilden sutton,1
+1826544365,Eastrington,eastrington,1
+1826544399,Ramsbury,ramsbury,1
+1826544501,Langold,langold,1
+1826544588,Lower Lemington,lower lemington,1
+1826544717,Wiggenhall Saint Germans,wiggenhall saint germans,1
+1826545139,Bearwood,bearwood,1
+1826545364,Lambeth,lambeth,1
+1826545433,Colchester,colchester,1
+1826545810,Eatington,eatington,1
+1826545852,Farnham Royal,farnham royal,1
+1826546152,Sharnford,sharnford,1
+1826546183,Stubbins,stubbins,1
+1826546394,Bishopthorpe,bishopthorpe,1
+1826546397,Leven,leven,1
+1826546566,North Hykeham,north hykeham,1
+1826546714,Puckeridge,puckeridge,1
+1826546811,Fallin,fallin,1
+1826547096,Willersey,willersey,1
+1826547164,Marchwiel,marchwiel,1
+1826547421,Bishopbriggs,bishopbriggs,1
+1826547485,Kingswinford,kingswinford,1
+1826547704,Oakley,oakley,1
+1826547891,Bodedern,bodedern,1
+1826548131,Stamford Bridge,stamford bridge,1
+1826548161,Aspley Guise,aspley guise,1
+1826548197,Minster,minster,1
+1826548262,Compton,compton,1
+1826548828,Brodsworth,brodsworth,1
+1826548880,Penrhyn Bay,penrhyn bay,1
+1826549288,Chesham,chesham,1
+1826549482,Hathersage,hathersage,1
+1826549531,Paisley,paisley,1
+1826549964,Chadderton,chadderton,1
+1826550004,Donnington,donnington,1
+1826550011,Treharris,treharris,1
+1826550370,Caerfyrddin,caerfyrddin,1
+1826550684,Blisworth,blisworth,1
+1826550710,Crowborough,crowborough,1
+1826550849,Milton Regis,milton regis,1
+1826550876,Burghfield,burghfield,1
+1826550908,Llanboidy,llanboidy,1
+1826550930,Hayes,hayes,1
+1826551027,Lea Town,lea town,1
+1826551036,Harbury,harbury,1
+1826551048,Thurcroft,thurcroft,1
+1826551383,Halton,halton,1
+1826551524,Tye Green,tye green,1
+1826551571,Calverley,calverley,1
+1826551750,Mildenhall,mildenhall,1
+1826551869,Killingworth,killingworth,1
+1826552358,Inverurie,inverurie,1
+1826552398,Ryhill,ryhill,1
+1826552633,Bolney,bolney,1
+1826552784,Blundeston,blundeston,1
+1826552975,Glapwell,glapwell,1
+1826553059,Littleover,littleover,1
+1826553147,Strichen,strichen,1
+1826553290,Seahouses,seahouses,1
+1826553575,Sharpness,sharpness,1
+1826553613,Llandwrog,llandwrog,1
+1826553727,Portsoy,portsoy,1
+1826553905,Botley,botley,1
+1826553953,Dunloy,dunloy,1
+1826554430,Prestbury,prestbury,1
+1826554505,Warton,warton,1
+1826555115,Stevenston,stevenston,1
+1826555461,Pendlebury,pendlebury,1
+1826555716,Moneyreagh,moneyreagh,1
+1826556120,Cupar,cupar,1
+1826556912,Rosewell,rosewell,1
+1826557263,Hatton,hatton,1
+1826557476,Queensbury,queensbury,1
+1826557635,Amersham,amersham,1
+1826557923,Llangefni,llangefni,1
+1826558087,Melrose,melrose,1
+1826558189,Woodstock,woodstock,1
+1826558347,Askam in Furness,askam in furness,1
+1826558458,Craghead,craghead,1
+1826558678,Liverpool,liverpool,1
+1826559160,Ammanford,ammanford,1
+1826559290,Loughton,loughton,1
+1826559394,Caol,caol,1
+1826559488,Brinklow,brinklow,1
+1826559568,Tyldesley,tyldesley,1
+1826559634,Rochester,rochester,1
+1826559934,Sarn,sarn,1
+1826560046,Much Hoole,much hoole,1
+1826560103,Bury,bury,1
+1826560207,Kents Bank,kents bank,1
+1826560402,Stepps,stepps,1
+1826560407,Glenelg,glenelg,1
+1826560419,Melton,melton,1
+1826560588,Broseley,broseley,1
+1826561000,Newbold on Avon,newbold on avon,1
+1826561062,South Hanningfield,south hanningfield,1
+1826561219,Mossblown,mossblown,1
+1826561226,Limpsfield,limpsfield,1
+1826561282,Warsash,warsash,1
+1826561547,Irlam,irlam,1
+1826561565,Worthen,worthen,1
+1826561824,Morton,morton,1
+1826562295,Ropley,ropley,1
+1826562344,Ludlow,ludlow,1
+1826562618,Wick Saint Lawrence,wick saint lawrence,1
+1826562991,Marshland St James,marshland st james,1
+1826563131,Peebles,peebles,1
+1826563368,Hepscott,hepscott,1
+1826563509,Hawkwell,hawkwell,1
+1826563916,Unstone,unstone,1
+1826564099,Goring by Sea,goring by sea,1
+1826564120,Eastdean,eastdean,1
+1826564240,Ixworth,ixworth,1
+1826564273,Aldington,aldington,1
+1826564728,Woodlesford,woodlesford,1
+1826564891,Laindon,laindon,1
+1826565038,Haywards Heath,haywards heath,1
+1826565398,Southborough,southborough,1
+1826565522,Burnley,burnley,1
+1826565856,Pont Rhyd-y-cyff,pont rhyd y cyff,1
+1826565863,Eastchurch,eastchurch,1
+1826566262,Barking,barking,1
+1826566445,West Haddon,west haddon,1
+1826566747,Ivybridge,ivybridge,1
+1826566949,South Witham,south witham,1
+1826566992,Woodhouse,woodhouse,1
+1826567448,Great Gonerby,great gonerby,1
+1826567623,Burton,burton,1
+1826567686,Atherstone,atherstone,1
+1826567893,Bignall End,bignall end,1
+1826568892,Longford,longford,1
+1826568900,Knowsley,knowsley,1
+1826568922,Beauly,beauly,1
+1826569253,Sollom,sollom,1
+1826569273,Rowlands Gill,rowlands gill,1
+1826569462,Brookfield,brookfield,1
+1826569534,Higher Walton,higher walton,1
+1826569545,Grendon,grendon,1
+1826569602,Great Oakley,great oakley,1
+1826569630,Kenninghall,kenninghall,1
+1826569677,Llanrhaiadr-ym-Mochnant,llanrhaiadr ym mochnant,1
+1826569743,East Tilbury,east tilbury,1
+1826570072,Watford,watford,1
+1826570126,Crosscanonby,crosscanonby,1
+1826570144,Ombersley,ombersley,1
+1826570427,Pagham,pagham,1
+1826570548,Whittington,whittington,1
+1826570555,Langley Mill,langley mill,1
+1826570775,Camborne,camborne,1
+1826571035,Ardersier,ardersier,1
+1826571135,Sandbank,sandbank,1
+1826571171,Spofforth,spofforth,1
+1826571262,Wrea Green,wrea green,1
+1826571447,Kirkintilloch,kirkintilloch,1
+1826571455,Glinton,glinton,1
+1826571557,Tadworth,tadworth,1
+1826571568,Maguires Bridge,maguires bridge,1
+1826571723,Ruislip,ruislip,1
+1826571734,Woodhouse Eaves,woodhouse eaves,1
+1826571755,Ulceby,ulceby,1
+1826571807,Saint Ive,saint ive,1
+1826571861,Wolvey,wolvey,1
+1826571894,Poringland,poringland,1
+1826571980,Combwich,combwich,1
+1826572198,Tockwith,tockwith,1
+1826572295,Swinton,swinton,1
+1826572350,Barleythorpe,barleythorpe,1
+1826572688,Tullibody,tullibody,1
+1826572805,Wembdon,wembdon,1
+1826573284,Penparc,penparc,1
+1826573684,Great Yeldham,great yeldham,1
+1826573807,Preesall,preesall,1
+1826573865,West Hanningfield,west hanningfield,1
+1826574190,Grasmere,grasmere,1
+1826574232,West Drayton,west drayton,1
+1826574386,Copthorne,copthorne,1
+1826574833,Stalbridge,stalbridge,1
+1826574888,Abertawe,abertawe,1
+1826575002,Brinkworth,brinkworth,1
+1826575877,Fairlight,fairlight,1
+1826576841,Little Clacton,little clacton,1
+1826577053,Wellington,wellington,1
+1826577257,North Tidworth,north tidworth,1
+1826577496,Brynmawr,brynmawr,1
+1826577778,Stenhousemuir,stenhousemuir,1
+1826577786,Trevor,trevor,1
+1826577826,Easingwold,easingwold,1
+1826578106,Rochdale,rochdale,1
+1826578179,Longframlington,longframlington,1
+1826578207,Torrance,torrance,1
+1826578278,Chertsey,chertsey,1
+1826578376,Collingham,collingham,1
+1826578404,Chislehurst,chislehurst,1
+1826578409,Ringwood,ringwood,1
+1826578502,Royal Wootton Bassett,royal wootton bassett,1
+1826578540,Whitworth,whitworth,1
+1826578725,Elton,elton,1
+1826578787,Llanfairfechan,llanfairfechan,1
+1826579026,Bawtry,bawtry,1
+1826579039,Hepburn,hepburn,1
+1826579336,Hartley,hartley,1
+1826579485,Great Warley Street,great warley street,1
+1826579574,Bridgnorth,bridgnorth,1
+1826579765,Blandford Forum,blandford forum,1
+1826579774,Hailey,hailey,1
+1826579949,Culloden,culloden,1
+1826580279,Sandown,sandown,1
+1826580409,East Whitburn,east whitburn,1
+1826580722,Llanharry,llanharry,1
+1826580742,Henley on Thames,henley on thames,1
+1826580801,Shillingstone,shillingstone,1
+1826581087,Middle Rasen,middle rasen,1
+1826581191,Waltham,waltham,1
+1826581215,Methwold,methwold,1
+1826581481,Dundee,dundee,1
+1826581914,Honiton,honiton,1
+1826581952,Enfield Lock,enfield lock,1
+1826581968,Parbold,parbold,1
+1826582449,Bosham,bosham,1
+1826582595,Heptonstall,heptonstall,1
+1826582599,Clapham,clapham,1
+1826582609,Arlesey,arlesey,1
+1826582637,Seal,seal,1
+1826582778,Corby,corby,1
+1826583042,Kensington,kensington,1
+1826583246,Sawley,sawley,1
+1826583278,Biddenden,biddenden,1
+1826583448,Marshfield,marshfield,1
+1826583583,Stoke Holy Cross,stoke holy cross,1
+1826583964,Heckington,heckington,1
+1826583968,Trinant,trinant,1
+1826583991,Lark Hill,lark hill,1
+1826584001,Trethomas,trethomas,1
+1826584064,Great Barford,great barford,1
+1826584075,Long Stratton,long stratton,1
+1826584607,Clenchwarton,clenchwarton,1
+1826584652,Cleethorpes,cleethorpes,1
+1826584724,Shere,shere,1
+1826584799,Hook,hook,1
+1826584870,Pemberton,pemberton,1
+1826585109,Aldermaston,aldermaston,1
+1826585125,Faifley,faifley,1
+1826585602,Burton upon Trent,burton upon trent,1
+1826585914,Buckley,buckley,1
+1826586304,Truro,truro,1
+1826586384,Bishops Waltham,bishops waltham,1
+1826586625,Washbrook,washbrook,1
+1826586872,Consett,consett,1
+1826586883,Heckmondwike,heckmondwike,1
+1826587031,Kirton,kirton,1
+1826587417,East Ham,east ham,1
+1826587515,Pen-y-Bont ar Ogwr,pen y bont ar ogwr,1
+1826587580,Gaerwen,gaerwen,1
+1826587585,Hambleton,hambleton,1
+1826587697,Tiverton,tiverton,1
+1826587762,Kilmacolm,kilmacolm,1
+1826587786,Llanddyfnan,llanddyfnan,1
+1826588113,Mauchline,mauchline,1
+1826588145,Elsecar,elsecar,1
+1826588466,Rolvenden,rolvenden,1
+1826588626,Renfrew,renfrew,1
+1826588761,Sutton,sutton,1
+1826589255,Randalstown,randalstown,1
+1826589441,Alveley,alveley,1
+1826589564,Rainhill,rainhill,1
+1826589684,Tongwynlais,tongwynlais,1
+1826589897,Brereton cum Smethwick,brereton cum smethwick,1
+1826589987,Huntley,huntley,1
+1826590359,Cushendall,cushendall,1
+1826590663,Lamberhurst,lamberhurst,1
+1826590824,Macmerry,macmerry,1
+1826590906,Chudleigh,chudleigh,1
+1826590988,Elswick,elswick,1
+1826591319,Ringmer,ringmer,1
+1826591590,Malton,malton,1
+1826591614,Sherston,sherston,1
+1826591617,Horndean,horndean,1
+1826591740,Warboys,warboys,1
+1826591780,Thetford,thetford,1
+1826591970,Heywood,heywood,1
+1826592108,Stoke,stoke,1
+1826592209,Huby,huby,1
+1826592538,Markyate,markyate,1
+1826593060,Kelsale,kelsale,1
+1826593302,Walford,walford,1
+1826593392,Shrewton,shrewton,1
+1826593773,Beetley,beetley,1
+1826594182,Denby Bottles,denby bottles,1
+1826594194,Banbury,banbury,1
+1826594706,Litherland,litherland,1
+1826594774,Ripponden,ripponden,1
+1826594812,Marcham,marcham,1
+1826595132,Birdham,birdham,1
+1826595228,Eastleigh,eastleigh,1
+1826595229,Kilmarnock,kilmarnock,1
+1826595557,Westgate on Sea,westgate on sea,1
+1826595952,Tardebigge,tardebigge,1
+1826595996,Rillington,rillington,1
+1826596317,Little Baddow,little baddow,1
+1826596486,Padfield,padfield,1
+1826596675,Blaxton,blaxton,1
+1826596817,Edgworth,edgworth,1
+1826596908,Plymstock,plymstock,1
+1826597177,Sheepy,sheepy,1
+1826597259,Brightwell-cum-Sotwell,brightwell cum sotwell,1
+1826597457,Chryston,chryston,1
+1826597503,Hertford Heath,hertford heath,1
+1826597621,Barnsley,barnsley,1
+1826597827,Long Crendon,long crendon,1
+1826598191,Binley Woods,binley woods,1
+1826598331,Hawarden,hawarden,1
+1826598466,Diss,diss,1
+1826598586,Great Harwood,great harwood,1
+1826598697,Partick,partick,1
+1826598721,Berrow,berrow,1
+1826599041,Almondsbury,almondsbury,1
+1826599467,Ugborough,ugborough,1
+1826599485,Hadleigh,hadleigh,1
+1826599690,New Bilton,new bilton,1
+1826599824,Shipton under Wychwood,shipton under wychwood,1
+1826600024,Bwlchgwyn,bwlchgwyn,1
+1826600240,Penzance,penzance,1
+1826600315,New Romney,new romney,1
+1826600750,Sutton-in-Craven,sutton in craven,1
+1826600799,Moor Row,moor row,1
+1826600816,Ryde,ryde,1
+1826600928,Fillongley,fillongley,1
+1826601085,Albrighton,albrighton,1
+1826601089,Callander,callander,1
+1826601477,Dunstable,dunstable,1
+1826601652,Doagh,doagh,1
+1826601698,Blue Bell Hill,blue bell hill,1
+1826601855,Stokesley,stokesley,1
+1826601919,Moffat,moffat,1
+1826601950,Outwell,outwell,1
+1826602244,Warminster,warminster,1
+1826602453,Culbokie,culbokie,1
+1826602597,Lytchett Matravers,lytchett matravers,1
+1826602892,Southampton,southampton,1
+1826603192,Humberston,humberston,1
+1826603209,Biddulph,biddulph,1
+1826603241,Derry,derry,1
+1826603300,Denby,denby,1
+1826603509,Treherbert,treherbert,1
+1826603551,Colwick,colwick,1
+1826603846,Heslington,heslington,1
+1826604016,Bradwell,bradwell,1
+1826604047,Delph,delph,1
+1826604096,Napton on the Hill,napton on the hill,1
+1826604103,Blaenau-Ffestiniog,blaenau ffestiniog,1
+1826604406,Chilton,chilton,1
+1826604815,Banavie,banavie,1
+1826604998,Floore,floore,1
+1826605189,Trawden,trawden,1
+1826605492,Barri,barri,1
+1826605743,Gorran Haven,gorran haven,1
+1826606014,Sopley,sopley,1
+1826606142,Saint Andrews,saint andrews,1
+1826606309,Ilminster,ilminster,1
+1826606528,Soham,soham,1
+1826606595,Cherry Burton,cherry burton,1
+1826606622,Featherstone,featherstone,1
+1826606767,Haslingfield,haslingfield,1
+1826606882,Saundersfoot,saundersfoot,1
+1826606929,Great Doddington,great doddington,1
+1826606982,Barnstaple,barnstaple,1
+1826607315,Llantarnam,llantarnam,1
+1826607363,Cholsey,cholsey,1
+1826607594,Tayport,tayport,1
+1826607712,Great Cornard,great cornard,1
+1826607875,Hoylandswaine,hoylandswaine,1
+1826609057,Brighton,brighton,1
+1826609111,Seghill,seghill,1
+1826609137,Bream,bream,1
+1826609342,High Wycombe,high wycombe,1
+1826609378,Gravesend,gravesend,1
+1826609580,Middlewich,middlewich,1
+1826609694,Kirn,kirn,1
+1826610407,Ford,ford,1
+1826610660,Fernhill Heath,fernhill heath,1
+1826611107,Bestwood Village,bestwood village,1
+1826611282,Bath,bath,1
+1826611376,Oakington,oakington,1
+1826611436,Uppingham,uppingham,1
+1826611453,Puddletown,puddletown,1
+1826611885,Loddiswell,loddiswell,1
+1826612013,Colwich,colwich,1
+1826612205,Winwick,winwick,1
+1826612208,Hornsea,hornsea,1
+1826612386,Crofton,crofton,1
+1826612540,Oakengates,oakengates,1
+1826613291,Rasharkin,rasharkin,1
+1826613347,Box,box,1
+1826613433,Plaxtol,plaxtol,1
+1826613545,Wolverton,wolverton,1
+1826613610,Llandeilo,llandeilo,1
+1826613703,Biggar,biggar,1
+1826613991,Busby,busby,1
+1826614034,Little Downham,little downham,1
+1826614797,Llangadock,llangadock,1
+1826615056,Jarrow,jarrow,1
+1826615070,Lambourn,lambourn,1
+1826615294,Meden Vale,meden vale,1
+1826615438,Llanybyther,llanybyther,1
+1826615523,Winsford,winsford,1
+1826615670,Campsall,campsall,1
+1826615743,Todmorden,todmorden,1
+1826616072,Ilton,ilton,1
+1826616247,Haworth,haworth,1
+1826616343,Woodsetts,woodsetts,1
+1826616515,Kingswood,kingswood,1
+1826616704,Barlborough,barlborough,1
+1826616921,North Kessock,north kessock,1
+1826617129,Staindrop,staindrop,1
+1826617559,Virginia Water,virginia water,1
+1826617652,High Ackworth,high ackworth,1
+1826617673,Annalong,annalong,1
+1826617830,West Runton,west runton,1
+1826618105,Brill,brill,1
+1826618250,Billinghay,billinghay,1
+1826618368,Chatteris,chatteris,1
+1826618420,Kilham,kilham,1
+1826618463,Saltcoats,saltcoats,1
+1826618776,Overton,overton,1
+1826619404,Wendron,wendron,1
+1826619519,Okehampton,okehampton,1
+1826619680,Broughton,broughton,1
+1826619807,Chisledon,chisledon,1
+1826620055,Narborough,narborough,1
+1826620178,Oystermouth,oystermouth,1
+1826620292,Allendale Town,allendale town,1
+1826620520,Dunnington,dunnington,1
+1826621043,Pennington,pennington,1
+1826621089,East Meon,east meon,1
+1826621114,Shortstown,shortstown,1
+1826621166,Welton,welton,1
+1826621403,Burton on the Wolds,burton on the wolds,1
+1826621561,Terrington Saint Clement,terrington saint clement,1
+1826621575,Giggleswick,giggleswick,1
+1826621626,Kingsdown,kingsdown,1
+1826621706,Boultham,boultham,1
+1826621792,Stoneykirk,stoneykirk,1
+1826621816,Claydon,claydon,1
+1826622627,Farsley,farsley,1
+1826622636,Radcliffe,radcliffe,1
+1826622800,Upton St Leonards,upton st leonards,1
+1826622959,Holmewood,holmewood,1
+1826623057,Rodney Stoke,rodney stoke,1
+1826623367,Quintrell Downs,quintrell downs,1
+1826623953,Clwt-y-bont,clwt y bont,1
+1826623986,Chaddesley Corbett,chaddesley corbett,1
+1826624147,Shedfield,shedfield,1
+1826624210,Kingussie,kingussie,1
+1826624252,Bishops Cannings,bishops cannings,1
+1826624574,Harleston,harleston,1
+1826624742,Beddau,beddau,1
+1826624781,Mere,mere,1
+1826625173,Dymock,dymock,1
+1826625241,Yelverton,yelverton,1
+1826625388,Dalmellington,dalmellington,1
+1826625567,Ramsey,ramsey,1
+1826625908,Felton,felton,1
+1826626144,Peterborough,peterborough,1
+1826626360,Wiveliscombe,wiveliscombe,1
+1826626467,Bidston,bidston,1
+1826626508,Torryburn,torryburn,1
+1826626555,Kemerton,kemerton,1
+1826626668,Stansted Mountfitchet,stansted mountfitchet,1
+1826626727,Much Hadham,much hadham,1
+1826626831,Surfleet,surfleet,1
+1826626879,Llanbadrig,llanbadrig,1
+1826626892,Keresley End,keresley end,1
+1826626902,Wadsley,wadsley,1
+1826627067,Seaton Delaval,seaton delaval,1
+1826627231,Birdwell,birdwell,1
+1826627574,Mickleover,mickleover,1
+1826627613,Dunchurch,dunchurch,1
+1826627925,Lydiate,lydiate,1
+1826628353,Bolton,bolton,1
+1826628425,Newbridge,newbridge,1
+1826628445,Shap,shap,1
+1826628485,Chacewater,chacewater,1
+1826628541,Cosham,cosham,1
+1826628865,Cotton End,cotton end,1
+1826629009,Waltham Cross,waltham cross,1
+1826629486,Ipswich,ipswich,1
+1826629556,Elham,elham,1
+1826630237,Killearn,killearn,1
+1826630392,Clayton West,clayton west,1
+1826630573,Sandy,sandy,1
+1826630574,Luton,luton,1
+1826630673,Ashurst,ashurst,1
+1826631001,Arborfield Green,arborfield green,1
+1826631187,Werrington,werrington,1
+1826631196,Cowie,cowie,1
+1826631598,Hunters Quay,hunters quay,1
+1826632085,West Mersea,west mersea,1
+1826632274,Hallow,hallow,1
+1826632321,Sway,sway,1
+1826632402,Kirklevington,kirklevington,1
+1826632527,Gatley,gatley,1
+1826632636,Avonmouth,avonmouth,1
+1826632789,Bingham,bingham,1
+1826632972,Shepperton,shepperton,1
+1826633006,Royal Leamington Spa,royal leamington spa,1
+1826633103,Northfleet,northfleet,1
+1826633271,Insch,insch,1
+1826633291,Kings Bromley,kings bromley,1
+1826634065,Moulton,moulton,1
+1826634399,Rackheath,rackheath,1
+1826634910,Pinxton,pinxton,1
+1826634933,Ruardean,ruardean,1
+1826635107,Hutton Rudby,hutton rudby,1
+1826635509,Weybourne,weybourne,1
+1826635579,Fochabers,fochabers,1
+1826635627,Georgeham,georgeham,1
+1826635683,Wembley,wembley,1
+1826635816,Talgarth,talgarth,1
+1826635849,Gateshead,gateshead,1
+1826635922,Owston Ferry,owston ferry,1
+1826636472,Belbroughton,belbroughton,1
+1826636637,Iver,iver,1
+1826636761,Urmston,urmston,1
+1826636803,Wickwar,wickwar,1
+1826636841,Wolverhampton,wolverhampton,1
+1826636879,Oakley,oakley,1
+1826637434,Perham Down,perham down,1
+1826637557,Dromara,dromara,1
+1826637615,Watton,watton,1
+1826637871,Sedgefield,sedgefield,1
+1826638204,Keighley,keighley,1
+1826638568,Littleport,littleport,1
+1826638688,Saint Eval,saint eval,1
+1826639765,Holywood,holywood,1
+1826639786,Saint Osyth,saint osyth,1
+1826639956,Thornton,thornton,1
+1826640137,Upper Killay,upper killay,1
+1826640186,Nantwich,nantwich,1
+1826640302,Icklesham,icklesham,1
+1826640623,Bridlington,bridlington,1
+1826640794,Boughton Aulph,boughton aulph,1
+1826640859,Highbury,highbury,1
+1826640874,Newton Poppleford,newton poppleford,1
+1826641239,High Bickington,high bickington,1
+1826641315,Norton Saint Philip,norton saint philip,1
+1826641578,Drighlington,drighlington,1
+1826641608,Great Clifton,great clifton,1
+1826642243,Gillingham,gillingham,1
+1826642248,Melksham,melksham,1
+1826642383,Trefnant,trefnant,1
+1826642497,Stepney,stepney,1
+1826642733,Lewisham,lewisham,1
+1826642886,Mansfield Woodhouse,mansfield woodhouse,1
+1826642921,Speldhurst,speldhurst,1
+1826643172,Bramhall,bramhall,1
+1826643343,Garelochhead,garelochhead,1
+1826643391,Hatfield Heath,hatfield heath,1
+1826643536,Combe Martin,combe martin,1
+1826644016,Clydach Vale,clydach vale,1
+1826644047,Stapleford,stapleford,1
+1826644428,Croft,croft,1
+1826644897,Loxwood,loxwood,1
+1826645118,Calne,calne,1
+1826645261,Burford,burford,1
+1826645561,Horsford,horsford,1
+1826645621,North Elmham,north elmham,1
+1826645692,Stretford,stretford,1
+1826645935,London,london,4
+1826646252,Penmaenmawr,penmaenmawr,1
+1826646560,Astwood Bank,astwood bank,1
+1826646738,Crich,crich,1
+1826647385,Arnold,arnold,1
+1826647427,Crudwell,crudwell,1
+1826647655,Eston,eston,1
+1826647688,Kirkby-in-Furness,kirkby in furness,1
+1826647719,Llangollen,llangollen,1
+1826647769,North Sunderland,north sunderland,1
+1826647938,Blaengawr,blaengawr,1
+1826648099,Harrow,harrow,1
+1826648142,Golcar,golcar,1
+1826648415,Bungay,bungay,1
+1826648427,Dronfield,dronfield,1
+1826648481,Usworth,usworth,1
+1826648498,Dipton,dipton,1
+1826648950,Sefton,sefton,1
+1826649007,Wainfleet All Saints,wainfleet all saints,1
+1826649347,Catrine,catrine,1
+1826649363,Harlington,harlington,1
+1826649829,Pannal,pannal,1
+1826649927,Bow,bow,1
+1826650120,Oxted,oxted,1
+1826650301,Mold,mold,1
+1826650427,Guardbridge,guardbridge,1
+1826650494,Shenley Church End,shenley church end,1
+1826650497,Gwersyllt,gwersyllt,1
+1826650504,Argoed,argoed,1
+1826650581,Aberbargoed,aberbargoed,1
+1826650649,Stoke Prior,stoke prior,1
+1826650839,Newbridge,newbridge,1
+1826651060,Wolverley,wolverley,1
+1826651108,Madron,madron,1
+1826651154,Nefyn,nefyn,1
+1826651246,Idmiston,idmiston,1
+1826651603,Morecambe,morecambe,1
+1826651856,Aston Abbotts,aston abbotts,1
+1826651891,Mayfield,mayfield,1
+1826651961,Barnetby le Wold,barnetby le wold,1
+1826652073,Greenhill,greenhill,1
+1826652345,Wethersfield,wethersfield,1
+1826652830,Skelton,skelton,1
+1826653044,New Stevenston,new stevenston,1
+1826653059,Great Yarmouth,great yarmouth,1
+1826653309,Shiremoor,shiremoor,1
+1826653346,Hattersley,hattersley,1
+1826653407,King’s Stanley,king s stanley,1
+1826653412,Thornton,thornton,1
+1826653537,Hyde Heath,hyde heath,1
+1826653958,Berkswell,berkswell,1
+1826654244,Breage,breage,1
+1826654301,Aberdulais,aberdulais,1
+1826654787,Sowerby,sowerby,1
+1826654935,Luncarty,luncarty,1
+1826655342,Wixams,wixams,1
+1826655471,Nelson,nelson,1
+1826655506,Shadoxhurst,shadoxhurst,1
+1826655696,Walsall,walsall,1
+1826655901,Dornoch,dornoch,1
+1826655909,Chalfont Saint Peter,chalfont saint peter,1
+1826655947,Taplow,taplow,1
+1826655954,Grove,grove,1
+1826656323,Bridge of Earn,bridge of earn,1
+1826656808,Lower Beeding,lower beeding,1
+1826656856,Effingham,effingham,1
+1826656929,Blaengwrach,blaengwrach,1
+1826657001,Minster,minster,1
+1826657031,Mackworth,mackworth,1
+1826657058,Holborn,holborn,1
+1826657542,Bishops Tachbrook,bishops tachbrook,1
+1826657714,Tolleshunt D’Arcy,tolleshunt d arcy,1
+1826657827,Nanpean,nanpean,1
+1826657976,Lostwithiel,lostwithiel,1
+1826658158,Bala,bala,1
+1826658204,Thames Ditton,thames ditton,1
+1826658270,Much Wenlock,much wenlock,1
+1826658551,Croft,croft,1
+1826658774,Rhu,rhu,1
+1826659053,Rhondda,rhondda,1
+1826659439,Nailsea,nailsea,1
+1826659481,Aylsham,aylsham,1
+1826659843,Kidbrooke,kidbrooke,1
+1826659912,Dilton Marsh,dilton marsh,1
+1826659985,Bramcote,bramcote,1
+1826660090,Kislingbury,kislingbury,1
+1826660161,Llangynidr,llangynidr,1
+1826660172,Kilcreggan,kilcreggan,1
+1826660316,Clitheroe,clitheroe,1
+1826660324,Credenhill,credenhill,1
+1826660412,Codnor,codnor,1
+1826660528,Saint Clement,saint clement,1
+1826660559,Bonnybridge,bonnybridge,1
+1826660616,Atworth,atworth,1
+1826660768,Cumnor,cumnor,1
+1826660998,Chalford,chalford,1
+1826661134,Landford,landford,1
+1826661260,Carnlough,carnlough,1
+1826661276,Meliden,meliden,1
+1826661451,Long Itchington,long itchington,1
+1826661722,Harthill,harthill,1
+1826661996,Great Offley,great offley,1
+1826662506,Benllech,benllech,1
+1826662811,Skegness,skegness,1
+1826663356,Bratton,bratton,1
+1826663717,Digswell,digswell,1
+1826663767,Papworth Everard,papworth everard,1
+1826664295,Gorebridge,gorebridge,1
+1826664658,Ruyton-XI-Towns,ruyton xi towns,1
+1826664752,Ninfield,ninfield,1
+1826664814,Hungerford,hungerford,1
+1826664818,Haughley,haughley,1
+1826665812,Bulford,bulford,1
+1826666013,Tywardreath,tywardreath,1
+1826666079,Allanton,allanton,1
+1826666133,Plains,plains,1
+1826666389,Stoke Fleming,stoke fleming,1
+1826666422,Castlethorpe,castlethorpe,1
+1826666438,Gorseinon,gorseinon,1
+1826666565,Pelsall,pelsall,1
+1826666661,Tewin,tewin,1
+1826666743,Collingtree,collingtree,1
+1826666935,Wattstown,wattstown,1
+1826667137,Letterston,letterston,1
+1826667369,Orpington,orpington,1
+1826667402,Chiddingfold,chiddingfold,1
+1826667477,Bailrigg,bailrigg,1
+1826667481,Lisburn,lisburn,1
+1826667704,Bargeddie,bargeddie,1
+1826667862,Walsham le Willows,walsham le willows,1
+1826667903,Morden,morden,1
+1826668025,Backwell,backwell,1
+1826668513,Wilford,wilford,1
+1826669089,West Wickham,west wickham,1
+1826669150,Mayland,mayland,1
+1826669220,Derrington,derrington,1
+1826669260,Bracebridge Heath,bracebridge heath,1
+1826669520,Dollis Hill,dollis hill,1
+1826669534,Christchurch,christchurch,1
+1826669570,Great Torrington,great torrington,1
+1826669578,Whitwick,whitwick,1
+1826669754,Silverstone,silverstone,1
+1826669882,Harefield,harefield,1
+1826670505,High Spen,high spen,1
+1826670630,Grassington,grassington,1
+1826671122,Ardrishaig,ardrishaig,1
+1826671131,Bramley,bramley,1
+1826671300,North Wootton,north wootton,1
+1826671489,Woodlands,woodlands,1
+1826671490,Roundway,roundway,1
+1826671512,Tottington,tottington,1
+1826672183,South Milford,south milford,1
+1826672245,Pontycymer,pontycymer,1
+1826672445,Huddersfield,huddersfield,1
+1826672938,Ashby de la Launde,ashby de la launde,1
+1826673096,Lees,lees,1
+1826673312,Dane End,dane end,1
+1826673559,East Dean and Friston,east dean and friston,1
+1826673759,Boreham,boreham,1
+1826674271,Marazion,marazion,1
+1826674604,Highgate,highgate,1
+1826674732,Porthcawl,porthcawl,1
+1826674740,East Dereham,east dereham,1
+1826675196,Withington,withington,1
+1826675242,Newmacher,newmacher,1
+1826675501,Portree,portree,1
+1826675562,Tiddington,tiddington,1
+1826675820,Lingfield,lingfield,1
+1826675845,Abertillery,abertillery,1
+1826675871,Kingsbury Episcopi,kingsbury episcopi,1
+1826675904,Drayton Bassett,drayton bassett,1
+1826675927,Wargrave,wargrave,1
+1826675947,Minster Lovell,minster lovell,1
+1826675984,Deddington,deddington,1
+1826676183,Hurstpierpoint,hurstpierpoint,1
+1826676190,Tisbury,tisbury,1
+1826676745,Lynsted,lynsted,1
+1826676893,Waltham Saint Lawrence,waltham saint lawrence,1
+1826676976,Almondbury,almondbury,1
+1826677003,Weston upon Trent,weston upon trent,1
+1826678049,Rhoose,rhoose,1
+1826678450,Marks Tey,marks tey,1
+1826678608,Welford,welford,1
+1826679048,Cleckheaton,cleckheaton,1
+1826679057,Blackburn,blackburn,1
+1826679152,Old Brampton,old brampton,1
+1826679432,Neath,neath,1
+1826679514,Syston,syston,1
+1826679547,Weldon,weldon,1
+1826679593,Kelty,kelty,1
+1826679607,Kingsteignton,kingsteignton,1
+1826679890,Reculver,reculver,1
+1826679931,Sturry,sturry,1
+1826679950,Harpenden,harpenden,1
+1826679961,Southgate,southgate,1
+1826679964,Kingsthorpe,kingsthorpe,1
+1826680163,Brownhills,brownhills,1
+1826680237,Bugle,bugle,1
+1826680448,Cranbourne,cranbourne,1
+1826680472,Milford Haven,milford haven,1
+1826680940,Withyham,withyham,1
+1826681013,Scleddau,scleddau,1
+1826681070,Bentley,bentley,1
+1826681714,Portglenone,portglenone,1
+1826681800,Shelley,shelley,1
+1826681824,Law,law,1
+1826682331,Four Lanes,four lanes,1
+1826682377,Pyrford,pyrford,1
+1826682901,Huyton,huyton,1
+1826682902,Whaley Bridge,whaley bridge,1
+1826682985,Yarnfield,yarnfield,1
+1826683025,Huncoat,huncoat,1
+1826683255,Brockenhurst,brockenhurst,1
+1826683271,Hurst Green,hurst green,1
+1826683389,Merley,merley,1
+1826683445,Grange-over-Sands,grange over sands,1
+1826683681,Hathern,hathern,1
+1826684013,Loddon,loddon,1
+1826684229,Newborough,newborough,1
+1826684335,Littlemore,littlemore,1
+1826684478,Llanfihangel-ar-Arth,llanfihangel ar arth,1
+1826684752,Exning,exning,1
+1826684783,Tettenhall,tettenhall,1
+1826684962,Hartland,hartland,1
+1826685166,Rossett,rossett,1
+1826685308,Amblecote,amblecote,1
+1826685341,Greenford,greenford,1
+1826685347,Aldridge,aldridge,1
+1826685396,Great Baddow,great baddow,1
+1826685441,Brierfield,brierfield,1
+1826685750,Fressingfield,fressingfield,1
+1826686342,Deganwy,deganwy,1
+1826686558,Biddulph Moor,biddulph moor,1
+1826686743,Greetland,greetland,1
+1826686813,Crosshouse,crosshouse,1
+1826686815,Mundesley,mundesley,1
+1826686995,Omagh,omagh,1
+1826687116,Bradford,bradford,1
+1826687387,Thrussington,thrussington,1
+1826687542,Barrow upon Humber,barrow upon humber,1
+1826688051,Norwich,norwich,1
+1826688106,Enderby,enderby,1
+1826688308,Barrow upon Soar,barrow upon soar,1
+1826688359,Brighouse,brighouse,1
+1826688592,Whitwell,whitwell,1
+1826689267,Landewednack,landewednack,1
+1826689320,Heswall,heswall,1
+1826689360,Langford,langford,1
+1826689517,Henlow,henlow,1
+1826689568,Oxford,oxford,1
+1826689803,Darvel,darvel,1
+1826690064,Mattishall,mattishall,1
+1826690246,Bushey,bushey,1
+1826690378,Desborough,desborough,1
+1826690506,Meldreth,meldreth,1
+1826690656,Melbourne,melbourne,1
+1826690713,Mitchel Troy,mitchel troy,1
+1826690868,Pant,pant,1
+1826690873,Berry Hill,berry hill,1
+1826691090,Carcroft,carcroft,1
+1826691117,Ranskill,ranskill,1
+1826691176,Yealmpton,yealmpton,1
+1826691574,Sheringham,sheringham,1
+1826692101,Gorleston-on-Sea,gorleston on sea,1
+1826692197,Duntocher,duntocher,1
+1826692433,Burham,burham,1
+1826692620,Hamilton,hamilton,1
+1826692690,Northleach,northleach,1
+1826693113,Llanfechell,llanfechell,1
+1826693144,Willesborough,willesborough,1
+1826693501,Ashington,ashington,1
+1826693791,Bonnyrigg,bonnyrigg,1
+1826694638,Chiltern Green,chiltern green,1
+1826694866,West Linton,west linton,1
+1826695306,Seaton,seaton,1
+1826695421,Romford,romford,1
+1826695451,Ditchingham,ditchingham,1
+1826695491,Leiston,leiston,1
+1826695618,Sturminster Newton,sturminster newton,1
+1826696164,Chichester,chichester,1
+1826696280,Beaufort,beaufort,1
+1826696408,Adlington,adlington,1
+1826696728,Nettleham,nettleham,1
+1826697064,Chipping Ongar,chipping ongar,1
+1826697141,Netherton,netherton,1
+1826697257,Boddam,boddam,1
+1826697274,Connor Downs,connor downs,1
+1826697588,Newtownards,newtownards,1
+1826697633,Saint Cleer,saint cleer,1
+1826697671,Northallerton,northallerton,1
+1826697792,Lyme Regis,lyme regis,1
+1826698037,Stonewood,stonewood,1
+1826698330,Thirsk,thirsk,1
+1826698485,Alltwen,alltwen,1
+1826698585,Cliffe,cliffe,1
+1826698933,Rosneath,rosneath,1
+1826699330,Uplyme,uplyme,1
+1826699367,Sidmouth,sidmouth,1
+1826699567,Catshill,catshill,1
+1826699653,Hackleton,hackleton,1
+1826699786,Holmbridge,holmbridge,1
+1826699828,Scawton,scawton,1
+1826699982,Stewkley,stewkley,1
+1826700008,Mostyn,mostyn,1
+1826700096,Beverley,beverley,1
+1826700202,Maryburgh,maryburgh,1
+1826700457,Beaminster,beaminster,1
+1826700583,Tavistock,tavistock,1
+1826700645,Pluckley,pluckley,1
+1826700748,Baslow,baslow,1
+1826700880,Grimsby,grimsby,1
+1826700886,Llansantffraid,llansantffraid,1
+1826701184,Wath upon Dearne,wath upon dearne,1
+1826701397,Spratton,spratton,1
+1826701436,Eaton Socon,eaton socon,1
+1826701531,Skirbeck,skirbeck,1
+1826701535,Whitefield,whitefield,1
+1826701602,Abersychan,abersychan,1
+1826701672,Trimdon Grange,trimdon grange,1
+1826702051,Burntwood,burntwood,1
+1826702063,Shirley,shirley,1
+1826702113,Oughtibridge,oughtibridge,1
+1826702199,Heddon on the Wall,heddon on the wall,1
+1826702281,Newcastle Emlyn,newcastle emlyn,1
+1826702294,Aberaman,aberaman,1
+1826702380,Ladock,ladock,1
+1826702536,Siston,siston,1
+1826702624,Treorchy,treorchy,1
+1826702890,Upper Cumberworth,upper cumberworth,1
+1826703256,Kelvedon,kelvedon,1
+1826703259,Bodenham,bodenham,1
+1826703378,Llanwern,llanwern,1
+1826703424,Boughton,boughton,1
+1826703454,Whissendine,whissendine,1
+1826703600,Newick,newick,1
+1826704222,Easton,easton,1
+1826704435,Penn,penn,1
+1826705062,Feock,feock,1
+1826705291,Chalgrove,chalgrove,1
+1826705684,Clydebank,clydebank,1
+1826705697,Marton,marton,1
+1826705889,Lutton,lutton,1
+1826705902,Inverkeithing,inverkeithing,1
+1826705990,Topsham,topsham,1
+1826706023,Thornaby on Tees,thornaby on tees,1
+1826706176,Llannor,llannor,1
+1826706469,Martley,martley,1
+1826706589,Canvey Island,canvey island,1
+1826706891,Wales,wales,1
+1826707052,Shenstone,shenstone,1
+1826707592,Corfe Mullen,corfe mullen,1
+1826707596,Eltham,eltham,1
+1826707694,Pott Row,pott row,1
+1826707860,Ipplepen,ipplepen,1
+1826708268,Gorfield,gorfield,1
+1826708788,Stornoway,stornoway,1
+1826708803,Dunoon,dunoon,1
+1826708962,Southwick,southwick,1
+1826709125,Fiskerton,fiskerton,1
+1826709134,Inverkip,inverkip,1
+1826709192,Cannock,cannock,1
+1826709483,Southbourne,southbourne,1
+1826709629,Yatton,yatton,1
+1826709919,Accrington,accrington,1
+1826710001,Cults,cults,1
+1826710421,Prestwick,prestwick,1
+1826710788,Selsey,selsey,1
+1826710794,Great Horkesley,great horkesley,1
+1826711154,Sulhampstead,sulhampstead,1
+1826711263,Eccles,eccles,1
+1826711853,Somerton,somerton,1
+1826711993,Bolingey,bolingey,1
+1826712087,Yateley,yateley,1
+1826712104,Teversham,teversham,1
+1826712354,Waltham Chase,waltham chase,1
+1826712596,Thornley,thornley,1
+1826713213,Combe Saint Nicholas,combe saint nicholas,1
+1826713267,Llanfaelog,llanfaelog,1
+1826713357,Kington,kington,1
+1826713394,West Molesey,west molesey,1
+1826713495,Fraserburgh,fraserburgh,1
+1826713508,Sunninghill,sunninghill,1
+1826713585,Newton Mearns,newton mearns,1
+1826713952,Hopeman,hopeman,1
+1826713966,Bedlington,bedlington,1
+1826714089,Billington,billington,1
+1826714160,Millom,millom,1
+1826714452,Hemsworth,hemsworth,1
+1826715019,Locking,locking,1
+1826715405,Flookburgh,flookburgh,1
+1826715512,Horton,horton,1
+1826715561,Curdridge,curdridge,1
+1826715932,Devizes,devizes,1
+1826715961,Wimbish,wimbish,1
+1826715964,Hambleton,hambleton,1
+1826716028,Littlethorpe,littlethorpe,1
+1826716058,Penwithick,penwithick,1
+1826716070,Oldham,oldham,1
+1826716353,Gornalwood,gornalwood,1
+1826716436,Freeland,freeland,1
+1826716746,Ystrad Aeron,ystrad aeron,1
+1826716988,Low Ackworth,low ackworth,1
+1826717277,Kilrea,kilrea,1
+1826717606,Avening,avening,1
+1826717638,Greenhill,greenhill,1
+1826717880,Whitchurch,whitchurch,1
+1826718081,Uddingston,uddingston,1
+1826718130,Long Sutton,long sutton,1
+1826718182,Whitland,whitland,1
+1826718241,Emsworth,emsworth,1
+1826718405,Stoke Ferry,stoke ferry,1
+1826718687,Newport,newport,1
+1826718744,Friern Barnet,friern barnet,1
+1826718778,Henfynyw Upper,henfynyw upper,1
+1826718894,Egerton,egerton,1
+1826718926,Croeserw,croeserw,1
+1826718988,Hipperholme,hipperholme,1
+1826719166,Saint Keverne,saint keverne,1
+1826719502,Wroxham,wroxham,1
+1826719630,Strood,strood,1
+1826719738,Pickmere,pickmere,1
+1826719868,Berinsfield,berinsfield,1
+1826719972,Woodborough,woodborough,1
+1826720044,Upminster,upminster,1
+1826720086,Lapworth,lapworth,1
+1826720097,Chilworth,chilworth,1
+1826720388,Salhouse,salhouse,1
+1826720402,Annahilt,annahilt,1
+1826720500,Solihull,solihull,1
+1826720855,Acton,acton,1
+1826721001,Hadlow,hadlow,1
+1826721497,Bradley Stoke,bradley stoke,1
+1826721850,Canford Cliffs,canford cliffs,1
+1826722060,Sauchie,sauchie,1
+1826722361,Dobcross,dobcross,1
+1826722534,Sacriston,sacriston,1
+1826723193,Flyford Flavell,flyford flavell,1
+1826723231,Scarborough,scarborough,1
+1826723485,Howden,howden,1
+1826723545,Hatfield,hatfield,1
+1826723577,Hockley Heath,hockley heath,1
+1826723902,Pewsey,pewsey,1
+1826724084,Saint Erme,saint erme,1
+1826724326,Enniskillen,enniskillen,1
+1826724333,Holton le Clay,holton le clay,1
+1826725150,Burnham,burnham,1
+1826725161,Longbenton,longbenton,1
+1826725246,Market Deeping,market deeping,1
+1826725604,Bleadon,bleadon,1
+1826725859,Fishburn,fishburn,1
+1826725924,Pease Pottage,pease pottage,1
+1826726004,Leyland,leyland,1
+1826726029,Aberfan,aberfan,1
+1826726048,Ripon,ripon,1
+1826726057,Brabourne,brabourne,1
+1826726064,Cradley,cradley,1
+1826726466,Chirk,chirk,1
+1826726647,Berkeley,berkeley,1
+1826726680,Ripley,ripley,1
+1826726795,Denbigh,denbigh,1
+1826726867,Warmington,warmington,1
+1826727195,Tunstall,tunstall,1
+1826727492,Lochmaben,lochmaben,1
+1826727642,Prestatyn,prestatyn,1
+1826727987,Arne,arne,1
+1826728148,Rainford,rainford,1
+1826728218,Laugharne,laugharne,1
+1826728474,Walkington,walkington,1
+1826728524,Alvechurch,alvechurch,1
+1826728587,Saint Asaph,saint asaph,1
+1826728611,Oulton,oulton,1
+1826728800,Cowbridge,cowbridge,1
+1826728819,Watchfield,watchfield,1
+1826728846,Monkton,monkton,1
+1826728939,Pocklington,pocklington,1
+1826729298,Hurlford,hurlford,1
+1826729831,West Cornforth,west cornforth,1
+1826730060,Ealing,ealing,1
+1826730210,Frome,frome,1
+1826730292,Glenfield,glenfield,1
+1826730405,Istead Rise,istead rise,1
+1826730971,Falkland,falkland,1
+1826730996,Southwell,southwell,1
+1826730999,Heath,heath,1
+1826731009,Norton,norton,1
+1826731234,Iron Acton,iron acton,1
+1826731609,Worksop,worksop,1
+1826731849,Little Missenden,little missenden,1
+1826731859,Old Windsor,old windsor,1
+1826731920,Snaresbrook,snaresbrook,1
+1826732260,Finedon,finedon,1
+1826732365,Old Sarum,old sarum,1
+1826732756,Bolsover,bolsover,1
+1826732848,Walsoken,walsoken,1
+1826732935,Drybrook,drybrook,1
+1826732950,Bilton,bilton,1
+1826733057,Woolley,woolley,1
+1826733076,Wilnecote,wilnecote,1
+1826733151,Winkleigh,winkleigh,1
+1826733547,Sutton on Hull,sutton on hull,1
+1826733623,Llanrwst,llanrwst,1
+1826733765,Great Houghton,great houghton,1
+1826733805,Astley,astley,1
+1826733950,Sowerby Bridge,sowerby bridge,1
+1826734227,Whitley,whitley,1
+1826734343,Newchurch,newchurch,1
+1826734412,Innerleithen,innerleithen,1
+1826735275,Shinfield,shinfield,1
+1826735321,Egg Buckland,egg buckland,1
+1826735322,Glusburn,glusburn,1
+1826735432,Stanley,stanley,1
+1826735443,Barnton,barnton,1
+1826735616,Rhosllanerchrugog,rhosllanerchrugog,1
+1826735722,Tidenham,tidenham,1
+1826735727,Tickhill,tickhill,1
+1826735971,River,river,1
+1826736387,Sunderland,sunderland,1
+1826736582,Brierley Hill,brierley hill,1
+1826736667,Northwold,northwold,1
+1826736794,Appleby Magna,appleby magna,1
+1826737126,Gargrave,gargrave,1
+1826737132,Harlow,harlow,1
+1826737367,Merthyr Tudful,merthyr tudful,1
+1826737414,Quedgeley,quedgeley,1
+1826737427,Shepshed,shepshed,1
+1826737459,Acle,acle,1
+1826737467,Wollaston,wollaston,1
+1826738321,Cherry Willingham,cherry willingham,1
+1826738493,Banstead,banstead,1
+1826738595,Coopersale,coopersale,1
+1826738858,Canewdon,canewdon,1
+1826739154,Llanaelhaiarn,llanaelhaiarn,1
+1826739593,Bollington,bollington,1
+1826739882,Llangybi,llangybi,1
+1826739892,Sonning,sonning,1
+1826739985,West Coker,west coker,1
+1826740199,Wickham Market,wickham market,1
+1826740275,Stoke Gifford,stoke gifford,1
+1826740377,Seaton Sluice,seaton sluice,1
+1826740532,Pawlett,pawlett,1
+1826740693,East Hanney,east hanney,1
+1826740990,Fazeley,fazeley,1
+1826741036,Newport,newport,1
+1826741334,Ripple,ripple,1
+1826741418,Wallasey,wallasey,1
+1826741704,Cold Ash,cold ash,1
+1826741935,Bramham,bramham,1
+1826742079,Winchcomb,winchcomb,1
+1826742184,Fort William,fort william,1
+1826742253,Worth,worth,1
+1826742278,Cwmbach,cwmbach,1
+1826742465,Whitley Bay,whitley bay,1
+1826742619,Hanwell,hanwell,1
+1826742644,Bottesford,bottesford,1
+1826742859,Fletching,fletching,1
+1826742978,Knottingley,knottingley,1
+1826743234,Dursley,dursley,1
+1826743491,Sleaford,sleaford,1
+1826743524,Brentwood,brentwood,1
+1826743526,Rawreth,rawreth,1
+1826743792,Kings Norton,kings norton,1
+1826743854,Caerwys,caerwys,1
+1826743888,Earith,earith,1
+1826743896,Brandon,brandon,1
+1826744205,Erdington,erdington,1
+1826744549,Beccles,beccles,1
+1826744560,West Monkton,west monkton,1
+1826744606,Newton Flotman,newton flotman,1
+1826744817,Endon,endon,1
+1826744896,Ashburton,ashburton,1
+1826745308,Grendon Underwood,grendon underwood,1
+1826745372,Staining,staining,1
+1826745428,Brize Norton,brize norton,1
+1826745455,Cuxton,cuxton,1
+1826745611,Braintree,braintree,1
+1826745620,Norton,norton,1
+1826745901,Saint Fagans,saint fagans,1
+1826746031,Horsham Saint Faith,horsham saint faith,1
+1826746108,Stokenham,stokenham,1
+1826746207,Carronshore,carronshore,1
+1826746532,Shanklin,shanklin,1
+1826746556,Hilsea,hilsea,1
+1826746597,Bow Street,bow street,1
+1826746642,Rhuddlan,rhuddlan,1
+1826746762,Winterbourne Dauntsey,winterbourne dauntsey,1
+1826747019,Coleorton,coleorton,1
+1826747115,Cranbrook,cranbrook,1
+1826747131,Westwood,westwood,1
+1826747312,Lixwm,lixwm,1
+1826747453,Budock Water,budock water,1
+1826747483,Billinge,billinge,1
+1826747523,Bagillt,bagillt,1
+1826747620,Clanfield,clanfield,1
+1826747826,Abinger,abinger,1
+1826748208,Woolfardisworthy,woolfardisworthy,1
+1826748213,Baughurst,baughurst,1
+1826748830,Dalton le Dale,dalton le dale,1
+1826748935,Stewartby,stewartby,1
+1826749057,Ballyclare,ballyclare,1
+1826749539,Hersham,hersham,1
+1826749677,Kingsbury,kingsbury,1
+1826749822,Brigham,brigham,1
+1826749949,Hednesford,hednesford,1
+1826750065,Carterton,carterton,1
+1826750123,Llangristiolus,llangristiolus,1
+1826750264,Thorne,thorne,1
+1826750324,Deepcar,deepcar,1
+1826750525,Mexborough,mexborough,1
+1826750637,Mossley,mossley,1
+1826750764,Whitchurch,whitchurch,1
+1826750836,Whitstable,whitstable,1
+1826751100,Thorp Arch,thorp arch,1
+1826751478,Conon Bridge,conon bridge,1
+1826751494,Flitwick,flitwick,1
+1826751659,Cheswick Green,cheswick green,1
+1826751704,Wordsley,wordsley,1
+1826751733,Willenhall,willenhall,1
+1826752019,Ashill,ashill,1
+1826752224,Meppershall,meppershall,1
+1826752342,Groomsport,groomsport,1
+1826752444,Scawby,scawby,1
+1826752476,Wellingborough,wellingborough,1
+1826752852,Blockley,blockley,1
+1826752994,Paulerspury,paulerspury,1
+1826753176,Pinhoe,pinhoe,1
+1826753886,West Horndon,west horndon,1
+1826754074,Coupe Green,coupe green,1
+1826754275,Birtley,birtley,1
+1826754743,Hoo St Werburgh,hoo st werburgh,1
+1826754955,Camrose,camrose,1
+1826755066,Cambuslang,cambuslang,1
+1826755213,Stockton,stockton,1
+1826755285,Newent,newent,1
+1826755330,Brigg,brigg,1
+1826755341,Aberporth,aberporth,1
+1826755520,Pontardulais,pontardulais,1
+1826755530,Wellesbourne Hastings,wellesbourne hastings,1
+1826755548,Balintore,balintore,1
+1826755611,Bishops Tawton,bishops tawton,1
+1826755756,Old Buckenham,old buckenham,1
+1826756002,Denshaw,denshaw,1
+1826756238,Newstead,newstead,1
+1826756277,Alderholt,alderholt,1
+1826756415,Chesterfield,chesterfield,1
+1826756514,Stratford-upon-Avon,stratford upon avon,1
+1826757058,Freckleton,freckleton,1
+1826757142,Forest Town,forest town,1
+1826757251,Kimpton,kimpton,1
+1826757430,Walton-on-the-Naze,walton on the naze,1
+1826757442,Maerdy,maerdy,1
+1826757539,Comrie,comrie,1
+1826757581,Leek Wootton,leek wootton,1
+1826757663,Cwmafan,cwmafan,1
+1826757876,Fordingbridge,fordingbridge,1
+1826757962,Whaplode,whaplode,1
+1826758065,Allhallows,allhallows,1
+1826758480,Waringstown,waringstown,1
+1826758661,Bookham,bookham,1
+1826758730,Westward Ho,westward ho,1
+1826758885,Valley,valley,1
+1826758924,Kings Somborne,kings somborne,1
+1826758972,Tenbury,tenbury,1
+1826759011,Westminster,westminster,1
+1826759089,Thakeham,thakeham,1
+1826759316,Butterwick,butterwick,1
+1826759375,Crumlin,crumlin,1
+1826759551,Raglan,raglan,1
+1826759558,Mount Hawke,mount hawke,1
+1826760347,Guestling,guestling,1
+1826760856,Saint Columb Major,saint columb major,1
+1826760900,Brookwood,brookwood,1
+1826761092,Machynlleth,machynlleth,1
+1826761158,Longdon,longdon,1
+1826761187,Blackrod,blackrod,1
+1826761215,Capel-le-Ferne,capel le ferne,1
+1826761372,Stone,stone,1
+1826761381,Polesworth,polesworth,1
+1826762012,Strathblane,strathblane,1
+1826762303,Ballingry,ballingry,1
+1826762324,Brampton,brampton,1
+1826762658,Brockholes,brockholes,1
+1826762927,Abererch,abererch,1
+1826763299,Coldstream,coldstream,1
+1826763306,Trimsaran,trimsaran,1
+1826763307,Eriswell,eriswell,1
+1826763416,Evesham,evesham,1
+1826763429,Chilcompton,chilcompton,1
+1826763508,Padstow,padstow,1
+1826763595,Henham,henham,1
+1826763624,Ovingham,ovingham,1
+1826763645,Brigstock,brigstock,1
+1826763751,Greenfield,greenfield,1
+1826763861,Marston Green,marston green,1
+1826763937,Rotherham,rotherham,1
+1826764165,Ilchester,ilchester,1
+1826764322,Streethay,streethay,1
+1826764325,Farndon,farndon,1
+1826764348,Cefn Cribwr,cefn cribwr,1
+1826764932,Bethel,bethel,1
+1826764995,Wilburton,wilburton,1
+1826765032,Castlederg,castlederg,1
+1826765305,Coven,coven,1
+1826765513,Harrogate,harrogate,1
+1826765558,Stamford,stamford,1
+1826765595,Binfield Heath,binfield heath,1
+1826765618,Broadwater,broadwater,1
+1826765672,Chatham,chatham,1
+1826765773,Seasalter,seasalter,1
+1826765912,Kilsyth,kilsyth,1
+1826766054,Axminster,axminster,1
+1826766062,East Woodhay,east woodhay,1
+1826766350,Crossford,crossford,1
+1826766399,Wick,wick,1
+1826766536,Wrentham,wrentham,1
+1826766548,Aldershot,aldershot,1
+1826766785,West Walton,west walton,1
+1826766844,Kensworth,kensworth,1
+1826766900,Bethersden,bethersden,1
+1826767635,Burslem,burslem,1
+1826767649,Burtonwood,burtonwood,1
+1826767688,Coxhoe,coxhoe,1
+1826767858,Easebourne,easebourne,1
+1826768153,Bursledon,bursledon,1
+1826768169,Ludham,ludham,1
+1826768214,Highclere,highclere,1
+1826768266,Chigwell,chigwell,1
+1826768392,Southfleet,southfleet,1
+1826768457,Bordon,bordon,1
+1826768782,Meopham,meopham,1
+1826768930,Currie,currie,1
+1826769102,Maesycwmmer,maesycwmmer,1
+1826769225,Llandrindod Wells,llandrindod wells,1
+1826769637,Hampstead,hampstead,1
+1826769723,Kelvedon Hatch,kelvedon hatch,1
+1826769743,Bournemouth,bournemouth,1
+1826770183,Wisbech Saint Mary,wisbech saint mary,1
+1826770665,Kemnay,kemnay,1
+1826771062,Dolbenmaen,dolbenmaen,1
+1826771087,Feltwell,feltwell,1
+1826771105,Bedford,bedford,1
+1826771408,Wadebridge,wadebridge,1
+1826771700,Bere Regis,bere regis,1
+1826771749,Wingham,wingham,1
+1826771792,Great Hanwood,great hanwood,1
+1826771802,Branston,branston,1
+1826771813,Broad Haven,broad haven,1
+1826772255,Long Houghton,long houghton,1
+1826772381,Redding,redding,1
+1826772503,Harewood,harewood,1
+1826772778,North Ferriby,north ferriby,1
+1826772887,Oldbury,oldbury,1
+1826773006,Dersingham,dersingham,1
+1826773138,Bellsbank,bellsbank,1
+1826773379,Quarrington,quarrington,1
+1826773530,Kirkby,kirkby,1
+1826773845,Tydd Saint Giles,tydd saint giles,1
+1826774067,Salford Priors,salford priors,1
+1826774327,Plumpton,plumpton,1
+1826774397,Lewes,lewes,1
+1826774617,Burnham-on-Sea,burnham on sea,1
+1826774944,Halton,halton,1
+1826775081,Ferring,ferring,1
+1826775154,Fence Houses,fence houses,1
+1826775307,Newbold,newbold,1
+1826775605,Ellington,ellington,1
+1826775634,March,march,1
+1826775712,Brading,brading,1
+1826775742,Tickton,tickton,1
+1826775771,Saint Helens,saint helens,1
+1826775954,Wonersh,wonersh,1
+1826775971,Pilling,pilling,1
+1826776055,Masham,masham,1
+1826776437,West Wellow,west wellow,1
+1826776889,Stoneyburn,stoneyburn,1
+1826776950,Dalbeattie,dalbeattie,1
+1826777017,Gamesley,gamesley,1
+1826777307,Pollokshaws,pollokshaws,1
+1826777809,Bridge of Allan,bridge of allan,1
+1826778008,Dinnington,dinnington,1
+1826778031,Martlesham Heath,martlesham heath,1
+1826778138,Newburgh,newburgh,1
+1826778161,Eye,eye,1
+1826778403,Sible Hedingham,sible hedingham,1
+1826778468,Probus,probus,1
+1826778633,Douglas,douglas,1
+1826778722,Woodbridge,woodbridge,1
+1826778917,Clackmannan,clackmannan,1
+1826779122,Winchburgh,winchburgh,1
+1826779157,West Bridgford,west bridgford,1
+1826779233,Handcross,handcross,1
+1826779891,Easington,easington,1
+1826779901,Dymchurch,dymchurch,1
+1826780016,Lydd,lydd,1
+1826780598,Robin Hood,robin hood,1
+1826780602,Barrowby,barrowby,1
+1826780785,Barford,barford,1
+1826780846,Hook Norton,hook norton,1
+1826781308,Ash Green,ash green,1
+1826781600,Briton Ferry,briton ferry,1
+1826781621,Baldwin's Gate,baldwin s gate,1
+1826781713,Wythenshawe,wythenshawe,1
+1826781796,Hilperton,hilperton,1
+1826782144,Woolton,woolton,1
+1826782283,Honeybourne,honeybourne,1
+1826782368,Walton,walton,1
+1826782439,Market Warsop,market warsop,1
+1826782534,South Elmsall,south elmsall,1
+1826782558,Wythall,wythall,1
+1826782897,Duffield,duffield,1
+1826783406,Otterbourne,otterbourne,1
+1826784348,Coleford,coleford,1
+1826785294,Blidworth,blidworth,1
+1826785355,Bethesda,bethesda,1
+1826785798,Penllergaer,penllergaer,1
+1826785907,Seafield,seafield,1
+1826786128,Caerhûn,caerhun,1
+1826786236,South Cerney,south cerney,1
+1826786448,Pontyberem,pontyberem,1
+1826786451,Avoch,avoch,1
+1826786755,Sevenoaks Weald,sevenoaks weald,1
+1826786768,Hennock,hennock,1
+1826786828,Kinloss,kinloss,1
+1826786921,Sutton Bridge,sutton bridge,1
+1826786949,Ullapool,ullapool,1
+1826786967,Sheering,sheering,1
+1826787169,Thundridge,thundridge,1
+1826787202,Burton,burton,1
+1826787259,Althorne,althorne,1
+1826787395,Sutton Benger,sutton benger,1
+1826787936,Sittingbourne,sittingbourne,1
+1826787990,Glossop,glossop,1
+1826788385,Kingswood,kingswood,1
+1826788895,Shireoaks,shireoaks,1
+1826788915,Llechryd,llechryd,1
+1826789066,Hunmanby,hunmanby,1
+1826789268,Llwynypia,llwynypia,1
+1826789311,Histon,histon,1
+1826789416,Lochgilphead,lochgilphead,1
+1826789445,Haddenham,haddenham,1
+1826789501,Shoreham,shoreham,1
+1826789510,Steeton,steeton,1
+1826789581,Disley,disley,1
+1826789639,Samlesbury,samlesbury,1
+1826789692,Silverdale,silverdale,1
+1826789719,Fenton,fenton,1
+1826789783,Cheddington,cheddington,1
+1826789857,Geddington,geddington,1
+1826789902,Ashington,ashington,1
+1826790025,Minehead,minehead,1
+1826790383,Ballymoney,ballymoney,1
+1826790460,Wem,wem,1
+1826790764,Harpole,harpole,1
+1826791051,Trefonen,trefonen,1
+1826791090,Crumlin,crumlin,1
+1826791258,Loggerheads,loggerheads,1
+1826791410,Leeswood,leeswood,1
+1826791603,Greatham,greatham,1
+1826791679,New Alresford,new alresford,1
+1826791986,Bagworth,bagworth,1
+1826792017,Rotherfield Peppard,rotherfield peppard,1
+1826792093,Carway,carway,1
+1826792138,Maybole,maybole,1
+1826792233,Tarves,tarves,1
+1826792346,Challock,challock,1
+1826792931,Windsor,windsor,1
+1826792993,Micheldever,micheldever,1
+1826793320,Acton,acton,1
+1826793384,Romsey,romsey,1
+1826794193,Bamber Bridge,bamber bridge,1
+1826794522,Brightlingsea,brightlingsea,1
+1826794690,Worsborough,worsborough,1
+1826794718,Waenfawr,waenfawr,1
+1826794750,Bradwell,bradwell,1
+1826794773,Slamannan,slamannan,1
+1826794956,Daventry,daventry,1
+1826795081,Gregson Lane,gregson lane,1
+1826795215,Netherlee,netherlee,1
+1826795318,Saint Merryn,saint merryn,1
+1826795612,Easton on the Hill,easton on the hill,1
+1826795824,Whitchurch,whitchurch,1
+1826795946,Kinglassie,kinglassie,1
+1826795957,Normanton,normanton,1
+1826796020,Norton Canes,norton canes,1
+1826796266,Hollywood,hollywood,1
+1826796900,Huntingdon,huntingdon,1
+1826797167,Ilsington,ilsington,1
+1826797417,Alsager,alsager,1
+1826797638,Northrepps,northrepps,1
+1826797688,Horning,horning,1
+1826797732,Flitton,flitton,1
+1826797798,Bathford,bathford,1
+1826797869,Borth,borth,1
+1826798518,Maltby,maltby,1
+1826798581,Ruardean Woodside,ruardean woodside,1
+1826798687,Swanley,swanley,1
+1826798944,Hellaby,hellaby,1
+1826799363,Carnoustie,carnoustie,1
+1826799578,Stoke-on-Trent,stoke on trent,1
+1826799961,Dungannon,dungannon,1
+1826799976,Water Orton,water orton,1
+1826800232,Plaistow,plaistow,1
+1826800452,Arreton,arreton,1
+1826800454,Biggleswade,biggleswade,1
+1826800966,Garsington,garsington,1
+1826800980,Culford,culford,1
+1826801130,Rochford,rochford,1
+1826801251,Linton,linton,1
+1826801312,Redbourn,redbourn,1
+1826801533,Winnersh,winnersh,1
+1826801547,Dumfries,dumfries,1
+1826801551,Hatfield Peverel,hatfield peverel,1
+1826801570,Ratby,ratby,1
+1826801598,Highbridge,highbridge,1
+1826801668,Hatch End,hatch end,1
+1826801746,Sutterton,sutterton,1
+1826802473,Cullercoats,cullercoats,1
+1826802533,Blackburn,blackburn,1
+1826803388,Broadway,broadway,1
+1826803495,Lichfield,lichfield,1
+1826803700,Hindhead,hindhead,1
+1826803857,Thatcham,thatcham,1
+1826804159,Kilnhurst,kilnhurst,1
+1826804602,Dickens Heath,dickens heath,1
+1826804699,West Bergholt,west bergholt,1
+1826804762,Staplehurst,staplehurst,1
+1826804881,Eastington,eastington,1
+1826804931,Heads Nook,heads nook,1
+1826805412,Stanley,stanley,1
+1826805586,Quorndon,quorndon,1
+1826805664,Ballynahinch,ballynahinch,1
+1826805676,Everton,everton,1
+1826805695,Bare,bare,1
+1826806021,Marston,marston,1
+1826806363,Whitby,whitby,1
+1826806502,Tonbridge,tonbridge,1
+1826806664,Filey,filey,1
+1826806747,Northampton,northampton,1
+1826807244,Plympton,plympton,1
+1826807360,Halewood,halewood,1
+1826807564,Lynton,lynton,1
+1826807636,Slough,slough,1
+1826807848,Garswood,garswood,1
+1826808024,Llangynwyd,llangynwyd,1
+1826808043,Ramsey,ramsey,1
+1826808185,Aston Clinton,aston clinton,1
+1826808237,Margate,margate,1
+1826808602,Herne,herne,1
+1826808810,Stourport-on-Severn,stourport on severn,1
+1826809413,Woodbury,woodbury,1
+1826809423,Lane End,lane end,1
+1826809506,Levens,levens,1
+1826809657,Belgrave,belgrave,1
+1826810179,Pontyates,pontyates,1
+1826810259,Denny,denny,1
+1826810296,Walbottle,walbottle,1
+1826810678,Croxley Green,croxley green,1
+1826810811,Darwen,darwen,1
+1826810943,Bean,bean,1
+1826811021,Tarbert,tarbert,1
+1826811134,Brampton en le Morthen,brampton en le morthen,1
+1826811274,Burntisland,burntisland,1
+1826811313,North Benfleet,north benfleet,1
+1826811337,Saxilby,saxilby,1
+1826811438,Yetminster,yetminster,1
+1826811520,Caterham,caterham,1
+1826811696,Kilsby,kilsby,1
+1826811709,Framlingham,framlingham,1
+1826811732,Eyemouth,eyemouth,1
+1826811893,Wrecclesham,wrecclesham,1
+1826812018,Albury,albury,1
+1826812129,Benwick,benwick,1
+1826812271,Bexley,bexley,1
+1826812300,Leatherhead,leatherhead,1
+1826812365,Hendred,hendred,1
+1826812445,Peterhead,peterhead,1
+1826812538,Burgh Castle,burgh castle,1
+1826812559,Fawley,fawley,1
+1826812697,Dean,dean,1
+1826812709,Totteridge,totteridge,1
+1826812983,Sonning Common,sonning common,1
+1826813082,Hornchurch,hornchurch,1
+1826813276,Menstrie,menstrie,1
+1826813405,Corby Glen,corby glen,1
+1826813563,Stranraer,stranraer,1
+1826813913,Burghclere,burghclere,1
+1826814042,Lifton,lifton,1
+1826814059,West Chiltington,west chiltington,1
+1826814185,Constantine,constantine,1
+1826814978,Bankfoot,bankfoot,1
+1826815022,Burnhope,burnhope,1
+1826815116,Fen Stanton,fen stanton,1
+1826815349,Thorpe,thorpe,1
+1826815474,Sevenoaks,sevenoaks,1
+1826815718,Welshpool,welshpool,1
+1826815794,Great Amwell,great amwell,1
+1826815883,Moor Park,moor park,1
+1826816015,South Hykeham,south hykeham,1
+1826816233,Hetton le Hole,hetton le hole,1
+1826816300,Watlington,watlington,1
+1826816584,Wootton,wootton,1
+1826816604,Almondbank,almondbank,1
+1826816675,Hemingford Grey,hemingford grey,1
+1826816714,Lightwater,lightwater,1
+1826816760,Harlech,harlech,1
+1826816762,Boroughbridge,boroughbridge,1
+1826816924,Kingswood,kingswood,1
+1826817524,Teynham,teynham,1
+1826817641,Caister-on-Sea,caister on sea,1
+1826817883,Scunthorpe,scunthorpe,1
+1826818026,Belle Vue,belle vue,1
+1826818117,Nelson,nelson,1
+1826818131,Heathfield,heathfield,1
+1826818664,Barnham,barnham,1
+1826818723,Alexandria,alexandria,1
+1826818780,Willingham,willingham,1
+1826819184,Audley,audley,1
+1826819323,Hockliffe,hockliffe,1
+1826819437,Reddingmuirhead,reddingmuirhead,1
+1826819726,Clare,clare,1
+1826819985,Great Dalby,great dalby,1
+1826820058,Wootton Bridge,wootton bridge,1
+1826820311,Rostrevor,rostrevor,1
+1826821223,Ebbw Vale,ebbw vale,1
+1826821498,Duckmanton,duckmanton,1
+1826821581,Camlough,camlough,1
+1826821796,Perton,perton,1
+1826821997,Honley,honley,1
+1826822160,Lymm,lymm,1
+1826822165,Carleton,carleton,1
+1826822253,Bruton,bruton,1
+1826822271,Ormiston,ormiston,1
+1826822689,Port Sunlight,port sunlight,1
+1826822690,Haddenham,haddenham,1
+1826822733,Drakes Broughton,drakes broughton,1
+1826822904,South Wingfield,south wingfield,1
+1826823710,Kingsnorth,kingsnorth,1
+1826823965,Brierley,brierley,1
+1826824090,West Wycombe,west wycombe,1
+1826824413,North Baddesley,north baddesley,1
+1826824641,Holbrook,holbrook,1
+1826824753,Hindley,hindley,1
+1826824895,Minety,minety,1
+1826825184,Corbridge,corbridge,1
+1826825428,Chagford,chagford,1
+1826825569,Ironbridge,ironbridge,1
+1826825678,Lisbellaw,lisbellaw,1
+1826825775,Kilmaurs,kilmaurs,1
+1826825779,Heanor,heanor,1
+1826825794,Hartlebury,hartlebury,1
+1826826048,Christleton,christleton,1
+1826826085,Woodnesborough,woodnesborough,1
+1826826087,Elmton,elmton,1
+1826826096,Langstone,langstone,1
+1826826241,Dudley,dudley,1
+1826826336,Radcliffe on Trent,radcliffe on trent,1
+1826826337,Tidworth,tidworth,1
+1826826400,Norton-on-Derwent,norton on derwent,1
+1826826582,Castle Donnington,castle donnington,1
+1826826688,Netherseal,netherseal,1
+1826827005,Warbleton,warbleton,1
+1826827095,Sutton,sutton,1
+1826827333,Ryall,ryall,1
+1826827600,Trimdon,trimdon,1
+1826827651,Eythorne,eythorne,1
+1826827675,Castleford,castleford,1
+1826827708,Darley,darley,1
+1826827717,Blindley Heath,blindley heath,1
+1826827848,Great Ayton,great ayton,1
+1826827915,Twickenham,twickenham,1
+1826827953,Holybourne,holybourne,1
+1826827994,Bisley,bisley,1
+1826828208,Craven Arms,craven arms,1
+1826828787,Dyffryn Ardudwy,dyffryn ardudwy,1
+1826828840,Laleham,laleham,1
+1826829966,Aberchirder,aberchirder,1
+1826830073,Troedyraur,troedyraur,1
+1826830249,Hartpury,hartpury,1
+1826830459,Pucklechurch,pucklechurch,1
+1826830469,Penywaun,penywaun,1
+1826830845,Walmer,walmer,1
+1826830987,Rhôs-on-Sea,rhos on sea,1
+1826831065,Aboyne,aboyne,1
+1826831166,Beetham,beetham,1
+1826831291,Runwell,runwell,1
+1826831314,Llansantffread,llansantffread,1
+1826831977,Tilney Saint Lawrence,tilney saint lawrence,1
+1826832157,Godshill,godshill,1
+1826832202,Newport-On-Tay,newport on tay,1
+1826832304,Docking,docking,1
+1826832575,Weston,weston,1
+1826832693,Whalley,whalley,1
+1826833212,Aberlady,aberlady,1
+1826833714,Swalwell,swalwell,1
+1826833780,Coleford,coleford,1
+1826833915,Westhill,westhill,1
+1826834014,Lanner,lanner,1
+1826834481,Sandhurst,sandhurst,1
+1826834529,Church Warsop,church warsop,1
+1826834582,Bromyard,bromyard,1
+1826834854,Cottenham,cottenham,1
+1826834967,Farndon,farndon,1
+1826835107,Broadwindsor,broadwindsor,1
+1826835662,Freiston,freiston,1
+1826835680,Alston,alston,1
+1826835720,Patcham,patcham,1
+1826835871,Mirfield,mirfield,1
+1826835950,Larne,larne,1
+1826836107,Llandysilio,llandysilio,1
+1826836144,Cofton Hackett,cofton hackett,1
+1826836224,Moodiesburn,moodiesburn,1
+1826836462,Glasgow,glasgow,1
+1826836462,Glasgow,glass cow,6
+1826836917,Thundersley,thundersley,1
+1826837081,Annan,annan,1
+1826837093,Sellindge,sellindge,1
+1826838029,Tain,tain,1
+1826838254,Bicknacre,bicknacre,1
+1826838754,Rathfriland,rathfriland,1
+1826838803,Chilworth,chilworth,1
+1826838864,Rogate,rogate,1
+1826838996,Timperley,timperley,1
+1826839302,Penrith,penrith,1
+1826839308,Ashton Keynes,ashton keynes,1
+1826839407,Newbiggin-by-the-Sea,newbiggin by the sea,1
+1826839539,Walberton,walberton,1
+1826839757,Hartshorne,hartshorne,1
+1826839813,South Bank,south bank,1
+1826839971,Wheatley Hill,wheatley hill,1
+1826839979,Tollerton,tollerton,1
+1826840078,Wood Street Village,wood street village,1
+1826840272,Gayton,gayton,1
+1826840312,Street,street,1
+1826840315,Long Ditton,long ditton,1
+1826840641,Longton,longton,1
+1826840707,Brayton,brayton,1
+1826840903,Exeter,exeter,1
+1826840948,Nazeing,nazeing,1
+1826841065,New Brighton,new brighton,1
+1826841088,Bradley,bradley,1
+1826841235,Henley in Arden,henley in arden,1
+1826842541,Pontypridd,pontypridd,1
+1826842559,Cayton,cayton,1
+1826843051,Hildenborough,hildenborough,1
+1826843295,Leyton,leyton,1
+1826843365,Gobowen,gobowen,1
+1826843496,Torpoint,torpoint,1
+1826843518,Shipdham,shipdham,1
+1826843519,Carlin How,carlin how,1
+1826843663,Strabane,strabane,1
+1826843688,Carlisle,carlisle,1
+1826843949,Mynydd Isa,mynydd isa,1
+1826844204,Brompton,brompton,1
+1826844583,Saint Kew,saint kew,1
+1826844690,Hatfield,hatfield,1
+1826844746,Invergordon,invergordon,1
+1826844924,Wandsworth,wandsworth,1
+1826844928,Harden,harden,1
+1826845173,Drumoak,drumoak,1
+1826845686,Rothienorman,rothienorman,1
+1826845701,Streatham,streatham,1
+1826846155,Elvington,elvington,1
+1826846225,Wigston Magna,wigston magna,1
+1826846311,Stotfold,stotfold,1
+1826846869,Carryduff,carryduff,1
+1826847150,Kemsing,kemsing,1
+1826847252,Stratfield Mortimer,stratfield mortimer,1
+1826847322,Bransgore,bransgore,1
+1826847351,Exminster,exminster,1
+1826847712,Silloth,silloth,1
+1826847818,Sompting,sompting,1
+1826848058,East Hanningfield,east hanningfield,1
+1826848098,Stanford le Hope,stanford le hope,1
+1826848118,Bobbing,bobbing,1
+1826848625,Shalford,shalford,1
+1826849389,Knockholt,knockholt,1
+1826849437,Comber,comber,1
+1826849590,Walpole,walpole,1
+1826850012,Liphook,liphook,1
+1826850069,Radlett,radlett,1
+1826850129,Bodmin,bodmin,1
+1826850305,Leigh-on-Sea,leigh on sea,1
+1826850417,Camelford,camelford,1
+1826850662,Stamperland,stamperland,1
+1826850681,Killyleagh,killyleagh,1
+1826850787,Badsey,badsey,1
+1826850985,Mytchett,mytchett,1
+1826850997,Holbrook,holbrook,1
+1826851075,Stonehouse,stonehouse,1
+1826851290,Lampeter,lampeter,1
+1826851300,Liskeard,liskeard,1
+1826851547,Cresswell,cresswell,1
+1826851652,Horam,horam,1
+1826852007,Newton St Loe,newton st loe,1
+1826852510,Launton,launton,1
+1826852529,Newington,newington,1
+1826852866,Molesey,molesey,1
+1826853029,Linwood,linwood,1
+1826853039,Colwall,colwall,1
+1826853227,South Hiendley,south hiendley,1
+1826853483,Kilbirnie,kilbirnie,1
+1826853512,Five Oak Green,five oak green,1
+1826853815,Grampound Road,grampound road,1
+1826853866,Littleborough,littleborough,1
+1826854235,Grimsargh,grimsargh,1
+1826854305,Fairford,fairford,1
+1826854355,Motherwell,motherwell,1
+1826854408,Polbeth,polbeth,1
+1826854532,Crossgar,crossgar,1
+1826854557,Saint Buryan,saint buryan,1
+1826854793,Worcester Park,worcester park,1
+1826854867,Crockenhill,crockenhill,1
+1826855008,Hemsby,hemsby,1
+1826855138,Berrington,berrington,1
+1826855164,Spaxton,spaxton,1
+1826855481,Bunbury,bunbury,1
+1826855589,Pen-y-fai,pen y fai,1
+1826855786,Lower Broadheath,lower broadheath,1
+1826856250,Wyberton,wyberton,1
+1826856462,Sherburn,sherburn,1
+1826856561,Retford,retford,1
+1826857178,Kenilworth,kenilworth,1
+1826857404,Penrhyndeudreath,penrhyndeudreath,1
+1826857629,Twechar,twechar,1
+1826857696,Macduff,macduff,1
+1826857740,Polegate,polegate,1
+1826857997,Cross Gates,cross gates,1
+1826858057,Millport,millport,1
+1826858184,Hopton,hopton,1
+1826858194,Westham,westham,1
+1826858525,Settle,settle,1
+1826858601,Bexleyheath,bexleyheath,1
+1826858664,Brinsworth,brinsworth,1
+1826859422,Rothwell,rothwell,1
+1826860287,Lochgelly,lochgelly,1
+1826860335,Stokenchurch,stokenchurch,1
+1826860584,Downpatrick,downpatrick,1
+1826860971,Monkton Heathfield,monkton heathfield,1
+1826861021,Chingford,chingford,1
+1826861062,Kirkcudbright,kirkcudbright,1
+1826861212,Saint Minver,saint minver,1
+1826861213,Tonna,tonna,1
+1826861277,Darley Dale,darley dale,1
+1826861562,Ducklington,ducklington,1
+1826862013,Latchingdon and Snoreham,latchingdon and snoreham,1
+1826862183,Bryn,bryn,1
+1826862515,Cumbernauld,cumbernauld,1
+1826863244,Selkirk,selkirk,1
+1826863309,Doveridge,doveridge,1
+1826863533,Guildford,guildford,1
+1826863614,Boughton Monchelsea,boughton monchelsea,1
+1826863645,Chapel Saint Leonards,chapel saint leonards,1
+1826863985,Berkhampstead,berkhampstead,1
+1826864100,East Brent,east brent,1
+1826864376,Bradworthy,bradworthy,1
+1826864377,Greenock,greenock,1
+1826864868,Long Bennington,long bennington,1
+1826865049,Southwick,southwick,1
+1826865116,Cove Bay,cove bay,1
+1826865233,Ault Hucknall,ault hucknall,1
+1826865415,Bargoed,bargoed,1
+1826865640,Motcombe,motcombe,1
+1826865824,Dunsfold,dunsfold,1
+1826865876,Ironville,ironville,1
+1826865974,Montrose,montrose,1
+1826866117,Escrick,escrick,1
+1826866182,Newton Ferrers,newton ferrers,1
+1826866609,Dalry,dalry,1
+1826866626,Thorrington,thorrington,1
+1826866856,Moreton,moreton,1
+1826867039,Houghton on the Hill,houghton on the hill,1
+1826867052,Newlyn,newlyn,1
+1826867099,Wittering,wittering,1
+1826867256,Buxton,buxton,1
+1826867726,Bramley,bramley,1
+1826867819,Coedpoeth,coedpoeth,1
+1826867983,Burgess Hill,burgess hill,1
+1826868013,Peacehaven,peacehaven,1
+1826868049,Welton,welton,1
+1826868173,Kirton in Lindsey,kirton in lindsey,1
+1826868550,Salford,salford,1
+1826868569,Herstmonceux,herstmonceux,1
+1826868832,Kirkliston,kirkliston,1
+1826868989,Tonyrefail,tonyrefail,1
+1826869043,Reading,reading,1
+1826869589,Cynwyl Elfed,cynwyl elfed,1
+1826869668,Culross,culross,1
+1826869753,Abram,abram,1
+1826870040,Baston,baston,1
+1826870758,Cheshunt,cheshunt,1
+1826870833,Cuffley,cuffley,1
+1826871116,Elmswell,elmswell,1
+1826871291,Winterton-on-Sea,winterton on sea,1
+1826871345,Ulleskelf,ulleskelf,1
+1826871489,Bacton,bacton,1
+1826871497,Pheasey,pheasey,1
+1826871537,Hawkinge,hawkinge,1
+1826871967,Davenham,davenham,1
+1826872529,Edith Weston,edith weston,1
+1826872959,Louth,louth,1
+1826872961,Throckley,throckley,1
+1826873432,Horden,horden,1
+1826873441,Hilldale,hilldale,1
+1826873472,Seighford,seighford,1
+1826873551,Creech Saint Michael,creech saint michael,1
+1826873593,Bognor Regis,bognor regis,1
+1826873650,Cleator Moor,cleator moor,1
+1826874181,Jump,jump,1
+1826874237,Ardrossan,ardrossan,1
+1826874548,Giffnock,giffnock,1
+1826874877,Guide Bridge,guide bridge,1
+1826874924,Earls Colne,earls colne,1
+1826874969,Quadring,quadring,1
+1826875300,Richmond,richmond,1
+1826875571,Stallingborough,stallingborough,1
+1826875983,Mill Hill,mill hill,1
+1826876022,Larkfield,larkfield,1
+1826876041,Fordham,fordham,1
+1826876067,Carnforth,carnforth,1
+1826876189,Broomfield,broomfield,1
+1826876428,Aintree,aintree,1
+1826876670,Chelmsford,chelmsford,1
+1826876835,Bishops Cleeve,bishops cleeve,1
+1826876841,Holt,holt,1
+1826877417,Perivale,perivale,1
+1826877782,Fulham,fulham,1
+1826877936,Burley,burley,1
+1826878017,Cropwell Bishop,cropwell bishop,1
+1826878278,Thurlby,thurlby,1
+1826878333,Wokingham,wokingham,1
+1826878501,Gosforth,gosforth,1
+1826878649,Navenby,navenby,1
+1826878671,Edwinstowe,edwinstowe,1
+1826878705,Bletchley,bletchley,1
+1826878815,Sheriff Hill,sheriff hill,1
+1826878823,White Waltham,white waltham,1
+1826879122,Woodhall Spa,woodhall spa,1
+1826879412,Ponthir,ponthir,1
+1826879452,Abergwynfi,abergwynfi,1
+1826879760,Marnhull,marnhull,1
+1826879838,Poyle,poyle,1
+1826879906,Broughton,broughton,1
+1826879983,Wrecsam,wrecsam,1
+1826879996,Stourbridge,stourbridge,1
+1826880341,Harrow Weald,harrow weald,1
+1826880371,Carfin,carfin,1
+1826880618,Distington,distington,1
+1826880661,Pembrey,pembrey,1
+1826880896,Bracknell,bracknell,1
+1826881077,Pontlottyn,pontlottyn,1
+1826881333,West Kingsdown,west kingsdown,1
+1826881376,Bathgate,bathgate,1
+1826881594,Wybunbury,wybunbury,1
+1826881643,Acomb,acomb,1
+1826881662,Lhanbryd,lhanbryd,1
+1826881710,Port Bannatyne,port bannatyne,1
+1826881740,Hartfield,hartfield,1
+1826881859,Thorpe Hesley,thorpe hesley,1
+1826881880,Whittington,whittington,1
+1826881978,Rickmansworth,rickmansworth,1
+1826882050,Linton,linton,1
+1826882560,Finchley,finchley,1
+1826882737,Cubert,cubert,1
+1826882885,Old Leake,old leake,1
+1826882980,Clayton le Moors,clayton le moors,1
+1826883084,Wilmslow,wilmslow,1
+1826883087,Menai Bridge,menai bridge,1
+1826883211,Beachley,beachley,1
+1826883308,Cardigan,cardigan,1
+1826884036,Churchill,churchill,1
+1826884124,Bearsted,bearsted,1
+1826884455,Yardley Gobion,yardley gobion,1
+1826884674,Llanwnda,llanwnda,1
+1826884719,Boxgrove,boxgrove,1
+1826884941,Silkstone,silkstone,1
+1826885065,Downham Market,downham market,1
+1826885697,Wouldham,wouldham,1
+1826885979,Wraysbury,wraysbury,1
+1826886004,Earlston,earlston,1
+1826886199,Llanrug,llanrug,1
+1826886413,Leadgate,leadgate,1
+1826886585,Wentworth,wentworth,1
+1826886916,Nunthorpe,nunthorpe,1
+1826887313,Englefield Green,englefield green,1
+1826888347,Steeple Bumpstead,steeple bumpstead,1
+1826888408,Whickham,whickham,1
+1826888487,Snodland,snodland,1
+1826888572,Bredon,bredon,1
+1826888621,Gainsborough,gainsborough,1
+1826889010,Milnthorpe,milnthorpe,1
+1826889162,Airdrie,airdrie,1
+1826889606,Bugbrooke,bugbrooke,1
+1826889783,Staines-upon-Thames,staines upon thames,1
+1826889791,Stamfordham,stamfordham,1
+1826889795,Cardross,cardross,1
+1826890072,Clifton,clifton,1
+1826890297,West Derby,west derby,1
+1826890493,Bleddfa,bleddfa,1
+1826890799,Tewkesbury,tewkesbury,1
+1826890868,Fairfield,fairfield,1
+1826891094,Binfield,binfield,1
+1826891277,Lower Shelton,lower shelton,1
+1826891290,Walsall Wood,walsall wood,1
+1826891292,Meifod,meifod,1
+1826891374,Mullion,mullion,1
+1826891568,Ferryhill,ferryhill,1
+1826891667,Rhodes,rhodes,1
+1826891706,Great Bromley,great bromley,1
+1826891835,Lynemouth,lynemouth,1
+1826891949,Ware,ware,1
+1826892138,Goxhill,goxhill,1
+1826892783,Skelton,skelton,1
+1826892843,Horton Heath,horton heath,1
+1826892880,Madeley,madeley,1
+1826892994,Tongham,tongham,1
+1826893250,Landore,landore,1
+1826893325,Bletchingley,bletchingley,1
+1826893327,Scholes,scholes,1
+1826893541,New Buildings,new buildings,1
+1826893817,Hythe,hythe,1
+1826894099,Pickering,pickering,1
+1826894167,Blaina,blaina,1
+1826894250,Starcross,starcross,1
+1826894267,Rothes,rothes,1
+1826894332,Corton,corton,1
+1826895574,Mellor,mellor,1
+1826895609,Milltimber,milltimber,1
+1826895623,Calderbank,calderbank,1
+1826895711,Ferrybridge,ferrybridge,1
+1826895941,Higham Ferrers,higham ferrers,1
+1826896132,Newmilns,newmilns,1
+1826896220,Swanage,swanage,1
+1826896340,Lerwick,lerwick,1
+1826896818,High Ongar,high ongar,1
+1826897323,Flixborough,flixborough,1
+1826897463,Lanchester,lanchester,1
+1826897505,Marske-by-the-Sea,marske by the sea,1
+1826898006,Crossways,crossways,1
+1826898389,Auchterarder,auchterarder,1
+1826898576,Sturminster Marshall,sturminster marshall,1
+1826898578,Studley,studley,1
+1826898591,Shotley Gate,shotley gate,1
+1826898612,Over,over,1
+1826899099,Holt,holt,1
+1826899284,Wroxall,wroxall,1
+1826899292,Kirkham,kirkham,1
+1826899717,Bartestree,bartestree,1
+1826899809,Crosby,crosby,1
+1826900000,Barking and Dagenham,barking and dagenham,1
+1826900001,Brent,brent,1
+1826900002,Camden,camden,1
+1826900003,Greenwich,greenwich,1
+1826900004,Hammersmith and Fulham,hammersmith and fulham,1
+1826900005,Haringey,haringey,1
+1826900006,Havering,havering,1
+1826900007,Kensington and Chelsea,kensington and chelsea,1
+1826900008,Redbridge,redbridge,1
+1826900009,Richmond upon Thames,richmond upon thames,1
+1826900010,Tower Hamlets,tower hamlets,1
+1826900011,Waltham Forest,waltham forest,1
+1826900012,Scholar Green,scholar green,1
+1826900014,Newham,newham,1
+1826900015,Merton,merton,1
+1826900136,Broxbourne,broxbourne,1
+1826900347,Denmead,denmead,1
+1826901044,Chipping,chipping,1
+1826901176,Holmes Chapel,holmes chapel,1
+1826901343,Caton,caton,1
+1826901362,Amlwch,amlwch,1
+1826902223,Wigan,wigan,1
+1826902493,Potterspury,potterspury,1
+1826902664,Wood Green,wood green,1
+1826902676,Byram,byram,1
+1826902779,Coningsby,coningsby,1
+1826902908,Great Bardfield,great bardfield,1
+1826903011,Cowley,cowley,1
+1826903160,Frinton-on-Sea,frinton on sea,1
+1826903198,Chicksands,chicksands,1
+1826903268,Dundonald,dundonald,1
+1826903505,Great Coates,great coates,1
+1826903762,Newmains,newmains,1
+1826903991,Polmont,polmont,1
+1826904026,Potter Heigham,potter heigham,1
+1826904412,Writtle,writtle,1
+1826904414,Black Notley,black notley,1
+1826904480,Laceby,laceby,1
+1826904503,Tattershall,tattershall,1
+1826904573,Frant,frant,1
+1826904946,Orsett,orsett,1
+1826904970,Roade,roade,1
+1826905007,Whitley,whitley,1
+1826905228,Cross Hills,cross hills,1
+1826905230,Church Stoke,church stoke,1
+1826905653,Lyndhurst,lyndhurst,1
+1826905810,Donington,donington,1
+1826905865,Edmonton,edmonton,1
+1826905880,Praze an Beeble,praze an beeble,1
+1826906012,Kegworth,kegworth,1
+1826906023,Woore,woore,1
+1826906124,Swingfield,swingfield,1
+1826906317,Sandford,sandford,1
+1826906332,Headbourne Worthy,headbourne worthy,1
+1826906333,Rossington,rossington,1
+1826906548,Tansley,tansley,1
+1826906606,Alcester,alcester,1
+1826906824,Newborough,newborough,1
+1826907017,Pattingham,pattingham,1
+1826907401,Eynsham,eynsham,1
+1826907601,Kilkeel,kilkeel,1
+1826907758,Stocksbridge,stocksbridge,1
+1826907783,Hunnington,hunnington,1
+1826907845,Denholme,denholme,1
+1826908020,Bishopston,bishopston,1
+1826908062,Titchfield,titchfield,1
+1826908469,South Molton,south molton,1
+1826908608,Saighton,saighton,1
+1826908637,Jacobs Well,jacobs well,1
+1826908746,Martham,martham,1
+1826908848,Greens Norton,greens norton,1
+1826909037,Dorchester,dorchester,1
+1826909253,Lancing,lancing,1
+1826909404,Hemingbrough,hemingbrough,1
+1826909427,Salsburgh,salsburgh,1
+1826909482,Warsop,warsop,1
+1826909512,Camberley,camberley,1
+1826909538,Saint Pauls Walden,saint pauls walden,1
+1826909718,Woodhouse,woodhouse,1
+1826909845,Newtonmore,newtonmore,1
+1826909902,Glemsford,glemsford,1
+1826909925,Pen-y-cae,pen y cae,1
+1826910154,Hay-on-Wye,hay on wye,1
+1826910231,Great Bookham,great bookham,1
+1826910245,Langley,langley,1
+1826910257,Shincliffe,shincliffe,1
+1826910342,Scarcroft,scarcroft,1
+1826910370,Barton upon Irwell,barton upon irwell,1
+1826910851,Bardsey,bardsey,1
+1826911147,Barton upon Humber,barton upon humber,1
+1826911336,Needingworth,needingworth,1
+1826911348,Clifton,clifton,1
+1826911422,Baystonhill,baystonhill,1
+1826911565,Montgomery,montgomery,1
+1826911682,Sandbach,sandbach,1
+1826912261,Carlton Colville,carlton colville,1
+1826912407,Havant,havant,1
+1826912606,Kingswood,kingswood,1
+1826912793,Kinross,kinross,1
+1826912872,Hertford,hertford,1
+1826912882,Brown Moss Side,brown moss side,1
+1826912948,Wick,wick,1
+1826913156,Scarisbrick,scarisbrick,1
+1826913290,Beckington,beckington,1
+1826913696,Winterton,winterton,1
+1826913851,Caynham,caynham,1
+1826914393,Tangmere,tangmere,1
+1826914470,Cliftonville,cliftonville,1
+1826914488,Linthwaite,linthwaite,1
+1826914828,Findochty,findochty,1
+1826915011,Martock,martock,1
+1826915228,Woodchurch,woodchurch,1
+1826915252,Orwell,orwell,1
+1826915531,Newdigate,newdigate,1
+1826915673,Moorends,moorends,1
+1826915779,Leigh,leigh,1
+1826916205,Whitehaven,whitehaven,1
+1826916458,Repton,repton,1
+1826916498,Sawbridgeworth,sawbridgeworth,1
+1826916549,Lepton,lepton,1
+1826916963,Tresillian,tresillian,1
+1826917092,Adel,adel,1
+1826917340,Wotton-under-Edge,wotton under edge,1
+1826917936,Biggin Hill,biggin hill,1
+1826918432,Chieveley,chieveley,1
+1826918674,Sole Street,sole street,1
+1826918722,Abingdon,abingdon,1
+1826918748,Roche,roche,1
+1826919005,Ashton in Makerfield,ashton in makerfield,1
+1826919193,Rich Hill,rich hill,1
+1826919357,Goosnargh,goosnargh,1
+1826919462,Great Wymondley,great wymondley,1
+1826919819,Badshot Lea,badshot lea,1
+1826919846,Bradford-on-Avon,bradford on avon,1
+1826920016,Garston,garston,1
+1826920026,Stradbroke,stradbroke,1
+1826920550,Darfield,darfield,1
+1826921049,Bristol,bristle,6
+1826921049,Bristol,bristol,1
+1826921143,Little Hulton,little hulton,1
+1826921169,Kingsland,kingsland,1
+1826921293,No Man's Heath,no man s heath,1
+1826921530,Prestwich,prestwich,1
+1826921551,Cockfield,cockfield,1
+1826921608,Houghton Conquest,houghton conquest,1
+1826921725,Llanvihangel Crucorney,llanvihangel crucorney,1
+1826922160,Ickleford,ickleford,1
+1826922220,New Houghton,new houghton,1
+1826922727,Binsted,binsted,1
+1826922874,Cramond,cramond,1
+1826922971,Kintbury,kintbury,1
+1826923198,Twyning,twyning,1
+1826923273,Groby,groby,1
+1826923281,Crieff,crieff,1
+1826923326,Micklefield,micklefield,1
+1826923611,Langley Vale,langley vale,1
+1826923681,Harlington,harlington,1
+1826923917,Lowdham,lowdham,1
+1826924159,Fornham Saint Martin,fornham saint martin,1
+1826924383,Chilham,chilham,1
+1826924654,Fence,fence,1
+1826924980,Basingstoke,basingstoke,1
+1826925051,Midhurst,midhurst,1
+1826925406,Roydon,roydon,1
+1826925473,Bonhill,bonhill,1
+1826925578,Whaplode Drove,whaplode drove,1
+1826925762,Kingswood,kingswood,1
+1826926124,Worsthorne,worsthorne,1
+1826926154,Wemyss Bay,wemyss bay,1
+1826926400,Carlton,carlton,1
+1826926544,Measham,measham,1
+1826926732,Mountain Ash,mountain ash,1
+1826926759,Weston upon Trent,weston upon trent,1
+1826926831,Downton,downton,1
+1826927518,Penrhyn-coch,penrhyn coch,1
+1826927798,Pwllheli,pwllheli,1
+1826927826,Feniton,feniton,1
+1826927872,Wiston,wiston,1
+1826928069,Invergowrie,invergowrie,1
+1826928271,Skellow,skellow,1
+1826928283,Tow Law,tow law,1
+1826928486,High Blantyre,high blantyre,1
+1826928705,Oakdale,oakdale,1
+1826928956,Trowell,trowell,1
+1826929126,Bowness-on-Solway,bowness on solway,1
+1826929404,Rayne,rayne,1
+1826929576,East Farleigh,east farleigh,1
+1826929580,Redcar,redcar,1
+1826929962,Alva,alva,1
+1826930345,Tarleton,tarleton,1
+1826930896,Helmsley,helmsley,1
+1826931144,Yarnton,yarnton,1
+1826931206,Pont-y-pŵl,pont y pwl,1
+1826931583,Horwich,horwich,1
+1826931599,Llandderfel,llandderfel,1
+1826931849,Milborne Saint Andrew,milborne saint andrew,1
+1826932068,Gloucester,gloucester,1
+1826932190,Cowdenbeath,cowdenbeath,1
+1826933039,Wareham,wareham,1
+1826933092,Wood End,wood end,1
+1826933211,Hainford,hainford,1
+1826933266,Fulwood,fulwood,1
+1826933370,Bulwell,bulwell,1
+1826933392,Merstham,merstham,1
+1826933700,Turvey,turvey,1
+1826933777,Moulton Chapel,moulton chapel,1
+1826933859,Penshurst,penshurst,1
+1826934274,Greenhithe,greenhithe,1
+1826934467,Pen-y-ffordd,pen y ffordd,1
+1826934608,Welland,welland,1
+1826934854,Llanelli,llanelli,1
+1826935014,South Warnborough,south warnborough,1
+1826935127,Uffculme,uffculme,1
+1826935286,Pool,pool,1
+1826935456,Cononley,cononley,1
+1826935489,Newcastle,newcastle,1
+1826935490,Chaddesden,chaddesden,1
+1826935596,Harrietsham,harrietsham,1
+1826935894,Paignton,paignton,1
+1826936242,Llanddarog,llanddarog,1
+1826936296,Hartley Row,hartley row,1
+1826936529,Shelley,shelley,1
+1826936718,Bilton,bilton,1
+1826936815,Downderry,downderry,1
+1826936836,Penyffordd,penyffordd,1
+1826936965,Worthing,worthing,1
+1826936967,Copplestone,copplestone,1
+1826937093,Harborne,harborne,1
+1826937132,Colyton,colyton,1
+1826937482,Fleetwood,fleetwood,1
+1826937651,Walkeringham,walkeringham,1
+1826937694,Larbert,larbert,1
+1826937930,Harrow on the Hill,harrow on the hill,1
+1826938401,Ellesmere Port,ellesmere port,1
+1826938552,Langport,langport,1
+1826938714,Wylam,wylam,1
+1826939132,Stoke Golding,stoke golding,1
+1826939193,Underwood,underwood,1
+1826939258,Harston,harston,1
+1826939305,Winford,winford,1
+1826939630,Hibaldstow,hibaldstow,1
+1826939803,Long Buckby,long buckby,1
+1826940485,Burbage,burbage,1
+1826940491,Garlinge,garlinge,1
+1826940560,Bramhope,bramhope,1
+1826940590,Llangendeirne,llangendeirne,1
+1826940717,Inverbervie,inverbervie,1
+1826940855,Wilton,wilton,1
+1826940898,Wyton,wyton,1
+1826941396,Wednesbury,wednesbury,1
+1826941533,Longforgan,longforgan,1
+1826942280,Bolton upon Dearne,bolton upon dearne,1
+1826942452,Thornhill,thornhill,1
+1826942487,Eastry,eastry,1
+1826942586,Glenboig,glenboig,1
+1826942993,Witton Gilbert,witton gilbert,1
+1826943206,Troon,troon,1
+1826943257,Margam,margam,1
+1826943293,Hounslow,hounslow,1
+1826943417,Bessbrook,bessbrook,1
+1826943517,South Killingholme,south killingholme,1
+1826943843,Bothwell,bothwell,1
+1826944016,Bowdon,bowdon,1
+1826944275,Hollington,hollington,1
+1826944312,Upper Harbledown,upper harbledown,1
+1826944488,Buckie,buckie,1
+1826944567,West End,west end,1
+1826944634,Cheadle,cheadle,1
+1826944687,Wrawby,wrawby,1
+1826944999,Whitmore,whitmore,1
+1826945156,Small Heath,small heath,1
+1826945189,Houghton le Spring,houghton le spring,1
+1826945369,New Silksworth,new silksworth,1
+1826945526,Eccleston,eccleston,1
+1826945672,Balloch,balloch,1
+1826945985,Sileby,sileby,1
+1826946360,Harrold,harrold,1
+1826946540,Edenbridge,edenbridge,1
+1826946689,Caerleon,caerleon,1
+1826947069,Mitcham,mitcham,1
+1826947183,Plymouth,plymouth,1
+1826947283,Chew Stoke,chew stoke,1
+1826947360,Pontllanfraith,pontllanfraith,1
+1826947385,Lye,lye,1
+1826947469,Burnopfield,burnopfield,1
+1826947512,Fortrose,fortrose,1
+1826947542,Whitherley,whitherley,1
+1826947686,Widnes,widnes,1
+1826947862,Sedbergh,sedbergh,1
+1826948114,Warden,warden,1
+1826948192,Gowerton,gowerton,1
+1826948211,Dodworth,dodworth,1
+1826948278,Denton,denton,1
+1826948431,Hellingly,hellingly,1
+1826948680,Stoke,stoke,1
+1826948829,Leominster,leominster,1
+1826948919,Charmouth,charmouth,1
+1826949064,Doune,doune,1
+1826949091,Boston Spa,boston spa,1
+1826949167,Milton,milton,1
+1826949401,Gwaun-Cae-Gurwen,gwaun cae gurwen,1
+1826949566,Newarthill,newarthill,1
+1826949815,Belper,belper,1
+1826950028,Saint Peters,saint peters,1
+1826950321,Arnside,arnside,1
+1826950423,Shotley Bridge,shotley bridge,1
+1826950455,Crickhowell,crickhowell,1
+1826950575,Silverdale,silverdale,1
+1826950844,Hartwell,hartwell,1
+1826950866,Egglescliffe,egglescliffe,1
+1826950903,Broad Oak,broad oak,1
+1826950950,Inverallochy and Cairnbulg,inverallochy and cairnbulg,1
+1826951403,Upton,upton,1
+1826951419,Frettenham,frettenham,1
+1826951805,Altham,altham,1
+1826951829,Ryhope,ryhope,1
+1826951859,Swallownest,swallownest,1
+1826952011,Newton Stewart,newton stewart,1
+1826952021,Finstock,finstock,1
+1826952560,Wallington,wallington,1
+1826952565,East Hagbourne,east hagbourne,1
+1826953119,Smethwick,smethwick,1
+1826953294,Wigginton,wigginton,1
+1826953412,Port Erroll,port erroll,1
+1826953560,Elworth,elworth,1
+1826953751,Reawla,reawla,1
+1826953832,Bettws,bettws,1
+1826954100,Layer Breton,layer breton,1
+1826954404,Box Hill,box hill,1
+1826954861,Wilberfoss,wilberfoss,1
+1826954935,Oban,oban,1
+1826955166,Stretton-on-Dunsmore,stretton on dunsmore,1
+1826955338,Ashurst Wood,ashurst wood,1
+1826955395,North Duffield,north duffield,1
+1826955551,Stoborough,stoborough,1
+1826955559,Bomere Heath,bomere heath,1
+1826955611,West Clandon,west clandon,1
+1826955708,Winkfield,winkfield,1
+1826956105,Blackwell,blackwell,1
+1826956188,Clowne,clowne,1
+1826956231,Whittington,whittington,1
+1826956381,Codsall,codsall,1
+1826956502,Child Okeford,child okeford,1
+1826956586,Llandyssul,llandyssul,1
+1826956858,Llanidloes,llanidloes,1
+1826956989,Newton Aycliffe,newton aycliffe,1
+1826957375,Sutton,sutton,1
+1826957505,Goldthorpe,goldthorpe,1
+1826957925,Harberton,harberton,1
+1826958033,Brewood,brewood,1
+1826958355,Woodplumpton,woodplumpton,1
+1826958449,Arksey,arksey,1
+1826958487,Shevington,shevington,1
+1826958705,Swynnerton,swynnerton,1
+1826958739,Keyworth,keyworth,1
+1826959066,Clifton,clifton,1
+1826959155,Betws,betws,1
+1826959230,Mendlesham,mendlesham,1
+1826959328,Ramsbottom,ramsbottom,1
+1826959489,Taunton,taunton,1
+1826959605,Saint Dennis,saint dennis,1
+1826959712,Winterslow,winterslow,1
+1826959717,Lakenheath,lakenheath,1
+1826960336,Rusper,rusper,1
+1826960396,Groombridge,groombridge,1
+1826960472,Tarbolton,tarbolton,1
+1826960680,Glenmavis,glenmavis,1
+1826960784,Carharrack,carharrack,1
+1826961010,Chudleigh Knighton,chudleigh knighton,1
+1826961283,Hadleigh,hadleigh,1
+1826961321,Stow on the Wold,stow on the wold,1
+1826961434,Illogan,illogan,1
+1826961585,Armthorpe,armthorpe,1
+1826961617,Leven,leven,1
+1826961746,Wychbold,wychbold,1
+1826961751,Windlesham,windlesham,1
+1826961790,Little Marlow,little marlow,1
+1826961805,Lower Bullingham,lower bullingham,1
+1826961929,Boverton,boverton,1
+1826962082,Alderley Edge,alderley edge,1
+1826962146,Tremadoc,tremadoc,1
+1826962627,Glascote,glascote,1
+1826962675,South Kirkby,south kirkby,1
+1826962939,Whitehill,whitehill,1
+1826963099,Hubberston,hubberston,1
+1826963129,Dover,dover,1
+1826963300,Aldenham,aldenham,1
+1826963684,East Harling,east harling,1
+1826964096,Portsmouth,portsmouth,1
+1826964711,Beaconsfield,beaconsfield,1
+1826964931,Leith,leith,1
+1826965204,Trowbridge,trowbridge,1
+1826965374,Tetney,tetney,1
+1826965523,Northway,northway,1
+1826965620,Mawnan Smith,mawnan smith,1
+1826965778,Kings Sutton,kings sutton,1
+1826965925,Irvine,irvine,1
+1826966356,Ash,ash,1
+1826966495,Preston,preston,1
+1826966953,Shiplake,shiplake,1
+1826967267,Winchester,winchester,1
+1826967439,Crawley Down,crawley down,1
+1826967618,Aylestone,aylestone,1
+1826967749,Holcombe,holcombe,1
+1826967981,Wheaton Aston,wheaton aston,1
+1826968128,Walton le Dale,walton le dale,1
+1826968149,Uley,uley,1
+1826968217,Godstone,godstone,1
+1826968396,Alconbury,alconbury,1
+1826968435,Carisbrooke,carisbrooke,1
+1826968444,Alresford,alresford,1
+1826968459,Heath and Reach,heath and reach,1
+1826968530,Colerne,colerne,1
+1826968649,Pembury,pembury,1
+1826968679,Kettering,kettering,1
+1826968702,Birstall,birstall,1
+1826968726,Stretton,stretton,1
+1826968934,Telford,telford,1
+1826969008,Linchmere,linchmere,1
+1826969115,Chirnside,chirnside,1
+1826969137,Bangor,bangor,1
+1826969205,Rugby,rugby,1
+1826969216,Resolven,resolven,1
+1826969267,Great Wyrley,great wyrley,1
+1826969307,Reddish,reddish,1
+1826969397,Hogsthorpe,hogsthorpe,1
+1826969433,Cross Houses,cross houses,1
+1826969796,Scampton,scampton,1
+1826969935,Little Raveley,little raveley,1
+1826970271,Birch Vale,birch vale,1
+1826970548,Queniborough,queniborough,1
+1826970551,Wells next the Sea,wells next the sea,1
+1826970637,Waddington,waddington,1
+1826971061,Nuffield,nuffield,1
+1826971079,Rustington,rustington,1
+1826971219,Letchworth,letchworth,1
+1826971495,Woolaston,woolaston,1
+1826971761,Wonston,wonston,1
+1826971859,Barmby on the Moor,barmby on the moor,1
+1826972202,Dunton Green,dunton green,1
+1826972289,Stretham,stretham,1
+1826972409,Hythe,hythe,1
+1826972555,Dawlish Warren,dawlish warren,1
+1826972609,Bedmond,bedmond,1
+1826973290,Goonhavern,goonhavern,1
+1826973593,Grangemouth,grangemouth,1
+1826973699,Southam,southam,1
+1826973789,Hingham,hingham,1
+1826974542,Musselburgh,musselburgh,1
+1826974579,Pittington,pittington,1
+1826974953,Rishton,rishton,1
+1826975459,Garstang,garstang,1
+1826975658,Ampleforth,ampleforth,1
+1826975927,Stratford St. Mary,stratford st. mary,1
+1826975928,Rode Heath,rode heath,1
+1826976007,Swarthmoor,swarthmoor,1
+1826976026,Gullane,gullane,1
+1826976279,Westhampnett,westhampnett,1
+1826976360,Hoyland Nether,hoyland nether,1
+1826976683,Bottom Boat,bottom boat,1
+1826976833,Davyhulme,davyhulme,1
+1826976834,Poundstock,poundstock,1
+1826976975,Limavady,limavady,1
+1826977154,Flamborough,flamborough,1
+1826977488,Barrow Hill,barrow hill,1
+1826977510,Saline,saline,1
+1826977592,Hever,hever,1
+1826977688,Royston,royston,1
+1826977878,Banks,banks,1
+1826978161,Barlaston,barlaston,1
+1826978348,Nailsworth,nailsworth,1
+1826978438,Worth,worth,1
+1826978456,Weobley,weobley,1
+1826978530,Nantyglo,nantyglo,1
+1826978666,Skelmersdale,skelmersdale,1
+1826978943,Twyford,twyford,1
+1826979170,Crowmarsh Gifford,crowmarsh gifford,1
+1826979198,Coventry,coventry,1
+1826979451,Maidenhead,maidenhead,1
+1826979494,Doncaster,doncaster,1
+1826979509,Llanerchymedd,llanerchymedd,1
+1826979637,Madeley,madeley,1
+1826979722,Stanstead Abbots,stanstead abbots,1
+1826979736,Scholes,scholes,1
+1826979862,Wellington,wellington,1
+1826980337,Sennybridge,sennybridge,1
+1826980462,Blackburn,blackburn,1
+1826980517,Pittenweem,pittenweem,1
+1826980531,Waltham Abbey,waltham abbey,1
+1826980770,Hirwaun,hirwaun,1
+1826980965,Northwood,northwood,1
+1826981070,Pwll,pwll,1
+1826981144,Kearsley,kearsley,1
+1826981147,Port Talbot,port talbot,1
+1826981453,Kippax,kippax,1
+1826981493,Bradfield,bradfield,1
+1826981738,Bisley,bisley,1
+1826981933,North Walsham,north walsham,1
+1826981985,North Berwick,north berwick,1
+1826982173,Bedlinog,bedlinog,1
+1826982422,Burghill,burghill,1
+1826982551,Gressenhall,gressenhall,1
+1826982706,Lampeter Velfrey,lampeter velfrey,1
+1826982755,Blackmore,blackmore,1
+1826982869,Ipstones,ipstones,1
+1826982921,Torquay,torquay,1
+1826982956,Three Legged Cross,three legged cross,1
+1826983032,Grimston,grimston,1
+1826983108,Wadworth,wadworth,1
+1826983360,Saint Margaret’s at Cliffe,saint margaret s at cliffe,1
+1826983701,Northiam,northiam,1
+1826983793,Heathfield,heathfield,1
+1826984164,Stanton under Bardon,stanton under bardon,1
+1826984341,Woolavington,woolavington,1
+1826984482,Rhosneigr,rhosneigr,1
+1826984549,Brymbo,brymbo,1
+1826984556,Higher Folds,higher folds,1
+1826984965,Edwalton,edwalton,1
+1826985879,Wawne,wawne,1
+1826986011,Fulwood,fulwood,1
+1826986185,Ecclesall,ecclesall,1
+1826986281,Sproughton,sproughton,1
+1826986493,Lugwardine,lugwardine,1
+1826986504,Shalfleet,shalfleet,1
+1826986509,Newnham,newnham,1
+1826986519,Chepstow,chepstow,1
+1826987295,Barton on Sea,barton on sea,1
+1826987531,Compton,compton,1
+1826987552,West Kilbride,west kilbride,1
+1826987656,Colden Common,colden common,1
+1826987782,Braunton,braunton,1
+1826987965,Caergwrle,caergwrle,1
+1826988062,Crondall,crondall,1
+1826988083,Thorney,thorney,1
+1826988107,Allithwaite,allithwaite,1
+1826988114,Ainsworth,ainsworth,1
+1826988261,Chestfield,chestfield,1
+1826988630,Markham,markham,1
+1826988726,Hebron,hebron,1
+1826988985,North Somercotes,north somercotes,1
+1826989199,Church Village,church village,1
+1826989425,Gretton,gretton,1
+1826989609,Long Eaton,long eaton,1
+1826990227,Lechlade,lechlade,1
+1826990633,Rocester,rocester,1
+1826990689,West Hoathley,west hoathley,1
+1826990715,Totland,totland,1
+1826990888,Send,send,1
+1826991067,Kilgetty,kilgetty,1
+1826991083,Carlton Miniott,carlton miniott,1
+1826991092,Thringstone,thringstone,1
+1826991123,East Cowes,east cowes,1
+1826991166,Chobham,chobham,1
+1826991193,Chandlers Ford,chandlers ford,1
+1826991610,Draycott,draycott,1
+1826991631,Erith,erith,1
+1826992168,Whitehills,whitehills,1
+1826992188,Harworth,harworth,1
+1826992459,Farnley,farnley,1
+1826992580,Welling,welling,1
+1826993360,Oxenhope,oxenhope,1
+1826993599,Treforest,treforest,1
+1826993952,West Wittering,west wittering,1
+1826994172,Deepcut,deepcut,1
+1826994188,Penpedairheol,penpedairheol,1
+1826994220,Haswell,haswell,1
+1826994435,Onllwyn,onllwyn,1
+1826994691,Middleton in Teesdale,middleton in teesdale,1
+1826994693,Allerton Bywater,allerton bywater,1
+1826995465,Wrotham,wrotham,1
+1826995476,Pilton,pilton,1
+1826995662,Burniston,burniston,1
+1826995667,Bellshill,bellshill,1
+1826995929,West Winch,west winch,1
+1826996247,Sixpenny Handley,sixpenny handley,1
+1826996294,Trewoon,trewoon,1
+1826996419,Wooler,wooler,1
+1826996464,Minera,minera,1
+1826996583,Hereford,hereford,1
+1826996931,Landkey,landkey,1
+1826997090,Clarkston,clarkston,1
+1826997114,Scotter,scotter,1
+1826997121,Ravenshead,ravenshead,1
+1826997655,Shotton Colliery,shotton colliery,1
+1826997690,Houghton Regis,houghton regis,1
+1826997873,Abbotts Ann,abbotts ann,1
+1826998634,Longside,longside,1
+1826998764,New Milton,new milton,1
+1826998852,Blakedown,blakedown,1
+1826999025,Choppington,choppington,1
+1826999199,Carlton,carlton,1
+1826999294,Worsley,worsley,1
+1826999392,Shepley,shepley,1
+1826999492,Streatley,streatley,1
+1826999522,Read,read,1
+1826999647,Aviemore,aviemore,1
+1826999687,Patchway,patchway,1
+1826999750,Hayle,hayle,1
+1826999993,Old Trafford,old trafford,1
+1826999995,Edlesborough,edlesborough,1

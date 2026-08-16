@@ -1,0 +1,2072 @@
+[
+  {
+    "phrase": "I have moved",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "I moved",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "I moved to {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "I need to change my location",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "I now live in {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "I want to change my location",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "I want to update my location",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "I've moved",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "I've moved to {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "change my city",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "change my city to {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "change my location",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "change my location to {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "change my town",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "change my town to {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "change where I am",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "my area is {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "my location has changed",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "set a new location",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "set my location to {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "set my town to {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "update my location",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "update my location to {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "update my town",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "update my town to {location}",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "update where I live",
+    "action": "changeLocation",
+    "weight": 2
+  },
+  {
+    "phrase": "I'm done",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "I'm off",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "bye",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "cancel",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "close",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "close hear",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "end",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "exit",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "finish",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "goodbye",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "leave",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "log off",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "quit",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "see ya",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "see you later",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "shut down",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "that's enough",
+    "action": "close",
+    "weight": 2
+  },
+  {
+    "phrase": "I like this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "I love this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "I want more from this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "I want to follow this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "I want to hear more from them",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "add them to my favourites",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "add this creator to my followed list",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "add this creator to my list",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "bookmark this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "favourite this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "follow",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "follow them",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "follow this artist",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "follow this author",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "follow this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "follow this narrator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "follow this person",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "follow this voice",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "keep me updated on this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "keep this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "more from this person",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "remember this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "save them",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "save this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "subscribe",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "subscribe to this creator",
+    "action": "follow",
+    "weight": 2
+  },
+  {
+    "phrase": "I need help",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "about this skill",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "assist me",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "functions",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "give me some tips",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "guide me",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "help",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "help me out",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "how do I use this",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "how does this work",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "instructions",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "teach me",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me about this",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "walk me through it",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "what are my options",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "what can I say",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "what can you do",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "what commands are there",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "what else can I do",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "what features do you have",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "what should I say",
+    "action": "help",
+    "weight": 2
+  },
+  {
+    "phrase": "back to the start",
+    "action": "navigate:home",
+    "weight": 2
+  },
+  {
+    "phrase": "go home",
+    "action": "navigate:home",
+    "weight": 2
+  },
+  {
+    "phrase": "go to the beginning",
+    "action": "navigate:home",
+    "weight": 2
+  },
+  {
+    "phrase": "home",
+    "action": "navigate:home",
+    "weight": 2
+  },
+  {
+    "phrase": "main menu",
+    "action": "navigate:home",
+    "weight": 2
+  },
+  {
+    "phrase": "start menu",
+    "action": "navigate:home",
+    "weight": 2
+  },
+  {
+    "phrase": "take me home",
+    "action": "navigate:home",
+    "weight": 2
+  },
+  {
+    "phrase": "cut it",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "enough",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "hush",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "mute",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "shut it",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "silence",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "stop",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "stop everything",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "stop playing",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "stop the audio",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "that'll do",
+    "action": "pause",
+    "weight": 2
+  },
+  {
+    "phrase": "find me the latest {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "get me the latest {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play latest {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play me latest {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play me recent {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play me the latest {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play me the most recent {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play me the newest {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play recent {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play the latest",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play the latest {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play the most recent {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "play the newest {topic}",
+    "action": "play:latest",
+    "weight": 2
+  },
+  {
+    "phrase": "content near me",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "content near {localQuery}",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "find content near me",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "find content near {localQuery}",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "find local content",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "local audio",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "local content",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "local recordings",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "near me",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "nearby audio",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "nearby content",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play community",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play community content",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play content near me",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play content near {localQuery}",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play from my area",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play from my city",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play from my community",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play from my town",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play local",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play local content",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play local {localQuery}",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play near me",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play near {localQuery}",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play something from my city",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play something from my community",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "play something from my town",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "show me content near me",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "show me local content",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "something near me",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "what's happening locally",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "what's happening near me",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "what's happening near {localQuery}",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "what's local",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "what's on near me",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "what's on near {localQuery}",
+    "action": "play:local",
+    "weight": 2
+  },
+  {
+    "phrase": "curate something",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "curate {recommendationQuery}",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "discover something new",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "discover {recommendationQuery}",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "find me something good",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "find me something {recommendationQuery}",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "hit me with something",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "play popular content",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "play popular {recommendationQuery}",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "play recommendations",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "play top picks",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "play trending content",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "play trending {recommendationQuery}",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "put something on",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "recommend something",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "recommend {recommendationQuery}",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "surprise me",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "what do you recommend",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "what's good",
+    "action": "play:recommended",
+    "weight": 2
+  },
+  {
+    "phrase": "most popular right now",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "popular picks",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "read me the trending list",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "show me trending",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "show me what's trending",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me what's popular",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me what's trending",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "top content",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "trending audio",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what are people listening to",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what is everyone listening to",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what is hot",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what is latest {topic}",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what is popular",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what is the latest {topic}",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what is trending",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what was trending {dateQuery}",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what's hot",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what's latest {topic}",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what's on trend",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what's popular",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what's the latest {topic}",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what's trending",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "what's trending right now",
+    "action": "play:trending",
+    "weight": 2
+  },
+  {
+    "phrase": "I want to hear that again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "can you play that again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "from the top",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "let me hear that again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "listen to that again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "one more time",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "play again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "play it again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "play that again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "play this one again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "repeat",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "repeat that",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "repeat this recording",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "replay",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "replay that",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "replay this one",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "say that again",
+    "action": "repeat:on",
+    "weight": 2
+  },
+  {
+    "phrase": "back to the beginning",
+    "action": "restart",
+    "weight": 2
+  },
+  {
+    "phrase": "begin again",
+    "action": "restart",
+    "weight": 2
+  },
+  {
+    "phrase": "from the beginning",
+    "action": "restart",
+    "weight": 2
+  },
+  {
+    "phrase": "go to the start",
+    "action": "restart",
+    "weight": 2
+  },
+  {
+    "phrase": "play from the beginning",
+    "action": "restart",
+    "weight": 2
+  },
+  {
+    "phrase": "restart",
+    "action": "restart",
+    "weight": 2
+  },
+  {
+    "phrase": "start fresh",
+    "action": "restart",
+    "weight": 2
+  },
+  {
+    "phrase": "start from the start",
+    "action": "restart",
+    "weight": 2
+  },
+  {
+    "phrase": "start over",
+    "action": "restart",
+    "weight": 2
+  },
+  {
+    "phrase": "back it up",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "back it up {number} seconds",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "back {number} minutes",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "back {number} seconds",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "back {time}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "go back a bit",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "go back {number}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "go back {number} seconds",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "go back {time}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "jump back",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "jump back {number}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "jump back {time}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "rewind",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "rewind a bit",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "rewind by {number}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "rewind by {time}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "rewind to {time}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "rewind {number}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "rewind {number} seconds",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "rewind {time}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip back",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip back {number}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip back {time}",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "take it back {number} seconds",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "wind back",
+    "action": "seek:backward",
+    "weight": 2
+  },
+  {
+    "phrase": "fast forward",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "fast forward by {number}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "fast forward by {time}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "fast forward {number}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "fast forward {number} seconds",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "fast forward {time}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "forward {number} minutes",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "forward {number} seconds",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "forward {time}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "go ahead {number} seconds",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "go forward {number}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "go forward {time}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "jump ahead",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "jump ahead {number} seconds",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "jump forward",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "jump forward {number}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "jump forward {time}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip ahead",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip ahead {number}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip ahead {time}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip forward {number}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip forward {time}",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip {number} minutes",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "skip {number} seconds ahead",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "wind forward",
+    "action": "seek:forward",
+    "weight": 2
+  },
+  {
+    "phrase": "can you slow it down",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "decrease playback speed",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "decrease speed",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "decrease the speed",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "go slower",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "half speed",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "make it slower",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "play it slower",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "play slower",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "play this slower",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "slow down",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "slow it down",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "slower",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "speak slower",
+    "action": "speedStep:down",
+    "weight": 2
+  },
+  {
+    "phrase": "can you play it faster",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "double speed",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "double the speed",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "faster",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "go faster",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "increase playback speed",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "increase speed",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "increase the speed",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "make it faster",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "play faster",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "play it faster",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "play this faster",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "speak faster",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "speed it up",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "speed up",
+    "action": "speedStep:up",
+    "weight": 2
+  },
+  {
+    "phrase": "I don't want to follow this creator anymore",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "I'm done with this creator",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "drop this creator",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "remove from following",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "remove them",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "remove this creator",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "stop following",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "stop following this creator",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "take this creator off my list",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "unfollow",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "unfollow them",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "unfollow this creator",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "unsubscribe",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "unsubscribe from them",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "unsubscribe from this creator",
+    "action": "unfollow",
+    "weight": 2
+  },
+  {
+    "phrase": "describe this recording",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me about this content",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me about this recording",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me what this is about",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "what is this about",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "what is this content about",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "what is this recording about",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "what's it about",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "what's this about",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "what's this all about",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "what's this content about",
+    "action": "whatIsThis",
+    "weight": 2
+  },
+  {
+    "phrase": "credit",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "credits",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "give me creator info",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "give me the credits",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "name of the creator",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me about the author",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me about the creator",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me who this is",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "what creator is this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "what's the name of the creator",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who am I listening to",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who created this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who is behind this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who is speaking",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who is talking",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who is the author",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who is the creator",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who is the narrator",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who is this by",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who is this person",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who made this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who produced this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who published this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who recorded this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who uploaded this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who wrote this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who's responsible for this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who's the artist",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "who's this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "whose voice is this",
+    "action": "whoMadeThis",
+    "weight": 2
+  },
+  {
+    "phrase": "read the screen",
+    "action": "readScreen",
+    "weight": 3
+  },
+  {
+    "phrase": "read this screen",
+    "action": "readScreen",
+    "weight": 3
+  },
+  {
+    "phrase": "what's on screen",
+    "action": "readScreen",
+    "weight": 3
+  },
+  {
+    "phrase": "what is on screen",
+    "action": "readScreen",
+    "weight": 3
+  },
+  {
+    "phrase": "what's on the screen",
+    "action": "readScreen",
+    "weight": 3
+  },
+  {
+    "phrase": "read this page",
+    "action": "readScreen",
+    "weight": 2
+  },
+  {
+    "phrase": "read the page",
+    "action": "readScreen",
+    "weight": 2
+  },
+  {
+    "phrase": "describe the screen",
+    "action": "readScreen",
+    "weight": 2
+  },
+  {
+    "phrase": "tell me what's on screen",
+    "action": "readScreen",
+    "weight": 2
+  },
+  {
+    "phrase": "next",
+    "action": "onboardingContinue",
+    "weight": 3
+  },
+  {
+    "phrase": "continue",
+    "action": "onboardingContinue",
+    "weight": 3
+  },
+  {
+    "phrase": "go to the next step",
+    "action": "onboardingContinue",
+    "weight": 3
+  },
+  {
+    "phrase": "next step",
+    "action": "onboardingContinue",
+    "weight": 3
+  },
+  {
+    "phrase": "continue setup",
+    "action": "onboardingContinue",
+    "weight": 3
+  },
+  {
+    "phrase": "continue with google",
+    "action": "accountSignIn",
+    "weight": 3
+  },
+  {
+    "phrase": "sign in with google",
+    "action": "accountSignIn",
+    "weight": 3
+  },
+  {
+    "phrase": "continue with apple",
+    "action": "accountSignIn",
+    "weight": 3
+  },
+  {
+    "phrase": "sign in with apple",
+    "action": "accountSignIn",
+    "weight": 3
+  },
+  {
+    "phrase": "keep going",
+    "action": "onboardingContinue",
+    "weight": 2
+  },
+  {
+    "phrase": "move on",
+    "action": "onboardingContinue",
+    "weight": 2
+  },
+  {
+    "phrase": "back",
+    "action": "onboardingBack",
+    "weight": 3
+  },
+  {
+    "phrase": "go back",
+    "action": "onboardingBack",
+    "weight": 3
+  },
+  {
+    "phrase": "previous step",
+    "action": "onboardingBack",
+    "weight": 3
+  },
+  {
+    "phrase": "go to the previous step",
+    "action": "onboardingBack",
+    "weight": 3
+  },
+  {
+    "phrase": "skip this step",
+    "action": "onboardingSkip",
+    "weight": 3
+  },
+  {
+    "phrase": "not now",
+    "action": "onboardingSkip",
+    "weight": 3
+  },
+  {
+    "phrase": "sign out",
+    "action": "accountSignOut",
+    "weight": 3
+  },
+  {
+    "phrase": "sign out of hear",
+    "action": "accountSignOut",
+    "weight": 3
+  },
+  {
+    "phrase": "skip",
+    "action": "onboardingSkip",
+    "weight": 3
+  },
+  {
+    "phrase": "skip this",
+    "action": "onboardingSkip",
+    "weight": 3
+  },
+  {
+    "phrase": "skip this one",
+    "action": "onboardingSkip",
+    "weight": 3
+  },
+  {
+    "phrase": "my town is {location}",
+    "action": "onboardingSetTown",
+    "weight": 3
+  },
+  {
+    "phrase": "i live in {location}",
+    "action": "onboardingSetTown",
+    "weight": 3
+  },
+  {
+    "phrase": "i am in {location}",
+    "action": "onboardingSetTown",
+    "weight": 3
+  },
+  {
+    "phrase": "i'm in {location}",
+    "action": "onboardingSetTown",
+    "weight": 3
+  },
+  {
+    "phrase": "set my town to {location}",
+    "action": "onboardingSetTown",
+    "weight": 3
+  },
+  {
+    "phrase": "my local area is {location}",
+    "action": "onboardingSetTown",
+    "weight": 3
+  },
+  {
+    "phrase": "my city is {location}",
+    "action": "onboardingSetTown",
+    "weight": 3
+  },
+  {
+    "phrase": "read this step",
+    "action": "onboardingRead",
+    "weight": 3
+  },
+  {
+    "phrase": "read it again",
+    "action": "onboardingRead",
+    "weight": 2
+  },
+  {
+    "phrase": "repeat that",
+    "action": "onboardingRead",
+    "weight": 2
+  },
+  {
+    "phrase": "say that again",
+    "action": "onboardingRead",
+    "weight": 2
+  },
+  {
+    "phrase": "read the step again",
+    "action": "onboardingRead",
+    "weight": 2
+  },
+  {
+    "phrase": "use spoken setup",
+    "action": "onboardingUseSpokenSetup",
+    "weight": 3
+  },
+  {
+    "phrase": "turn on spoken guidance",
+    "action": "onboardingUseSpokenSetup",
+    "weight": 3
+  },
+  {
+    "phrase": "use screen controls",
+    "action": "onboardingUseScreenControls",
+    "weight": 3
+  },
+  {
+    "phrase": "turn off spoken guidance",
+    "action": "onboardingUseScreenControls",
+    "weight": 3
+  },
+  {
+    "phrase": "play sound check",
+    "action": "onboardingPlaySoundCheck",
+    "weight": 3
+  },
+  {
+    "phrase": "repeat sound check",
+    "action": "onboardingPlaySoundCheck",
+    "weight": 3
+  },
+  {
+    "phrase": "i cannot hear it",
+    "action": "onboardingCannotHear",
+    "weight": 3
+  },
+  {
+    "phrase": "cannot hear sound check",
+    "action": "onboardingCannotHear",
+    "weight": 3
+  },
+  {
+    "phrase": "use my location",
+    "action": "onboardingUseLocation",
+    "weight": 3
+  }
+]

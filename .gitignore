@@ -7,6 +7,8 @@ node_modules/
 .expo/
 dist/
 web-build/
+.validation/
+.expo-validation/
 expo-env.d.ts
 
 # Native
@@ -32,6 +34,7 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env.eas-simulator
 
 # typescript
 *.tsbuildinfo
@@ -41,3 +44,9 @@ example
 # generated native folders
 /ios
 /android
+
+# Local AI agent configuration and generated skills
+.agents/
+skills-lock.json
+.claude/
+CLAUDE.md

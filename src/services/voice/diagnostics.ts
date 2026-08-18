@@ -1,7 +1,7 @@
 import type { VoiceDiagnostic, VoiceDiagnostics } from "@/types";
 class NoopVoiceDiagnostics implements VoiceDiagnostics {
   async record(_event: VoiceDiagnostic) {
-    /* Disabled until explicit consent and a backend exist. */
+
   }
   async reset() {}
   async export() {

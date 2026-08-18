@@ -1,10 +1,3 @@
-/**
- * Hear! App Asset Registry
- *
- * Centralized, strongly-typed catalog of all application assets.
- * Backed by Expo asset bundling configured in app.json.
- */
-
 export const appAssets = {
   images: {
     logo: require("@/assets/images/hear-logo.png"),
@@ -22,9 +15,6 @@ export const appAssets = {
   },
 } as const;
 
-/**
- * Preload array used during app initialization in AppRoot.
- */
 export const ALL_APP_ASSETS = [
   appAssets.images.logo,
   appAssets.database.voiceSeed,

@@ -1,4 +1,4 @@
-import { runCommand } from "@/lib/voice/run";
+import { runCommand } from "@/services/voice/run";
 import { entities, stories, topics } from "@/data/catalogue";
 import {
   onboardingVoiceBridge,

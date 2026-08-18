@@ -1,7 +1,7 @@
 import {
   migrateVoiceDatabase,
   VOICE_SCHEMA_VERSION,
-} from "@/lib/voice/repository";
+} from "@/services/voice/repository";
 import type {
   VoiceMigrationDatabase,
   VoiceMigrationTransaction,

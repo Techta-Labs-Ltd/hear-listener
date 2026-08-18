@@ -1,66 +1,50 @@
-import { useState } from "react";
-import { FlatList } from "react-native";
 import { Pressable, View } from "@/tw";
 import { AppText } from "@/components/ui/AppText";
-import { spacing } from "@/constants/theme";
 import { useVoice } from "@/hooks/useVoice";
-import { useResponsiveLayout } from "@/hooks/useResponsiveLayout";
-
-const GAP = spacing.sm;
 
 export function AmbiguityChoices() {
-  const { prompt, choices, choose } = useVoice();
-  const [page, setPage] = useState(0);
-  const { contentWidth, gutter } = useResponsiveLayout();
-  const pageWidth = Math.min(contentWidth - gutter * 2, 480);
+  const { choices, choose } = useVoice();
 
   return (
-    <View className="w-full gap-3">
-      <AppText variant="label" tone="muted" className="text-center">
-        {prompt}
-      </AppText>
-      <FlatList
-        data={choices}
-        keyExtractor={(choice) => choice.id}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={pageWidth + GAP}
-        decelerationRate="fast"
-        contentContainerStyle={{ gap: GAP }}
-        onMomentumScrollEnd={(event) =>
-          setPage(
-            Math.round(event.nativeEvent.contentOffset.x / (pageWidth + GAP)),
-          )
-        }
-        renderItem={({ item }) => (
+    <View className="w-full gap-3 pt-1">
+      {choices.map((item, index) => {
+        const isFirst = index === 0;
+        return (
           <Pressable
+            key={item.id}
             accessibilityRole="button"
-            accessibilityLabel={item.label}
+            accessibilityLabel={`${index + 1}: ${item.label}`}
+            accessibilityHint={item.detail}
             onPress={() => choose(item)}
-            className="min-h-26 justify-center gap-1 rounded-card border border-border bg-canvas p-4 active:border-primary active:bg-primary-soft"
-            style={{ width: pageWidth }}
+            className={
+              isFirst
+                ? "min-h-[58px] items-start justify-center rounded-[20px] bg-white px-5 active:opacity-90"
+                : "min-h-[58px] items-start justify-center rounded-[20px] border border-white/20 bg-white/10 px-5 active:bg-white/20"
+            }
           >
-            <AppText variant="heading">{item.label}</AppText>
+            <AppText
+              className={
+                isFirst
+                  ? "font-body-bold text-[16px] leading-5 text-ink"
+                  : "font-body-bold text-[16px] leading-5 text-white"
+              }
+            >
+              {index + 1} · {item.label}
+            </AppText>
             {item.detail ? (
-              <AppText variant="label" tone="muted">
+              <AppText
+                className={
+                  isFirst
+                    ? "mt-0.5 text-[13px] leading-4 text-muted"
+                    : "mt-0.5 text-[13px] leading-4 text-voice-muted"
+                }
+              >
                 {item.detail}
               </AppText>
             ) : null}
-            <AppText tone="primary" className="absolute bottom-3 right-4 text-xl">
-              →
-            </AppText>
           </Pressable>
-        )}
-      />
-      <View className="items-center gap-1">
-        <AppText variant="overline" tone="primary">
-          CHOICE {page + 1} OF {choices.length}
-        </AppText>
-        <AppText variant="label" tone="muted">
-          Swipe for another. Tap to choose.
-        </AppText>
-      </View>
+        );
+      })}
     </View>
   );
 }

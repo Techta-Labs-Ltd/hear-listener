@@ -38,7 +38,7 @@ export function AudioRuntime() {
   }, [current, player]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/immutability -- expo-audio exposes `loop` as a mutable native property.
+
     player.loop = repeat;
   }, [repeat, player]);
 

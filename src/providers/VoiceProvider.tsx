@@ -1,19 +1,20 @@
 import { VoiceGestureLayer } from "@/components/voice/VoiceGestureLayer";
 import { VoiceOverlay } from "@/components/voice/VoiceOverlay";
+import { VOICE_TIMING } from "@/constants/voice";
 import { entities, stories, topics } from "@/data/catalogue";
 import { appHaptics } from "@/lib/haptics";
-import { voiceAnnounce } from "@/lib/voice/announce";
+import { voiceAnnounce } from "@/services/voice/announce";
 import {
   confidenceBand,
   latencyBand,
   voiceDiagnostics,
-} from "@/lib/voice/diagnostics";
-import { voiceExecutor } from "@/lib/voice/executor";
-import { voiceTermRepository } from "@/lib/voice/repository";
-import { voiceResolver } from "@/lib/voice/resolver";
-import { buildScreenOrientation } from "@/lib/voice/screen-registry";
-import { ukSpeech } from "@/lib/voice/speech";
-import { speechCoordinator } from "@/lib/voice/speech-coordinator";
+} from "@/services/voice/diagnostics";
+import { voiceExecutor } from "@/services/voice/executor";
+import { voiceTermRepository } from "@/services/voice/repository";
+import { voiceResolver } from "@/services/voice/resolver";
+import { buildScreenOrientation } from "@/services/voice/screen-registry";
+import { ukSpeech } from "@/services/voice/speech";
+import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { topicRoute } from "@/navigation/routes";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { usePlaybackStore, usePreferencesStore, useVoiceStore } from "@/stores";
@@ -39,10 +40,10 @@ import {
   useRef,
   type PropsWithChildren,
 } from "react";
-import { AppState, InteractionManager } from "react-native";
+import { AppState, InteractionManager, Platform } from "react-native";
 import { VoiceContext } from "./voice-context";
 
-const NO_SPEECH_TIMEOUT = 8000;
+const NO_SPEECH_TIMEOUT = VOICE_TIMING.noSpeechTimeout;
 const MAX_RECOGNITION_DURATION = 30000;
 const RESOLUTION_TIMEOUT = 5000;
 const PLAYBACK_EXECUTORS = new Set([
@@ -97,6 +98,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   const noSpeechTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
+  const onDeviceRecognition = useRef(false);
   const clearTimers = useCallback(() => {
     if (recognitionTimer.current) clearTimeout(recognitionTimer.current);
     if (noSpeechTimer.current) clearTimeout(noSpeechTimer.current);
@@ -193,7 +195,8 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       continuous: false,
       maxAlternatives: 5,
       contextualStrings,
-      requiresOnDeviceRecognition: true,
+      requiresOnDeviceRecognition:
+        Platform.OS === "android" ? onDeviceRecognition.current : true,
       addsPunctuation: false,
       iosTaskHint: "confirmation",
       iosVoiceProcessingEnabled: true,
@@ -255,6 +258,23 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         speechDetected: false,
         playbackWasPlaying,
       };
+      try {
+        const deviceAvailable =
+          ExpoSpeechRecognitionModule.isRecognitionAvailable();
+        if (active.current?.id !== id) return;
+        if (!deviceAvailable) {
+          finish(
+            "Voice isn't supported on this device. You can still browse and listen by touch.",
+            "service-not-allowed",
+          );
+          return;
+        }
+        onDeviceRecognition.current =
+          ExpoSpeechRecognitionModule.supportsOnDeviceRecognition();
+      } catch {
+        onDeviceRecognition.current = false;
+        if (active.current?.id !== id) return;
+      }
       useVoiceStore.getState().setVoice({
         state: "permission",
         sessionId: id,

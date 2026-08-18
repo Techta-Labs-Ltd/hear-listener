@@ -51,6 +51,6 @@ async function releaseWakeLock() {
   try {
     await deactivateKeepAwake(KEEP_AWAKE_TAG);
   } catch {
-    // The native activity may already be gone while the app is backgrounding.
+
   }
 }

@@ -1,94 +1,132 @@
 import { useRouter } from "expo-router";
 import { ScrollView, View } from "@/tw";
-import { MiniPlayer } from "@/components/player/MiniPlayer";
-import { StoryCard } from "@/components/content/StoryCard";
-import { AppScreen } from "@/components/ui/AppScreen";
-import { AppText } from "@/components/ui/AppText";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { IconButton } from "@/components/ui/IconButton";
-import { LibraryMenuCard } from "@/components/library/LibraryMenuCard";
+import { AppText } from "@/components/ui/AppText";
+import { AppScreen } from "@/components/ui/AppScreen";
+import { SkeletonBlock } from "@/components/ui/SkeletonBlock";
+import { LibraryHubRow } from "@/components/library/LibraryHubRow";
+import { LibraryHubTile } from "@/components/library/LibraryHubTile";
+import { SyncPausedCard } from "@/components/library/SyncPausedCard";
 import { stories } from "@/data/catalogue";
 import { usePreferences } from "@/stores";
-import { librarySectionRoute } from "@/navigation/routes";
-import { libraryCopy } from "@/utils/copy/library";
+import { useAccountAccess } from "@/hooks/useAccountAccess";
+import { colors } from "@/constants/theme";
 import { icons } from "@/utils/icons/app-icons";
-import { VoicePrompt } from "@/components/voice/VoicePrompt";
+import { librarySectionRoute, routes } from "@/navigation/routes";
+import { libraryCopy } from "@/utils/copy/library";
 
 export function LibraryScreen() {
   const router = useRouter();
+  const account = useAccountAccess();
   const { preferences } = usePreferences();
-  const downloads = stories.filter(
+  const savedCount = preferences.savedIds.length;
+  const followingCount = preferences.followingIds.length;
+  const downloadsCount = stories.filter(
     (item) => item.downloaded || preferences.downloadedIds.includes(item.id),
-  );
-  const rows = [
-    {
-      title: "Saved audio",
-      detail: "12 stories",
-      section: "saved",
-    },
-    {
-      title: "People you follow",
-      detail: "8 creators and publications",
-      section: "following",
-    },
-    {
-      title: "Downloaded audio",
-      detail: "3 ready offline",
-      section: "downloads",
-    },
-    {
-      title: "Listening history",
-      detail: "Recently played",
-      section: "history",
-    },
-  ] as const;
+  ).length;
+  const syncError = account.status === "error";
+  const syncing = account.status === "signingIn";
 
   return (
     <AppScreen>
-      <ScrollView contentContainerClassName="gap-6 p-4 pb-[120px]">
+      <ScrollView
+        contentContainerClassName="px-5 pt-8 pb-[110px]"
+        showsVerticalScrollIndicator={false}
+      >
         <View className="flex-row items-start justify-between">
           <View>
-            <AppText variant="overline" tone="primary">
+            <AppText variant="overline" tone="primary" className="tracking-[0.4px]">
               {libraryCopy.eyebrow}
             </AppText>
-            <AppText variant="title">{libraryCopy.title}</AppText>
+            <AppText
+              accessibilityRole="header"
+              className="mt-[5px] font-display text-[31px] leading-[37px] text-ink"
+            >
+              {libraryCopy.title}
+            </AppText>
           </View>
           <IconButton
             symbol={icons.settings}
-            label="Open settings"
-            onPress={() => router.push("/settings")}
+            label={libraryCopy.settingsLabel}
+            onPress={() => router.push(routes.settings)}
+            tintColor={colors.voiceCanvas}
+            className="h-10 w-10 bg-surface"
           />
         </View>
-        <VoicePrompt example="Open my downloads" />
-        <View className="gap-2">
-          {rows.map((row) => (
-            <LibraryMenuCard
-              key={row.title}
-              title={row.title}
-              detail={row.detail}
-              onPress={() => router.push(librarySectionRoute(row.section))}
-            />
-          ))}
-        </View>
-        <View className="gap-3">
-          <AppText variant="overline" tone="primary">
-            {libraryCopy.offlineEyebrow}
-          </AppText>
-          <AppText variant="heading">{libraryCopy.offlineTitle}</AppText>
-          {downloads.length > 0 ? (
-            downloads.map((item) => (
-              <StoryCard key={item.id} item={item} compact />
-            ))
-          ) : (
-            <EmptyState
-              icon={icons.downloadEmpty}
-              title={libraryCopy.emptyDownloadsTitle}
-              description={libraryCopy.emptyDownloadsDescription}
-            />
-          )}
-        </View>
+        {syncError || account.error ? (
+          <SyncPausedCard
+            title={libraryCopy.syncTitle}
+            description={account.error ?? libraryCopy.syncDescription}
+            actionLabel={libraryCopy.syncRetry}
+            onRetry={() => void account.signIn()}
+            retrying={syncing}
+            className="mt-[40px]"
+          />
+        ) : (
+          <>
+            <AppText
+              accessibilityRole="header"
+              className="mt-[39px] font-display text-[19px] leading-[23px] text-ink"
+            >
+              {libraryCopy.savedSection}
+            </AppText>
+            {syncing ? (
+              <View className="mt-4 gap-3">
+                <SkeletonBlock className="h-[86px] rounded-[20px]" tone="soft" />
+                <SkeletonBlock className="h-[86px] rounded-[20px]" tone="soft" />
+              </View>
+            ) : (
+              <View className="mt-4 gap-[14px]">
+                <LibraryHubRow
+                  title={librarySectionTitle.saved}
+                  detail={`${savedCount} ${savedCount === 1 ? "story" : "stories"}`}
+                  icon={icons.saved}
+                  iconTint={colors.primary}
+                  iconBackground="#EDE4F5"
+                  onPress={() => router.push(librarySectionRoute("saved"))}
+                />
+                <LibraryHubRow
+                  title={librarySectionTitle.following}
+                  detail={`${followingCount} creators and publications`}
+                  icon={icons.plus}
+                  iconTint="#A64E55"
+                  iconBackground="#F4E5DD"
+                  onPress={() => router.push(librarySectionRoute("following"))}
+                />
+              </View>
+            )}
+            <AppText
+              accessibilityRole="header"
+              className="mt-[28px] font-display text-[19px] leading-[23px] text-ink"
+            >
+              {libraryCopy.offlineSection}
+            </AppText>
+            <View className="mt-[23px] flex-row gap-[14px]">
+              <LibraryHubTile
+                title={librarySectionTitle.downloads}
+                detail={`${downloadsCount} ready offline`}
+                icon={icons.downloads}
+                accent="#0F6973"
+                onPress={() => router.push(librarySectionRoute("downloads"))}
+              />
+              <LibraryHubTile
+                title={librarySectionTitle.history}
+                detail="Recently played"
+                icon={icons.historyEmpty}
+                accent={colors.primary}
+                onPress={() => router.push(librarySectionRoute("history"))}
+              />
+            </View>
+          </>
+        )}
       </ScrollView>
-      <MiniPlayer />
     </AppScreen>
   );
 }
+
+const librarySectionTitle = {
+  saved: "Saved audio",
+  following: "People you follow",
+  downloads: "Downloads",
+  history: "History",
+} as const;

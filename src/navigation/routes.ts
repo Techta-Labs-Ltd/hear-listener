@@ -8,6 +8,9 @@ export const routes = {
   library: "/library",
   onboarding: "/onboarding",
   player: "/player",
+  queue: "/player/queue",
+  sleepTimer: "/player/sleep-timer",
+  search: "/search",
   settings: "/settings",
 } as const satisfies Record<string, Href>;
 

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type {
+  AccessibilityProps,
   ColorValue,
   ImageStyle,
   StyleProp,
@@ -121,6 +122,22 @@ export type StoryCardProps = {
   compact?: boolean;
 };
 
+export type ContinueListeningCardProps = {
+  item: ContentItem;
+  className?: string;
+};
+
+export type StoryTileProps = {
+  item: ContentItem;
+  className?: string;
+};
+
+export type PlayerArtworkProps = {
+  item: ContentItem;
+  size?: "player" | "finished";
+  className?: string;
+};
+
 export type TopicGridProps = {
   topics: Topic[];
   activeId?: string;
@@ -134,8 +151,105 @@ export type ProgressTrackProps = {
   className?: string;
 };
 
-export type LibraryMenuCardProps = {
+export type VoiceReadyBannerProps = {
+  className?: string;
+};
+
+export type QuickStartCardProps = {
+  step: number;
+  title: string;
+  description: string;
+  tone?: "dark" | "peach";
+  className?: string;
+};
+
+export type PromoCardProps = {
+  eyebrow: string;
+  title: string;
+  description?: string;
+  meta?: string;
+  playLabel?: string;
+  tone?: "brand" | "editor";
+  compact?: boolean;
+  onPress: () => void;
+  accessibilityHint?: string;
+  accessibilityValue?: AccessibilityProps["accessibilityValue"];
+  className?: string;
+};
+
+export type TopicChipProps = {
+  topic: Topic;
+  count: number;
+  accent: string;
+  onPress: () => void;
+};
+
+export type StoryRowProps = {
+  item: ContentItem;
+  subtitle?: string;
+  thumbSize?: "md" | "sm" | "none";
+  showPlay?: boolean;
+  trailing?: ReactNode;
+  onPress?: () => void;
+  className?: string;
+};
+
+export type SearchBarProps = {
+  label: string;
+  onPress: () => void;
+  className?: string;
+};
+
+export type OfflineNoticeProps = {
+  onOpenDownloads: () => void;
+  className?: string;
+};
+
+export type SkeletonBlockProps = {
+  tone?: "default" | "soft";
+  className?: string;
+};
+
+export type VoiceTipProps = {
+  eyebrow: string;
+  text: string;
+  tone?: "default" | "mint";
+  className?: string;
+};
+
+export type LibraryHubRowProps = {
   title: string;
   detail: string;
+  icon: string;
+  iconTint: string;
+  iconBackground: string;
   onPress: () => void;
+};
+
+export type LibraryHubTileProps = {
+  title: string;
+  detail: string;
+  icon: string;
+  accent: string;
+  onPress: () => void;
+  className?: string;
+};
+
+export type SectionPageHeaderProps = {
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  subtitleClassName?: string;
+  small?: boolean;
+  backLabel: string;
+  onBack: () => void;
+};
+
+export type SyncPausedCardProps = {
+  title: string;
+  description: string;
+  actionLabel: string;
+  onRetry: () => void;
+  retrying?: boolean;
+  className?: string;
 };

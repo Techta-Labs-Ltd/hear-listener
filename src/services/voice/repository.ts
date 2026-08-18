@@ -55,8 +55,7 @@ async function openVoiceDatabase() {
     await configureDatabase(database);
   } catch (error) {
     if (!isBusyError(error)) throw error;
-    // A stale connection from a previous process holds the file.
-    // Drop our connection, delete the database and re-import the seed.
+
     try {
       await database.closeAsync();
     } catch {}

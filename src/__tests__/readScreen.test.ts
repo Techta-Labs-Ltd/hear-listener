@@ -12,6 +12,7 @@ const preferences = {
   downloadedIds: ["morning-headlines"],
   voiceDiagnosticsEnabled: false,
   voiceConsentVersion: 1,
+  homeGuideDismissed: false,
 };
 
 function context(pathname: string, extra: object = {}) {

@@ -2,6 +2,7 @@ import type { ContentItem } from "./content";
 export const speedOptions = [0.75, 1, 1.25, 1.5, 2] as const;
 export type SpeedMultiplier = (typeof speedOptions)[number];
 export type RepeatMode = "on" | "off";
+export type SleepTimerOptionId = "15" | "30" | "end";
 export type PlaybackSnapshot = {
   current?: ContentItem;
   playing: boolean;

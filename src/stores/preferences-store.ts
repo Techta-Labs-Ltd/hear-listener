@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { safeAsyncStorage } from "@/lib/storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { useShallow } from "zustand/react/shallow";
@@ -15,6 +15,7 @@ export const initialPreferences: Preferences = {
   downloadedIds: [],
   voiceDiagnosticsEnabled: false,
   voiceConsentVersion: 1,
+  homeGuideDismissed: false,
 };
 export const usePreferencesStore = create<PreferencesStore>()(
   persist(
@@ -27,8 +28,8 @@ export const usePreferencesStore = create<PreferencesStore>()(
     }),
     {
       name: "hear-preferences",
-      version: 4,
-      storage: createJSONStorage(() => AsyncStorage),
+      version: 5,
+      storage: createJSONStorage(() => safeAsyncStorage),
       partialize: ({
         setupComplete,
         onboardingVersion,
@@ -40,6 +41,7 @@ export const usePreferencesStore = create<PreferencesStore>()(
         downloadedIds,
         voiceDiagnosticsEnabled,
         voiceConsentVersion,
+        homeGuideDismissed,
       }) => ({
         setupComplete,
         onboardingVersion,
@@ -51,6 +53,7 @@ export const usePreferencesStore = create<PreferencesStore>()(
         downloadedIds,
         voiceDiagnosticsEnabled,
         voiceConsentVersion,
+        homeGuideDismissed,
       }),
       migrate: migratePreferences,
       onRehydrateStorage: () => (state) => state?.setHydrated(true),
@@ -72,6 +75,7 @@ export function usePreferences() {
         downloadedIds,
         voiceDiagnosticsEnabled,
         voiceConsentVersion,
+        homeGuideDismissed,
       }) => ({
         setupComplete,
         onboardingVersion,
@@ -83,6 +87,7 @@ export function usePreferences() {
         downloadedIds,
         voiceDiagnosticsEnabled,
         voiceConsentVersion,
+        homeGuideDismissed,
       }),
     ),
   );
@@ -127,6 +132,10 @@ export function migratePreferences(stored: unknown): Preferences {
       typeof stored.voiceConsentVersion === "number"
         ? stored.voiceConsentVersion
         : initialPreferences.voiceConsentVersion,
+    homeGuideDismissed:
+      typeof stored.homeGuideDismissed === "boolean"
+        ? stored.homeGuideDismissed
+        : false,
   };
 }
 

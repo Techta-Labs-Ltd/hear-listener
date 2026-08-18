@@ -1,189 +1,161 @@
+import { useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useRef } from "react";
-import { Alert, type ScrollView as NativeScrollView } from "react-native";
-import { ScrollView, View } from "@/tw";
 import { AppScreen } from "@/components/ui/AppScreen";
-import { ListRow, ListSection, ToggleRow } from "@/components/ui/List";
 import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { AppText } from "@/components/ui/AppText";
-import { useVoice } from "@/hooks/useVoice";
-import { usePreferences } from "@/stores";
-import { routes } from "@/navigation/routes";
-import { settingsCopy as copy } from "@/utils/copy/settings";
-import { icons } from "@/utils/icons/app-icons";
-import { onboardingVoiceBridge } from "@/stores/onboarding-voice-store";
+import { Pressable, ScrollView, View } from "@/tw";
 import { useAccountAccess } from "@/hooks/useAccountAccess";
+import { usePlayback, usePreferences } from "@/stores";
+import { AccountSettingsView } from "./AccountSettingsView";
+import { VoiceSettingsView } from "./VoiceSettingsView";
+import { PlaybackSettingsView } from "./PlaybackSettingsView";
+import { AccessibilitySettingsView } from "./AccessibilitySettingsView";
+import { PrivacySettingsView } from "./PrivacySettingsView";
 
 export function SettingsScreen() {
   const router = useRouter();
-  const { section } = useLocalSearchParams<{ section?: string }>();
-  const scrollView = useRef<NativeScrollView>(null);
-  const sectionOffsets = useRef<Record<string, number>>({});
-  const voice = useVoice();
-  const { preferences, updatePreferences } = usePreferences();
+  const params = useLocalSearchParams<{ section?: string }>();
+  const [localSection, setLocalSection] = useState<string | null | undefined>(undefined);
+  const activeSection = localSection !== undefined ? localSection : (params.section ?? null);
+  const setActiveSection = (sec: string | null) => setLocalSection(sec);
   const account = useAccountAccess();
+  const { preferences } = usePreferences();
+  const playback = usePlayback();
 
-  function reopenOnboarding() {
-    Alert.alert(
-      copy.resetTitle,
-      "This restarts setup but keeps your saved stories, following, and downloads.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: copy.resetAction,
-          onPress: () => {
-            onboardingVoiceBridge.resetExperience();
-            updatePreferences({
-              setupComplete: false,
-              spokenGuidanceEnabled: false,
-            });
-            router.replace(routes.onboarding);
-          },
-        },
-      ],
-    );
+  if (activeSection === "account") {
+    return <AccountSettingsView onBack={() => setActiveSection(null)} />;
+  }
+  if (activeSection === "voice" || activeSection === "voice-mic") {
+    return <VoiceSettingsView onBack={() => setActiveSection(null)} />;
+  }
+  if (activeSection === "playback") {
+    return <PlaybackSettingsView onBack={() => setActiveSection(null)} />;
+  }
+  if (activeSection === "accessibility") {
+    return <AccessibilitySettingsView onBack={() => setActiveSection(null)} />;
+  }
+  if (activeSection === "privacy") {
+    return <PrivacySettingsView onBack={() => setActiveSection(null)} />;
   }
 
-  const status = (label: string) => (
-    <AppText variant="overline" tone="primary">
-      {label}
-    </AppText>
-  );
-
-  function scrollToRequestedSection() {
-    if (!section) return;
-
-    const y = sectionOffsets.current[section];
-    if (y === undefined) return;
-
-    scrollView.current?.scrollTo({ y, animated: false });
-  }
+  const accountName = account.profile?.displayName || "Optional account";
+  const accountDetail = account.profile?.email || "Sync listening across devices";
 
   return (
     <AppScreen>
-      <ScreenHeader
-        title={copy.title}
-        eyebrow={copy.eyebrow}
-        onBack={router.back}
-      />
+      <ScreenHeader title="Settings" eyebrow="PREFERENCES" onBack={router.back} />
       <ScrollView
-        ref={scrollView}
-        contentContainerClassName="w-full max-w-[720px] self-center gap-6 p-4 pb-12"
-        onContentSizeChange={scrollToRequestedSection}
+        contentContainerClassName="px-5 pt-4 pb-12 gap-6"
+        showsVerticalScrollIndicator={false}
       >
-        <ListSection label="Account">
-          <ListRow
-            icon={icons.person}
-            title={account.profile?.displayName ?? (account.profile ? "Hear! account" : "Optional account")}
-            detail={account.profile?.email ?? (account.profile ? `Connected with ${account.profile.provider}` : `Continue with ${account.provider === "apple" ? "Apple" : "Google"} or keep using Hear without an account.`)}
-            onPress={() => {
-              if (account.profile) {
-                Alert.alert("Sign out?", "Your saved listening stays on this device.", [
-                  { text: "Cancel", style: "cancel" },
-                  { text: "Sign out", style: "destructive", onPress: () => void account.signOut() },
-                ]);
-              } else {
-                void account.signIn();
-              }
-            }}
-            trailing={status(account.profile ? "SIGN OUT" : "SIGN IN")}
-          />
-          {account.error ? <AppText className="px-4 pb-4" tone="danger">{account.error}</AppText> : null}
-        </ListSection>
-        <View
-          onLayout={({ nativeEvent }) => {
-            sectionOffsets.current.connections = nativeEvent.layout.y;
-          }}
-        >
-          <ListSection label={copy.connections}>
-            <ListRow
-              icon={icons.audioOutput}
-              title={copy.audioOutputTitle}
-              detail={copy.audioOutputDetail}
-              trailing={status("ACTIVE")}
-            />
-            <ListRow
-              icon={icons.bluetooth}
-              title={copy.bluetoothTitle}
-              detail={copy.bluetoothDetail}
-              trailing={status("ADD")}
-            />
-            <ListRow
-              icon={icons.internet}
-              title={copy.internetTitle}
-              detail={copy.internetDetail}
-              trailing={status("ONLINE")}
-            />
-            <ListRow
-              icon={icons.wifi}
-              title={copy.wifiTitle}
-              detail={copy.wifiDetail}
-              trailing={status("CONNECT…")}
-            />
-          </ListSection>
+
+        <View className="gap-3">
+          <AppText variant="overline" tone="primary" className="tracking-[0.4px]">
+            ACCOUNT
+          </AppText>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={account.profile ? "Manage account" : "Sign in to optional account"}
+            accessibilityHint="Opens account settings and sync status."
+            onPress={() => setActiveSection("account")}
+            className="flex-row items-center justify-between rounded-[20px] border border-border/60 bg-surface p-5 active:opacity-85 shadow-sm"
+          >
+            <View className="flex-1 gap-1 pr-3">
+              <AppText className="font-body-bold text-base leading-5 text-ink">
+                {accountName}
+              </AppText>
+              <AppText tone="muted" className="text-xs leading-4">
+                {accountDetail}
+              </AppText>
+            </View>
+            <AppText className="font-body-bold text-xs leading-4 text-primary">
+              {account.profile ? "MANAGE" : "SIGN IN"}
+            </AppText>
+          </Pressable>
         </View>
-        <View
-          onLayout={({ nativeEvent }) => {
-            sectionOffsets.current.voice = nativeEvent.layout.y;
-          }}
-        >
-          <ListSection label={copy.voiceAudio}>
-            <ListRow
-              icon={icons.microphone}
-              title={copy.voiceTitle}
-              detail={copy.voiceDetail}
-              onPress={() => voice.startVoiceSession({ source: "contextualAction" })}
-              trailing={status("OPEN")}
-            />
-            <ListRow
-              icon={icons.playback}
-              title={copy.playbackTitle}
-              detail={copy.playbackDetail}
-              onPress={() => router.push(routes.player)}
-              trailing={status("OPEN")}
-            />
-          </ListSection>
+
+        <View className="gap-3">
+          <AppText variant="overline" tone="primary" className="tracking-[0.4px]">
+            VOICE AND AUDIO
+          </AppText>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Voice and microphone settings"
+            onPress={() => setActiveSection("voice")}
+            className="flex-row items-center justify-between rounded-[20px] border border-border/60 bg-surface p-5 active:opacity-85 shadow-sm"
+          >
+            <View className="flex-1 gap-1 pr-3">
+              <AppText className="font-body-bold text-base leading-5 text-ink">
+                Voice and microphone
+              </AppText>
+              <AppText tone="muted" className="text-xs leading-4">
+                Ready · UK English
+              </AppText>
+            </View>
+            <AppText className="text-xl text-muted">›</AppText>
+          </Pressable>
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Playback preferences"
+            onPress={() => setActiveSection("playback")}
+            className="flex-row items-center justify-between rounded-[20px] border border-border/60 bg-surface p-5 active:opacity-85 shadow-sm"
+          >
+            <View className="flex-1 gap-1 pr-3">
+              <AppText className="font-body-bold text-base leading-5 text-ink">
+                Playback preferences
+              </AppText>
+              <AppText tone="muted" className="text-xs leading-4">
+                {playback.speed === 1 ? "Normal speed" : `${playback.speed}× speed`} · No sleep timer
+              </AppText>
+            </View>
+            <AppText className="text-xl text-muted">›</AppText>
+          </Pressable>
         </View>
-        <View
-          onLayout={({ nativeEvent }) => {
-            sectionOffsets.current.experience = nativeEvent.layout.y;
-          }}
-        >
-          <ListSection label={copy.experience}>
-            <ToggleRow
-              title={copy.spokenNavigationTitle}
-              detail={copy.spokenNavigationDetail}
-              value={preferences.spokenGuidanceEnabled}
-              onChange={(spokenGuidanceEnabled) =>
-                updatePreferences({ spokenGuidanceEnabled })
-              }
-            />
-            <ListRow
-              icon={icons.accessibility}
-              title={copy.accessibilityTitle}
-              detail={copy.accessibilityDetail}
-              trailing={status("OPEN")}
-            />
-            <ListRow
-              icon={icons.location}
-              title={copy.locationTitle}
-              detail={preferences.town || copy.notSet}
-              trailing={status("OPEN")}
-            />
-            <ListRow
-              icon={icons.privacy}
-              title={copy.privacyTitle}
-              detail={copy.privacyDetail}
-              trailing={status("OPEN")}
-            />
-            <ListRow
-              icon={icons.repeat}
-              title={copy.resetTitle}
-              detail={copy.resetDescription}
-              onPress={reopenOnboarding}
-              trailing={status("RESTART")}
-            />
-          </ListSection>
+
+        <View className="gap-3">
+          <AppText variant="overline" tone="primary" className="tracking-[0.4px]">
+            EXPERIENCE
+          </AppText>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Accessibility settings"
+            onPress={() => setActiveSection("accessibility")}
+            className="flex-row items-center justify-between rounded-[20px] border border-border/60 bg-surface p-5 active:opacity-85 shadow-sm"
+          >
+            <View className="flex-1 gap-1 pr-3">
+              <AppText className="font-body-bold text-base leading-5 text-ink">
+                Accessibility
+              </AppText>
+              <AppText tone="muted" className="text-xs leading-4">
+                Contrast, motion, {preferences.spokenGuidanceEnabled ? "spoken feedback" : "silent"}
+              </AppText>
+            </View>
+            <AppText className="text-xl text-muted">›</AppText>
+          </Pressable>
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Privacy and location settings"
+            onPress={() => setActiveSection("privacy")}
+            className="flex-row items-center justify-between rounded-[20px] border border-border/60 bg-surface p-5 active:opacity-85 shadow-sm"
+          >
+            <View className="flex-1 gap-1 pr-3">
+              <AppText className="font-body-bold text-base leading-5 text-ink">
+                Privacy and location
+              </AppText>
+              <AppText tone="muted" className="text-xs leading-4">
+                Permissions and local area
+              </AppText>
+            </View>
+            <AppText className="text-xl text-muted">›</AppText>
+          </Pressable>
+        </View>
+
+        <View className="rounded-[20px] bg-voice-panel p-5">
+          <AppText className="font-body-bold text-sm leading-[18px] text-white">
+            Double-tap and say “Open voice settings.”
+          </AppText>
         </View>
       </ScrollView>
     </AppScreen>

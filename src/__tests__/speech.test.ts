@@ -1,5 +1,5 @@
 import * as Speech from "expo-speech";
-import { isUkLanguage, UkSpeechService, voiceScore } from "@/lib/voice/speech";
+import { isUkLanguage, UkSpeechService, voiceScore } from "@/services/voice/speech";
 
 jest.mock("expo-speech", () => ({
   getAvailableVoicesAsync: jest.fn(),

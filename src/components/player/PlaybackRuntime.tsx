@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { usePlaybackStore, useVoiceStore } from "@/stores";
 import { appHaptics } from "@/lib/haptics";
-import { ukSpeech } from "@/lib/voice/speech";
+import { ukSpeech } from "@/services/voice/speech";
 
 export function PlaybackRuntime() {
   const playing = usePlaybackStore((state) => state.playing);

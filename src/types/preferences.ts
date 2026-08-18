@@ -9,6 +9,7 @@ export type Preferences = {
   downloadedIds: string[];
   voiceDiagnosticsEnabled: boolean;
   voiceConsentVersion: number;
+  homeGuideDismissed: boolean;
 };
 
 export type PreferencesStore = Preferences & {

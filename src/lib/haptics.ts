@@ -4,7 +4,7 @@ async function safely(trigger: () => Promise<void>) {
   try {
     await trigger();
   } catch {
-    // Haptics are supplementary. Text and speech remain the primary feedback.
+
   }
 }
 

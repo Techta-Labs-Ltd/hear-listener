@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useAccountAccess } from "@/hooks/useAccountAccess";
-import { speechCoordinator } from "@/lib/voice/speech-coordinator";
+import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { useAccountCommandStore } from "@/stores/account-command-store";
 import { useVoice } from "@/hooks/useVoice";
 

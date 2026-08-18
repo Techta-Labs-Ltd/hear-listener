@@ -37,6 +37,9 @@ export const icons = {
   accessibility: "accessibility",
   privacy: "hand.raised.fill",
   topicArrow: "arrow.right",
+  search: "magnifyingglass",
+  plus: "plus",
+  queue: "list.bullet",
 } as const;
 
 export type AppIcon = (typeof icons)[keyof typeof icons];

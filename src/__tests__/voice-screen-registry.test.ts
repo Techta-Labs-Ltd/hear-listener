@@ -3,7 +3,7 @@ import {
   getScreenCommandExamples,
   getVoiceScreenDefinition,
   voiceScreenDefinitions,
-} from "@/lib/voice/screen-registry";
+} from "@/services/voice/screen-registry";
 import { initialPreferences } from "@/stores/preferences-store";
 
 const context = {

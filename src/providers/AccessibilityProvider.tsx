@@ -8,7 +8,7 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import { speechCoordinator } from "@/lib/voice/speech-coordinator";
+import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { usePreferencesStore } from "@/stores";
 
 type AccessibilityContextValue = {

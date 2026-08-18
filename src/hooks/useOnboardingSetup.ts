@@ -2,19 +2,29 @@ import { useRouter } from "expo-router";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useVoice } from "@/hooks/useVoice";
 import { useAccountAccess } from "@/hooks/useAccountAccess";
-import { speechCoordinator } from "@/lib/voice/speech-coordinator";
+import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { routes } from "@/navigation/routes";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { usePreferencesStore, useVoiceStore } from "@/stores";
 import { onboardingVoiceBridge, useOnboardingVoiceStore } from "@/stores/onboarding-voice-store";
-import type { OnboardingPhase, OnboardingScreenId } from "@/types";
+import type { AccountProvider, OnboardingPhase, OnboardingScreenId } from "@/types";
 
 const WELCOME_SPEECH =
-  "Welcome to Hear. Hear can read each screen aloud and respond to one voice command at a time. Double-tap anywhere to continue.";
-const PERMISSION_SPEECH =
-  "Voice access. Hear listens only after you double-tap and stops after one command. Double-tap anywhere to allow access and speak a command.";
+  "Welcome to Hear. Hear reads the app aloud and lets you control listening with short voice commands. Double-tap anywhere to begin voice setup.";
+const ACCESS_SPEECH =
+  "Voice access. Hear listens only after you call it. One command at a time, and the microphone is never left running. Double-tap to show microphone access, then choose Allow in your phone's permission dialog.";
+const TEST_SPEECH =
+  "Listening. Speak naturally. Say: Play my local news. Say cancel to stop.";
 const ACCOUNT_SPEECH =
-  "Your account is optional. Continue with your device account to sync Hear, or say not now to open Hear without signing in.";
+  "Optional account. Keep your listening with you. Say Apple, Google, or Not now.";
+
+const ACTIVE_VOICE_STATES = new Set([
+  "preparing",
+  "listening",
+  "resolving",
+  "executing",
+  "clarifying",
+]);
 
 export function useOnboardingSetup() {
   const router = useRouter();
@@ -48,24 +58,34 @@ export function useOnboardingSetup() {
     onboardingVoiceBridge.setGestureMode(
       screen === "welcome"
         ? "advanceWelcome"
-        : screen === "voicePermission"
+        : screen === "voiceAccess" || screen === "voiceTest"
           ? "startVoicePractice"
           : "inactive",
     );
     onboardingVoiceBridge.registerStep({
-      stepIndex: screen === "welcome" ? 0 : screen === "voicePermission" ? 1 : 2,
+      stepIndex: screen === "welcome" ? 0 : screen === "account" ? 2 : 1,
       totalSteps: 3,
-      title: screen === "welcome" ? "Welcome" : screen === "voicePermission" ? "Voice access" : "Optional account",
-      description: screen === "welcome"
-        ? "Listen without searching through screens."
-        : screen === "voicePermission"
-          ? "Speak when you choose."
-          : "Sync your listening or continue without an account.",
-      options: screen === "welcome"
-        ? ["Double-tap anywhere to continue"]
-        : screen === "voicePermission"
-          ? ["Double-tap to enable voice", "Continue without voice"]
-          : ["Continue with device account", "Not now"],
+      title:
+        screen === "welcome" ? "Welcome"
+          : screen === "voiceAccess" ? "Voice access"
+          : screen === "voiceTest" ? "Voice practice"
+          : "Optional account",
+      description:
+        screen === "welcome"
+          ? "Hear what matters. Skip the screens."
+          : screen === "voiceAccess"
+            ? "Hear listens only after you call it."
+            : screen === "voiceTest"
+              ? "Let's try one command."
+              : "Keep your listening with you.",
+      options:
+        screen === "welcome"
+          ? ["Double-tap anywhere to begin voice setup"]
+          : screen === "voiceAccess"
+            ? ["Double-tap to show microphone access"]
+            : screen === "voiceTest"
+              ? ["Say “Play my local news.”", "Say “cancel” to stop"]
+              : ["Continue with Apple", "Continue with Google", "Not now"],
     });
   }, [screen]);
 
@@ -79,7 +99,9 @@ export function useOnboardingSetup() {
       return;
     }
     accessibility.announce(
-      screen === "voicePermission" ? PERMISSION_SPEECH : ACCOUNT_SPEECH,
+      screen === "voiceAccess" ? ACCESS_SPEECH
+        : screen === "voiceTest" ? TEST_SPEECH
+        : ACCOUNT_SPEECH,
       `onboarding:${screen}`,
     );
   }, [accessibility, screen, updatePreferences]);
@@ -89,7 +111,7 @@ export function useOnboardingSetup() {
       state.gestureEvent?.id !== previous.gestureEvent?.id &&
       state.gestureEvent?.mode === "advanceWelcome"
     ) {
-      setScreen("voicePermission");
+      setScreen("voiceAccess");
     }
   }), []);
 
@@ -98,7 +120,8 @@ export function useOnboardingSetup() {
     if (!command || command.id === lastCommandId.current) return;
     lastCommandId.current = command.id;
     if (command.type === "back") {
-      setScreen((current) => current === "account" ? "voicePermission" : "welcome");
+      if (screen === "voiceTest") voice.close();
+      setScreen(screen === "account" || screen === "voiceTest" ? "voiceAccess" : "welcome");
       return;
     }
     if (screen === "account" && command.type === "skip") {
@@ -115,14 +138,28 @@ export function useOnboardingSetup() {
   }), [account, complete, screen, voice]);
 
   useEffect(() => useVoiceStore.subscribe((state, previous) => {
+    const sessionBecameActive =
+      ACTIVE_VOICE_STATES.has(state.state) && !ACTIVE_VOICE_STATES.has(previous.state);
+    if (screen === "voiceAccess" && sessionBecameActive) {
+      setScreen("voiceTest");
+      return;
+    }
     if (
-      screen === "voicePermission" &&
+      (screen === "voiceAccess" || screen === "voiceTest") &&
       state.state === "success" &&
       previous.state !== "success"
     ) {
       voiceReady.current = true;
       voice.close();
       setScreen("account");
+      return;
+    }
+
+    const sessionClosed =
+      (state.state === "idle" || state.state === "cancelled" || state.state === "error") &&
+      ACTIVE_VOICE_STATES.has(previous.state);
+    if (screen === "voiceTest" && sessionClosed && !voiceReady.current) {
+      setScreen("voiceAccess");
     }
   }), [screen, voice]);
 
@@ -155,15 +192,20 @@ export function useOnboardingSetup() {
     screen,
     phase,
     screenReaderEnabled: accessibility.screenReaderEnabled,
+    voiceState: voice.state,
+    voiceMessage: voice.message,
     announceCurrent,
-    advanceWelcome: () => setScreen("voicePermission"),
+    advanceWelcome: () => setScreen("voiceAccess"),
     startVoicePractice: () =>
       void voice.startVoiceSession({ source: "onboardingPractice" }),
-    back: () => setScreen(screen === "account" ? "voicePermission" : "welcome"),
+    back: () => {
+      if (screen === "voiceTest") voice.close();
+      setScreen(screen === "welcome" ? "welcome" : screen === "voiceAccess" ? "welcome" : "voiceAccess");
+    },
     continueWithoutVoice: () => setScreen("account"),
     account,
-    signIn: async () => {
-      const signedIn = await account.signIn();
+    signIn: async (provider?: AccountProvider) => {
+      const signedIn = await account.signIn(provider);
       if (signedIn) complete(voiceReady.current);
     },
     skipAccount: () => complete(voiceReady.current),

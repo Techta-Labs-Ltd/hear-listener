@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { accountService } from "@/services/account-service";
 import { useAccountStore } from "@/stores";
+import type { AccountProvider } from "@/types";
 
 function accountError(error: unknown): string {
   if (error instanceof Error) {
@@ -14,11 +15,11 @@ function accountError(error: unknown): string {
 
 export function useAccountAccess() {
   const account = useAccountStore();
-  const provider = accountService.providerForPlatform();
-  const signIn = useCallback(async () => {
+  const platformProvider = accountService.providerForPlatform();
+  const signIn = useCallback(async (provider?: AccountProvider) => {
     account.setStatus("signingIn");
     try {
-      const profile = await accountService.signIn(provider);
+      const profile = await accountService.signIn(provider ?? platformProvider);
       if (!profile) {
         account.setStatus("idle");
         return false;
@@ -29,10 +30,10 @@ export function useAccountAccess() {
       account.setStatus("error", accountError(error));
       return false;
     }
-  }, [account, provider]);
+  }, [account, platformProvider]);
   const signOut = useCallback(async () => {
     await accountService.signOut(account.profile?.provider);
     account.clear();
   }, [account]);
-  return { ...account, provider, signIn, signOut };
+  return { ...account, provider: platformProvider, signIn, signOut };
 }

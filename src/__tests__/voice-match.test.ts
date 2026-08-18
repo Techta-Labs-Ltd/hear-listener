@@ -1,5 +1,5 @@
 import { entities, stories, topics } from "@/data/catalogue";
-import { SQLiteVoiceResolver } from "@/lib/voice/resolver";
+import { SQLiteVoiceResolver } from "@/services/voice/resolver";
 import { initialPreferences } from "@/stores/preferences-store";
 import type { VoiceCandidate, VoiceTermRepository } from "@/types";
 

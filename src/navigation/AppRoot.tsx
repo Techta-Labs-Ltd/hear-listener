@@ -14,6 +14,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { MiniPlayer } from "@/components/player/MiniPlayer";
 import { PlaybackRuntime } from "@/components/player/PlaybackRuntime";
 import { AppActivityRuntime } from "@/components/player/AppActivityRuntime";
 import { AccountRuntime } from "@/components/account/AccountRuntime";
@@ -52,6 +53,7 @@ export function AppRoot() {
             <AccountRuntime />
             <StatusBar style="dark" />
             <RootNavigator />
+            <MiniPlayer />
           </VoiceProvider>
         ) : (
           <AnimatedLaunchScreen onComplete={() => setLaunchComplete(true)} />

@@ -10,7 +10,20 @@ export const colors = {
   success: "#177C57",
   danger: "#B74455",
   voiceCanvas: "#32145D",
+  voicePanel: "#21102F",
   voiceGlow: "#9A68DF",
+  voiceIndicator: "#C49BFF",
+  voiceMuted: "#D9CBED",
+  voiceTrack: "#6B557A",
+  progressInactive: "#D8D0DB",
+  finePrint: "#7A727C",
+  brandNight: "#1D0C2B",
+  brandDusk: "#271136",
+  brandViolet: "#3D1C55",
+  brandPlum: "#5B3370",
+  brandGlow: "#8E5CD8",
+  skeleton: "#E4DBE7",
+  skeletonSoft: "#ECE6EE",
 } as const;
 
 export const spacing = {
@@ -46,9 +59,9 @@ export const layout = {
 } as const;
 
 export const motion = {
-  launchEntrance: 500,
-  launchHold: 0,
+  launchEntrance: 180,
+  launchBrand: 470,
+  launchHold: 3200,
   launchExit: 150,
-  launchWave: 560,
   reduced: 150,
 } as const;

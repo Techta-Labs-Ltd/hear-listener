@@ -1,5 +1,5 @@
-import { phoneticKey, voiceTrigrams } from "@/lib/voice/normalize";
-import { VoicePackManager } from "@/lib/voice/updates";
+import { phoneticKey, voiceTrigrams } from "@/services/voice/normalize";
+import { VoicePackManager } from "@/services/voice/updates";
 import type { VoicePackManifest } from "@/types";
 
 const manifest: VoicePackManifest = {

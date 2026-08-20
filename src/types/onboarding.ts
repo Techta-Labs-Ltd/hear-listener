@@ -33,11 +33,6 @@ export type OnboardingProgressProps = {
   className?: string;
 };
 
-export type VoiceStatusBadgeProps = {
-  label: string;
-  className?: string;
-};
-
 export type PromptCardProps = {
   label: string;
   command: string;
@@ -66,13 +61,6 @@ export type InstructionFooterProps = {
   inverse?: boolean;
   titleClassName?: string;
   className?: string;
-};
-
-export type ListeningPanelProps = {
-
-  state: VoiceState;
-
-  message?: string;
 };
 
 export type ProviderButtonProps = {
@@ -116,4 +104,48 @@ export type OnboardingValidationState = {
   soundStatus: CapabilityStatus;
   locationStatus: CapabilityStatus;
   town: string;
+};
+
+export type OnboardingVoiceCommand =
+  | { type: "continue" }
+  | { type: "back" }
+  | { type: "skip" }
+  | { type: "read" }
+  | { type: "useSpokenSetup" }
+  | { type: "useScreenControls" }
+  | { type: "playSoundCheck" }
+  | { type: "cannotHear" }
+  | { type: "useLocation" }
+  | { type: "setTown"; locationId: string; name: string };
+
+export type OnboardingStepReadout = {
+  stepIndex: number;
+  totalSteps: number;
+  title: string;
+  description: string;
+  options: string[];
+};
+
+export type GestureEvent = {
+  id: number;
+  mode: Exclude<OnboardingGestureMode, "inactive">;
+};
+
+export type OnboardingVoiceStore = {
+  lastCommand?: OnboardingVoiceCommand & { id: number };
+  stepReadout?: OnboardingStepReadout;
+  gestureMode: OnboardingGestureMode;
+  gestureEvent?: GestureEvent;
+  gestureLessonActive: boolean;
+  gestureLessonCompleted: boolean;
+  voiceInvocationAllowed: boolean;
+  registerStep: (readout: OnboardingStepReadout) => void;
+  dispatch: (command: OnboardingVoiceCommand) => void;
+  take: () => (OnboardingVoiceCommand & { id: number }) | undefined;
+  setGestureMode: (mode: OnboardingGestureMode) => void;
+  reportGesture: () => OnboardingGestureMode;
+  setGestureLessonActive: (active: boolean) => void;
+  completeGestureLesson: () => void;
+  setVoiceInvocationAllowed: (allowed: boolean) => void;
+  resetExperience: () => void;
 };

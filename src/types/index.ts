@@ -10,3 +10,5 @@ export * from "./onboarding";
 export * from "./voice-updates";
 export * from "./voice-execution";
 export * from "./account";
+export * from "./accessibility";
+

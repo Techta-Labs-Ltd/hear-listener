@@ -1,14 +1,7 @@
-import { AccessibilityInfo } from "react-native";
 import { usePreferencesStore } from "@/stores";
+import type { SpeechPriority, SpeechRequest } from "@/types";
+import { AccessibilityInfo } from "react-native";
 import { ukSpeech } from "./speech";
-
-export type SpeechPriority = "screen" | "instruction" | "session";
-
-export type SpeechRequest = {
-  key: string;
-  text: string;
-  priority?: SpeechPriority;
-};
 
 const priorityRank: Record<SpeechPriority, number> = {
   screen: 1,

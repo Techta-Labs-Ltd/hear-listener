@@ -1,16 +1,8 @@
 import type {
-  PlaybackSnapshot,
-  Preferences,
+  VoiceScreenContext,
   VoiceScreenDefinition,
 } from "@/types";
 import { buildScreenReadout } from "@/utils/copy/readScreen";
-
-export type VoiceScreenContext = {
-  pathname: string;
-  playback: Pick<PlaybackSnapshot, "current" | "playing" | "progress" | "speed">;
-  preferences: Preferences;
-  screenReaderEnabled?: boolean;
-};
 
 const definitions: VoiceScreenDefinition<VoiceScreenContext>[] = [
   definition("onboarding", "Setup", (path) => path === "/onboarding", "Setup. Follow the spoken instructions.", ["continue", "go back"]),

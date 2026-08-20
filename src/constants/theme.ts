@@ -26,6 +26,12 @@ export const colors = {
   skeletonSoft: "#ECE6EE",
 } as const;
 
+export const artworkGradients = [
+  ["#A64E55", "#E7A17E"],
+  ["#0F6973", "#62B2AA"],
+  ["#4C3D8F", "#9C78D8"],
+] as const;
+
 export const spacing = {
   xxs: 4,
   xs: 8,
@@ -64,4 +70,38 @@ export const motion = {
   launchHold: 3200,
   launchExit: 150,
   reduced: 150,
+} as const;
+
+export const soundWave = {
+  defaultColors: [
+    colors.voiceIndicator,
+    colors.surface,
+    colors.voiceIndicator,
+    colors.brandGlow,
+  ] as const,
+  sizes: {
+    sm: {
+      minHeight: 3,
+      maxHeight: 14,
+      width: 2.5,
+      containerHeight: "h-3.5",
+      gap: "gap-[3px]",
+    },
+    md: {
+      minHeight: 4,
+      maxHeight: 20,
+      width: 3,
+      containerHeight: "h-5",
+      gap: "gap-1",
+    },
+    lg: {
+      minHeight: 6,
+      maxHeight: 28,
+      width: 4,
+      containerHeight: "h-7",
+      gap: "gap-1.5",
+    },
+  },
+  durations: [320, 260, 380, 290] as const,
+  initialHeights: [0.4, 0.8, 0.5, 0.7] as const,
 } as const;

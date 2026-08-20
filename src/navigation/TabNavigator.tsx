@@ -1,37 +1,32 @@
 import { SymbolView } from "@/components/ui/AppIcon";
 import { Tabs } from "expo-router";
-import type { ColorValue } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors, fontFamily } from "@/constants/theme";
-import { icons } from "@/utils/icons/app-icons";
 import { navigationCopy } from "@/utils/copy/navigation";
 
-const tabIcons = {
-  index: icons.homeTab,
-  explore: icons.discoverTab,
-  library: icons.libraryTab,
-} as const;
-function TabIcon({
-  name,
-  color,
-}: {
-  name: keyof typeof tabIcons;
-  color: ColorValue;
-}) {
-  return <SymbolView name={tabIcons[name]} size={22} tintColor={color} />;
-}
 export function TabNavigator() {
+  const insets = useSafeAreaInsets();
+  const bottomPadding = Math.max(8, insets.bottom);
+  const tabHeight = 60 + bottomPadding;
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarLabelStyle: { fontFamily: fontFamily.bodyStrong, fontSize: 11 },
+        tabBarLabelStyle: {
+          fontFamily: fontFamily.bodyStrong,
+          fontSize: 11,
+          fontWeight: "600",
+          marginTop: -2,
+        },
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
-          height: 72,
-          paddingBottom: 8,
+          borderTopWidth: 1,
+          height: tabHeight,
+          paddingBottom: bottomPadding,
           paddingTop: 8,
         },
       }}
@@ -40,27 +35,42 @@ export function TabNavigator() {
         name="index"
         options={{
           title: navigationCopy.home,
-          tabBarIcon: ({ color }) => <TabIcon name="index" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <SymbolView
+              name={focused ? "house.fill" : "house"}
+              size={24}
+              tintColor={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
           title: navigationCopy.discover,
-          tabBarIcon: ({ color }) => <TabIcon name="explore" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <SymbolView
+              name={focused ? "safari.fill" : "safari"}
+              size={24}
+              tintColor={color}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="library"
         options={{
           title: navigationCopy.library,
-          tabBarIcon: ({ color }) => <TabIcon name="library" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <SymbolView
+              name={focused ? "doc.text.fill" : "doc.text"}
+              size={24}
+              tintColor={color}
+            />
+          ),
         }}
       />
-      <Tabs.Screen
-        name="library/[section]"
-        options={{ href: null }}
-      />
+      <Tabs.Screen name="library/[section]" options={{ href: null }} />
     </Tabs>
   );
 }

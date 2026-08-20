@@ -17,3 +17,10 @@ export type AccountStore = {
   setProfile: (profile: AccountProfile) => void;
   clear: () => void;
 };
+
+export type AccountCommand = "signIn" | "signOut";
+export type AccountCommandEvent = { id: number; command: AccountCommand };
+export type AccountCommandStore = {
+  event?: AccountCommandEvent;
+  dispatch: (command: AccountCommand) => void;
+};

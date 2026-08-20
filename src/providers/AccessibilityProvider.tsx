@@ -10,15 +10,7 @@ import {
 } from "react";
 import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { usePreferencesStore } from "@/stores";
-
-type AccessibilityContextValue = {
-  screenReaderEnabled: boolean;
-  reduceMotionEnabled: boolean;
-  spokenNavigationEnabled: boolean;
-  setSpokenNavigationEnabled: (enabled: boolean) => void;
-  announce: (message: string, key?: string) => void;
-  stopSpeaking: () => void;
-};
+import type { AccessibilityContextValue } from "@/types";
 
 const AccessibilityContext = createContext<
   AccessibilityContextValue | undefined

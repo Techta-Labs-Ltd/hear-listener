@@ -7,8 +7,11 @@ export type ResponsiveLayout = {
   deviceClass: DeviceClass;
   isLandscape: boolean;
   isLargeText: boolean;
+  isCompact: boolean;
+  isTablet: boolean;
   reduceMotion: boolean;
   gutter: number;
   contentWidth: number;
+  cardWidth: number;
   columns: number;
 };

@@ -1,1 +1,1 @@
-export { SleepTimerSheet as default } from "@/features/player/screens/SleepTimerSheet";
+export { SleepTimerScreen as default } from "@/screens/SleepTimerScreen";

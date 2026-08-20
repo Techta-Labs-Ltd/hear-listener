@@ -7,14 +7,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Animated, Easing, StyleSheet, useWindowDimensions } from "react-native";
+import { Animated, Easing, Platform, StyleSheet, useWindowDimensions } from "react-native";
 import { SvgXml } from "react-native-svg";
 
 const WAVE_DIM_SVG = `<svg width="513" height="72" viewBox="0 0 513 72" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.12" d="M0.361458 70.5795C130.452 -27.4889 238.528 145.632 512.719 0.530644" stroke="#B58BE9" stroke-width="1.20084"/></svg>`;
-
 const WAVE_BRIGHT_SVG = `<svg width="513" height="72" viewBox="0 0 513 72" fill="none" xmlns="http://www.w3.org/2000/svg"><path opacity="0.48" d="M0.421593 70.6533C130.485 -27.3948 238.538 145.69 512.672 0.618955" stroke="#C6A6F2" stroke-width="1.40069"/></svg>`;
-
 const WAVE_ASPECT = 72 / 513;
+const useNativeDriver = Platform.OS !== "web";
 
 export function AnimatedLaunchScreen({ onComplete }: AnimatedLaunchScreenProps) {
   const { reduceMotionEnabled } = useAppAccessibility();
@@ -46,7 +45,7 @@ export function AnimatedLaunchScreen({ onComplete }: AnimatedLaunchScreenProps) 
         Animated.timing(exitOpacity, {
           toValue: 0,
           duration: motion.reduced,
-          useNativeDriver: true,
+          useNativeDriver,
         }),
       ]);
     } else {
@@ -55,19 +54,19 @@ export function AnimatedLaunchScreen({ onComplete }: AnimatedLaunchScreenProps) 
           toValue: 1,
           duration: motion.launchEntrance,
           easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
+          useNativeDriver,
         }),
         Animated.timing(brand, {
           toValue: 1,
           duration: motion.launchBrand,
           easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
+          useNativeDriver,
         }),
         Animated.delay(motion.launchHold),
         Animated.timing(exitOpacity, {
           toValue: 0,
           duration: motion.launchExit,
-          useNativeDriver: true,
+          useNativeDriver,
         }),
       ]);
     }
@@ -102,13 +101,13 @@ export function AnimatedLaunchScreen({ onComplete }: AnimatedLaunchScreenProps) 
       <View
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
-        pointerEvents="none"
         style={{
           position: "absolute",
           left: -62,
           top: waveTop,
           width: waveWidth,
           height: waveHeight,
+          pointerEvents: "none",
         }}
       >
         <SvgXml xml={WAVE_DIM_SVG} width={waveWidth} height={waveHeight} />
@@ -116,8 +115,10 @@ export function AnimatedLaunchScreen({ onComplete }: AnimatedLaunchScreenProps) 
       <Animated.View
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
-        pointerEvents="none"
-        style={[StyleSheet.absoluteFill, { opacity: brand }]}
+        style={[
+          StyleSheet.absoluteFill,
+          { opacity: brand, pointerEvents: "none" as const },
+        ]}
       >
         <LinearGradient
           colors={[colors.brandDusk, colors.brandViolet, colors.brandPlum]}

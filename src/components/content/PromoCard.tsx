@@ -41,33 +41,41 @@ export function PromoCard({
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         style={{
-          minHeight: compact ? 112 : description ? 172 : 168,
-          borderRadius: 24,
-          padding: 24,
+          minHeight: compact ? 100 : description ? 160 : 150,
+          borderRadius: 22,
+          padding: 20,
           justifyContent: "space-between",
         }}
       >
-        <View className="gap-3">
+        <View className="gap-2 sm:gap-3">
           <AppText variant="overline" className="tracking-[0.4px] text-voice-muted">
             {eyebrow}
           </AppText>
           <AppText
             className={cn(
               "font-display text-white",
-              description ? "text-[25px] leading-[30px]" : "text-2xl leading-[29px]",
+              description
+                ? "text-[21px] sm:text-[25px] leading-[26px] sm:leading-[30px]"
+                : "text-[20px] sm:text-2xl leading-[25px] sm:leading-[29px]",
             )}
           >
             {title}
           </AppText>
           {description ? (
-            <AppText className="text-[13px] leading-4 text-voice-muted" numberOfLines={2}>
+            <AppText
+              className="text-xs sm:text-[13px] leading-4 text-voice-muted"
+              numberOfLines={2}
+            >
               {description}
             </AppText>
           ) : null}
         </View>
-        <View className="flex-row items-end justify-between">
+        <View className="mt-2 flex-row items-end justify-between">
           {meta ? (
-            <AppText className="text-xs leading-[15px] text-voice-muted" numberOfLines={1}>
+            <AppText
+              className="text-[11px] sm:text-xs leading-[15px] text-voice-muted"
+              numberOfLines={1}
+            >
               {meta}
             </AppText>
           ) : (
@@ -79,10 +87,16 @@ export function PromoCard({
               importantForAccessibility="no-hide-descendants"
               className={cn(
                 "items-center justify-center rounded-full bg-surface",
-                tone === "editor" ? "h-[46px] w-[46px]" : "h-12 w-12",
+                tone === "editor"
+                  ? "h-10 w-10 sm:h-[46px] sm:w-[46px]"
+                  : "h-10 w-10 sm:h-12 sm:w-12",
               )}
             >
-              <SymbolView name={icons.play} size={tone === "editor" ? 16 : 18} tintColor={colors.voicePanel} />
+              <SymbolView
+                name={icons.play}
+                size={tone === "editor" ? 15 : 17}
+                tintColor={colors.voicePanel}
+              />
             </View>
           ) : null}
         </View>

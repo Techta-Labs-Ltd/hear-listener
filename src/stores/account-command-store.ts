@@ -1,11 +1,5 @@
 import { create } from "zustand";
-
-type AccountCommand = "signIn" | "signOut";
-type AccountCommandEvent = { id: number; command: AccountCommand };
-type AccountCommandStore = {
-  event?: AccountCommandEvent;
-  dispatch: (command: AccountCommand) => void;
-};
+import type { AccountCommand, AccountCommandStore } from "@/types";
 
 let commandId = 0;
 export const useAccountCommandStore = create<AccountCommandStore>((set) => ({

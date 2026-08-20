@@ -1,6 +1,5 @@
 import { stories, topics } from "@/data/catalogue";
-import type { OnboardingStepReadout } from "@/stores/onboarding-voice-store";
-import type { PlaybackSnapshot, Preferences } from "@/types";
+import type { OnboardingStepReadout, PlaybackSnapshot, Preferences } from "@/types";
 import { parseLibrarySection } from "@/navigation/routes";
 import { formatClock } from "@/utils/text";
 

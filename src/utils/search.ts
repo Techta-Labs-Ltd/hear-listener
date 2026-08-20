@@ -1,41 +1,43 @@
-import { entities, stories, topics } from "@/data/catalogue";
-import type { ContentItem, Entity } from "@/types";
+import { entities, stories } from "@/data/catalogue";
+import type { CatalogueSearchResults, ContentItem, Entity } from "@/types";
 
-export type CatalogueSearchResults = {
-  shows: Entity[];
-  audio: ContentItem[];
-};
+export function searchCatalogue(rawQuery: string): CatalogueSearchResults {
+  const query = rawQuery.trim().toLowerCase();
+  if (!query) {
+    return {
+      audio: stories.slice(0, 4),
+      shows: entities.slice(0, 2),
+    };
+  }
 
-export function searchCatalogue(query: string): CatalogueSearchResults {
-  const words = query
-    .trim()
-    .toLowerCase()
-    .split(/\s+/)
-    .filter((word) => word.length > 1);
-  if (!words.length) return { shows: entities, audio: stories };
+  const terms = query.split(/\s+/);
+  const audio = stories.filter((story) => {
+    const title = story.title.toLowerCase();
+    const creator = story.creator.toLowerCase();
+    const publication = story.publication.toLowerCase();
+    const desc = story.description?.toLowerCase() ?? "";
+    return terms.some(
+      (term) =>
+        title.includes(term) ||
+        creator.includes(term) ||
+        publication.includes(term) ||
+        desc.includes(term),
+    );
+  });
 
-  const has = (value: string) =>
-    words.some((word) => value.toLowerCase().includes(word));
+  const shows = entities.filter((entity) => {
+    const name = entity.name.toLowerCase();
+    const desc = entity.description?.toLowerCase() ?? "";
+    return terms.some((term) => name.includes(term) || desc.includes(term));
+  });
 
-  const shows = entities.filter(
-    (entity) =>
-      has(entity.name) ||
-      has(entity.kind) ||
-      (entity.description ? has(entity.description) : false),
-  );
-  const audio = stories.filter(
-    (item) =>
-      has(item.title) ||
-      has(item.creator) ||
-      has(item.publication) ||
-      (item.topicIds ?? []).some((topicId) => {
-        const topicName = topics.find((topic) => topic.id === topicId)?.name;
-        return topicName ? has(topicName) : false;
-      }),
-  );
-  return { shows, audio };
+  return { audio, shows };
 }
 
 export function firstStoryForEntity(entity: Entity): ContentItem | undefined {
-  return stories.find((item) => item.creator === entity.name);
+  return (
+    stories.find((s) => s.creator.toLowerCase() === entity.name.toLowerCase()) ??
+    stories.find((s) => s.publication.toLowerCase() === entity.name.toLowerCase()) ??
+    stories[0]
+  );
 }

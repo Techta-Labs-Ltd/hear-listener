@@ -1,4 +1,5 @@
-import { speechCoordinator, type SpeechPriority } from "./speech-coordinator";
+import { speechCoordinator } from "./speech-coordinator";
+import type { SpeechPriority } from "@/types";
 
 export function voiceAnnounce(
   message: string,

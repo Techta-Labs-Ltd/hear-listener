@@ -33,7 +33,7 @@ export function OnboardingHero({
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
           className="absolute inset-0"
-          pointerEvents="none"
+          style={{ pointerEvents: "none" }}
         >
           <SvgXml xml={HILLS_SVG} width="100%" height="100%" preserveAspectRatio="none" />
         </View>
@@ -46,8 +46,7 @@ export function OnboardingHero({
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
           className="absolute right-0 left-0"
-          style={{ bottom: -24 }}
-          pointerEvents="none"
+          style={{ bottom: -24, pointerEvents: "none" }}
         >
           <SvgXml xml={WAVE_SVG} width="100%" height={55} preserveAspectRatio="none" />
         </View>

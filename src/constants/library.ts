@@ -6,3 +6,10 @@ export const librarySections: readonly LibrarySection[] = [
   "downloads",
   "history",
 ];
+
+export const librarySectionTitle: Record<LibrarySection, string> = {
+  saved: "Saved audio",
+  following: "People you follow",
+  downloads: "Downloads",
+  history: "History",
+};

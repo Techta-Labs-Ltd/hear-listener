@@ -1,1 +1,1 @@
-export { QueueScreen as default } from "@/features/player/screens/QueueScreen";
+export { QueueScreen as default } from "@/screens/QueueScreen";

@@ -1,6 +1,6 @@
 import type { ContentItem, Entity, LibrarySection, Topic } from "./content";
 import type { Preferences } from "./preferences";
-import type { SpeedMultiplier } from "./playback";
+import type { PlaybackSnapshot, SpeedMultiplier } from "./playback";
 
 export type VoiceState =
   | "idle"
@@ -39,11 +39,43 @@ export type VoiceScreenDefinition<Context = unknown> = {
   commands: readonly VoiceCommandExample[];
 };
 
+export type SpeechPriority = "screen" | "instruction" | "session";
+
+export type SpeechRequest = {
+  key: string;
+  text: string;
+  priority?: SpeechPriority;
+};
+
+export type VoiceScreenContext = {
+  pathname: string;
+  playback: Pick<PlaybackSnapshot, "current" | "playing" | "progress" | "speed">;
+  preferences: Preferences;
+  screenReaderEnabled?: boolean;
+};
+
 export type VoiceInvocationSource =
   | "doubleTap"
   | "accessibilityAction"
   | "contextualAction"
-  | "onboardingPractice";
+  | "onboardingPractice"
+  | "eventTrigger";
+
+export type VoiceTriggerEvent = {
+  source?: VoiceInvocationSource;
+  announceLocation?: boolean;
+};
+
+export type VoiceEventListener = (event: VoiceTriggerEvent) => void;
+
+export type ActiveVoiceSession = {
+  id: string;
+  controller: AbortController;
+  finalHandled: boolean;
+  startedAt: number;
+  speechDetected: boolean;
+  playbackWasPlaying: boolean;
+};
 
 export type VoiceStore = {
   state: VoiceState;
@@ -251,6 +283,13 @@ export type VoiceResolveRequest = {
 export interface VoiceResolver {
   resolve(request: VoiceResolveRequest): Promise<VoiceResolution>;
 }
+export type ScreenVoiceContext = {
+  title?: string;
+  orientation?: string;
+  readout?: string | (() => string);
+  commands?: string[];
+};
+
 export type VoiceContextValue = {
   state: VoiceState;
   sessionId?: string;
@@ -260,6 +299,8 @@ export type VoiceContextValue = {
   choices: VoiceChoice[];
   errorCode?: string;
   retryable: boolean;
+  activeScreen?: ScreenVoiceContext | null;
+  registerScreen?: (screen: ScreenVoiceContext) => () => void;
   startVoiceSession: (options: { source: VoiceInvocationSource }) => Promise<void>;
   stop: () => void;
   retry: () => Promise<void>;
@@ -290,3 +331,16 @@ export type VoiceActionDefinition = {
   confirmation: boolean;
   slotSchema: string;
 };
+
+export type PanelPhase = "initializing" | "listening" | "working";
+
+export type ListeningPanelProps = {
+  state: VoiceState;
+  message?: string;
+};
+
+export type VoiceStatusBadgeProps = {
+  label: string;
+  className?: string;
+};
+

@@ -9,7 +9,10 @@ import type {
   ViewProps,
   ViewStyle,
 } from "react-native";
-import type { ContentItem, Topic } from "./content";
+import type { ContentItem, Entity, Topic } from "./content";
+import { icons } from "@/utils/icons/app-icons";
+
+export type AppIcon = (typeof icons)[keyof typeof icons];
 
 export type HearLogoProps = {
   size?: number;
@@ -32,6 +35,10 @@ export type AppIconProps = {
 
 export type AppScreenProps = ViewProps & {
   className?: string;
+  screenTitle?: string;
+  screenOrientation?: string;
+  screenReadout?: string | (() => string);
+  voiceCommands?: string[];
 };
 
 export type AppTextTone =
@@ -206,8 +213,50 @@ export type OfflineNoticeProps = {
 };
 
 export type SkeletonBlockProps = {
-  tone?: "default" | "soft";
+  tone?: "default" | "soft" | "dark";
   className?: string;
+};
+
+export type ShimmerProps = {
+  className?: string;
+  children?: ReactNode;
+};
+
+export type ShimmerBlockProps = {
+  className?: string;
+  tone?: "default" | "soft" | "dark";
+};
+
+export type OptionRowProps = {
+  label: string;
+  selected: boolean;
+  onSelect: () => void;
+};
+
+export type OnlineDiscoverContentProps = {
+  editorPick?: ContentItem;
+  tonight?: ContentItem;
+};
+
+export type ShowResultProps = {
+  entity: Entity;
+  onPlay: () => void;
+};
+
+export type PlayingPlayerProps = {
+  current: ContentItem;
+};
+
+export type FinishedPlayerProps = {
+  current: ContentItem;
+};
+
+export type PlayingCardProps = {
+  item: ContentItem;
+};
+
+export type QueueRowProps = {
+  item: ContentItem;
 };
 
 export type VoiceTipProps = {
@@ -251,5 +300,15 @@ export type SyncPausedCardProps = {
   actionLabel: string;
   onRetry: () => void;
   retrying?: boolean;
+  className?: string;
+};
+
+export type SoundWaveSize = "sm" | "md" | "lg";
+
+export type SoundWaveBarsProps = {
+  playing?: boolean;
+  barCount?: number;
+  size?: SoundWaveSize;
+  colors?: readonly string[] | string[];
   className?: string;
 };

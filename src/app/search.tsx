@@ -1,1 +1,1 @@
-export { SearchScreen as default } from "@/features/discover/screens/SearchScreen";
+export { SearchScreen as default } from "@/screens/SearchScreen";

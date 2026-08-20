@@ -6,6 +6,8 @@ const BASE = "http://localhost:8081";
 const OUT = path.resolve(process.cwd(), ".validation", "responsive");
 
 const VIEWPORTS = [
+  { name: "itel-a56-360x720", width: 360, height: 720 },
+  { name: "android-small-360", width: 360, height: 640 },
   { name: "mobile-390", width: 390, height: 844 },
   { name: "mobile-430", width: 430, height: 932 },
   { name: "tablet-768", width: 768, height: 1024 },

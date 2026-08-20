@@ -1,1 +1,1 @@
-export { TopicScreen as default } from "@/features/discover/screens/TopicScreen";
+export { TopicScreen as default } from "@/screens/TopicScreen";

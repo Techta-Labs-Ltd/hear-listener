@@ -28,21 +28,25 @@ export function StoryTile({ item, className }: StoryTileProps) {
       <View
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
-        className="h-[120px] w-full items-center justify-center rounded-[14px]"
+        className="h-[105px] sm:h-[120px] w-full items-center justify-center rounded-[14px]"
         style={{ backgroundColor: item.color || "#0F7B7A" }}
       >
-        <AppText className="font-display text-[22px] font-bold tracking-wider text-white">
+        <AppText className="font-display text-[20px] sm:text-[22px] font-bold tracking-wider text-white">
           {topic}
         </AppText>
       </View>
       <View className="pt-3 pb-1">
         <AppText
-          className="font-body-bold text-[14px] leading-[18px] text-ink"
+          className="font-body-bold text-[13px] sm:text-[14px] leading-[17px] sm:leading-[18px] text-ink"
           numberOfLines={2}
         >
           {item.title}
         </AppText>
-        <AppText tone="muted" className="mt-1.5 text-[12px] leading-4 text-[#665F69]" numberOfLines={1}>
+        <AppText
+          tone="muted"
+          className="mt-1 sm:mt-1.5 text-[11px] sm:text-[12px] leading-4 text-[#665F69]"
+          numberOfLines={1}
+        >
           {item.duration} · {item.creator}
         </AppText>
       </View>

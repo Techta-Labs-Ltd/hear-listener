@@ -1,13 +1,12 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
-import { VoiceStatusBadge } from "@/components/voice/VoiceStatusBadge";
 import { AppleSignInButton, GoogleSignInButton } from "@/components/onboarding/ProviderButtons";
 import { InstructionFooter } from "@/components/onboarding/InstructionFooter";
 import { Pressable, ScrollView, View } from "@/tw";
 import type { AccountStepProps } from "@/types";
 
-export function AccountStep({ signingIn, error, onSignIn, onSkip }: AccountStepProps) {
+export function AccountStep({ screenReaderEnabled, signingIn, error, onSignIn, onSkip }: AccountStepProps) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -35,40 +34,37 @@ export function AccountStep({ signingIn, error, onSignIn, onSkip }: AccountStepP
             {error}
           </AppText>
         ) : null}
-        <View className="mt-[34px] gap-4 rounded-[24px] bg-voice-panel p-[22px]">
-          <VoiceStatusBadge label="HEAR IS LISTENING" />
-          <AppText className="font-body-bold text-base leading-5 text-white">
-            Say “Apple,” “Google,” or “Not now.”
-          </AppText>
+
+        <View className="mt-[34px] gap-4">
+          <AppleSignInButton
+            loading={signingIn}
+            onPress={() => onSignIn("apple")}
+          />
+          <GoogleSignInButton
+            loading={signingIn}
+            onPress={() => onSignIn("google")}
+          />
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Not now"
+            accessibilityHint="Skips sign-in and opens Hear without an account."
+            onPress={onSkip}
+            className="min-h-12 items-center justify-center rounded-2xl border border-border bg-surface px-6 active:opacity-70"
+          >
+            <AppText className="font-body-bold text-base text-primary">Not now</AppText>
+          </Pressable>
         </View>
-        <AppleSignInButton
-          loading={signingIn}
-          onPress={() => onSignIn("apple")}
-          className="mt-[40px]"
-        />
-        <GoogleSignInButton
-          loading={signingIn}
-          onPress={() => onSignIn("google")}
-          className="mt-4"
-        />
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Not now"
-          accessibilityHint="Skips sign-in and opens Hear without an account."
-          onPress={onSkip}
-          className="mt-6 min-h-12 items-center justify-center active:opacity-70"
-        >
-          <AppText className="font-body-bold text-base leading-5 text-primary">Not now</AppText>
-        </Pressable>
+
+        <View className="flex-1" />
+
         <InstructionFooter
           className="mt-[36px]"
-          titleClassName="font-body-bold text-sm leading-[17px]"
-          title="Voice chooses the provider."
-          subtitle="Your phone completes secure authorization."
-          notes={[
-            "Visible provider controls remain for touch and screen readers.",
-            "Use system Google and Apple components in production.",
-          ]}
+          title={
+            screenReaderEnabled
+              ? "Select an option above to continue"
+              : "Choose an account or select Not now"
+          }
+          subtitle="You can sign in or create an account at any time in Settings."
         />
       </View>
     </ScrollView>

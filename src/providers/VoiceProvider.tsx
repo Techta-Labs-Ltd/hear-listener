@@ -19,7 +19,7 @@ import { VoiceGestureLayer } from "@/components/voice/VoiceGestureLayer";
 import { PLAYBACK_EXECUTORS, VOICE_TIMING } from "@/constants/voice";
 import { entities, stories, topics } from "@/data/catalogue";
 import { appHaptics } from "@/lib/haptics";
-import { topicRoute } from "@/navigation/routes";
+import { routes, topicRoute } from "@/navigation/routes";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { voiceAnnounce } from "@/services/voice/announce";
 import {
@@ -254,6 +254,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
       const id = generateVoiceSessionId();
       const controller = new AbortController();
+      const screenSnapshot = activeScreenRef.current;
       active.current = {
         id,
         controller,
@@ -261,6 +262,8 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         startedAt: Date.now(),
         speechDetected: false,
         playbackWasPlaying,
+        source: _source,
+        screenSnapshot: screenSnapshot ? { ...screenSnapshot } : null,
       };
 
       const supported = await isSpeechRecognitionSupported();
@@ -404,12 +407,16 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       const started = Date.now();
       try {
         const preferences = usePreferencesStore.getState();
+        const snapshotPath =
+          session.screenSnapshot?.pathname ??
+          activeScreenRef.current?.pathname ??
+          activeScreenRef.current?.title;
         const result = await voiceResolver.resolve({
           sessionId: id,
           hypotheses,
           signal: session.controller.signal,
           context: {
-            currentPath: activeScreenRef.current?.title,
+            currentPath: snapshotPath,
             preferences,
             stories,
             topics,

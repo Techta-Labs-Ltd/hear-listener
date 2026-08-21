@@ -5,6 +5,7 @@ import { ScreenHeader } from "@/components/ui/ScreenHeader";
 import { AppText } from "@/components/ui/AppText";
 import { Pressable, ScrollView, View } from "@/tw";
 import { useAccountAccess } from "@/hooks/useAccountAccess";
+import { usePlayback, usePreferences } from "@/stores";
 import { routes } from "@/navigation/routes";
 import { safeBack } from "@/utils/navigation";
 import { AccountSettingsView } from "@/components/settings/AccountSettingsView";

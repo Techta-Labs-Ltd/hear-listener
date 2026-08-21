@@ -1,7 +1,6 @@
-import type { Router } from "expo-router";
 import { routes } from "@/navigation/routes";
 
-export function safeBack(router: Router, fallback: string = routes.home): void {
+export function safeBack(router: any, fallback: string = routes.home): void {
   try {
     if (router.canGoBack()) {
       router.back();

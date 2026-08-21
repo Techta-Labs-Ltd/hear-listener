@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Platform } from "react-native";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { AppText } from "@/components/ui/AppText";
 import { OptionRow } from "@/components/ui/OptionRow";
@@ -21,11 +21,15 @@ export function SleepTimerScreen() {
   const playback = usePlayback();
   const [selection, setSelection] = useState<SleepTimerOptionId>("30");
 
+  const pathname = usePathname();
   useRegisterScreenVoice({
+    id: "player",
+    pathname,
     title: "Sleep Timer",
     orientation:
       "Sleep timer. Choose 15 minutes, 30 minutes, 45 minutes, 60 minutes, or end of story, or dismiss.",
     commands: ["set sleep timer to 30 minutes", "cancel sleep timer", "close"],
+    voiceEnabled: true,
   });
 
   const applyTimer = () => {

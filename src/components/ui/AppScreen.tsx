@@ -1,6 +1,8 @@
+import { usePathname } from "expo-router";
 import { SafeAreaView, View } from "@/tw";
 import type { AppScreenProps } from "@/types";
 import { useRegisterScreenVoice } from "@/hooks/useVoice";
+import { getVoiceScreenDefinition } from "@/services/voice/screen-registry";
 
 export function AppScreen({
   children,
@@ -11,11 +13,22 @@ export function AppScreen({
   voiceCommands,
   ...props
 }: AppScreenProps) {
+  const pathname = usePathname();
+  const screenId = (() => {
+    try {
+      return getVoiceScreenDefinition(pathname).id;
+    } catch {
+      return undefined;
+    }
+  })();
   useRegisterScreenVoice({
+    id: screenId,
+    pathname,
     title: screenTitle,
     orientation: screenOrientation,
     readout: screenReadout,
     commands: voiceCommands,
+    voiceEnabled: true,
   });
 
   return (

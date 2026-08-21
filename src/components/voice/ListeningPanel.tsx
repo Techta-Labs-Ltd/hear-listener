@@ -20,12 +20,20 @@ function phaseFor(state: VoiceState): PanelPhase {
 export function ListeningPanel({ state, message }: ListeningPanelProps) {
   const insets = useSafeAreaInsets();
   const { reduceMotionEnabled } = useAppAccessibility();
+  const isError = state === "error" || state === "cancelled";
   const phase = phaseFor(state);
-  const copy = LISTENING_PHASE_COPY[phase];
+  const copy = isError
+    ? {
+        badge: "TRY AGAIN",
+        title: "I didn’t hear that.",
+        sub: message || "Double-tap anywhere to listen again.",
+      }
+    : LISTENING_PHASE_COPY[phase];
+
   const [progress] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
-    if (phase !== "listening") {
+    if (phase !== "listening" || isError) {
       progress.setValue(0);
       return;
     }
@@ -42,7 +50,7 @@ export function ListeningPanel({ state, message }: ListeningPanelProps) {
     });
     animation.start();
     return () => animation.stop();
-  }, [phase, progress, reduceMotionEnabled]);
+  }, [isError, phase, progress, reduceMotionEnabled]);
 
   return (
     <LinearGradient
@@ -59,26 +67,26 @@ export function ListeningPanel({ state, message }: ListeningPanelProps) {
       <View
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
-        className="mt-3 h-1 w-[76px] self-center rounded-full bg-voice-muted opacity-65"
+        className="mt-3 h-1 w-[64px] self-center rounded-full bg-voice-muted opacity-65"
       />
       <View className="mt-4 sm:mt-7 px-5 sm:px-6">
         <VoiceStatusBadge label={copy.badge} />
         <AppText
           accessibilityLiveRegion="polite"
-          className="mt-4 sm:mt-[28px] font-display text-[28px] sm:text-[36px] leading-[34px] sm:leading-[44px] text-white"
+          className="mt-4 sm:mt-[28px] font-display text-[32px] sm:text-[38px] leading-[36px] sm:leading-[44px] text-white"
         >
           {copy.title}
         </AppText>
-        <AppText className="mt-2 sm:mt-[14px] text-[14px] sm:text-[16px] leading-[19px] sm:leading-[21px] text-voice-muted">
+        <AppText className="mt-2 sm:mt-[12px] text-[15px] sm:text-[16px] leading-[20px] sm:leading-[21px] text-voice-muted">
           {message && phase === "working" ? message : copy.sub}
         </AppText>
-        {phase === "listening" ? (
+        {phase === "listening" && !isError ? (
           <>
             <View
               accessible
               accessibilityRole="progressbar"
               accessibilityLabel="Listening time before the session closes"
-              className="mt-4 sm:mt-[36px] h-1 overflow-hidden rounded-full bg-voice-track"
+              className="mt-5 sm:mt-[32px] h-1.5 overflow-hidden rounded-full bg-voice-track"
             >
               <Animated.View
                 accessibilityElementsHidden
@@ -92,19 +100,19 @@ export function ListeningPanel({ state, message }: ListeningPanelProps) {
                 }}
               />
             </View>
-            <AppText className="mt-3 sm:mt-[18px] text-xs sm:text-sm leading-[16px] sm:leading-[17px] text-voice-muted">
+            <AppText className="mt-3 sm:mt-[16px] text-[13px] sm:text-sm leading-[16px] sm:leading-[17px] text-voice-muted">
               No speech: a gentle reminder at 4 seconds.
             </AppText>
-            <AppText className="mt-1.5 sm:mt-[8px] text-xs sm:text-sm leading-[16px] sm:leading-[17px] text-voice-muted">
+            <AppText className="mt-1.5 sm:mt-[8px] text-[13px] sm:text-sm leading-[16px] sm:leading-[17px] text-voice-muted">
               Closes at 8 seconds and returns here.
             </AppText>
           </>
         ) : null}
-        <View className="mt-4 sm:mt-[36px] border-t border-voice-track pt-3 sm:pt-[19px]">
-          <AppText className="font-body-bold text-[14px] sm:text-[15px] leading-[18px] text-white">
-            Say “cancel” to stop.
+        <View className="mt-5 sm:mt-[32px] border-t border-voice-track pt-4 sm:pt-[20px]">
+          <AppText className="font-body-bold text-[16px] sm:text-[18px] leading-[20px] text-white">
+            {isError ? "Say “Play my local news.”" : "Say “cancel” to stop."}
           </AppText>
-          <AppText className="mt-1.5 sm:mt-[12px] text-xs sm:text-[13px] leading-4 text-voice-muted">
+          <AppText className="mt-1.5 sm:mt-[10px] text-[13px] sm:text-[14px] leading-4 text-voice-muted">
             After timeout, double-tap anywhere to listen again.
           </AppText>
         </View>

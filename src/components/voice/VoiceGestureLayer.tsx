@@ -35,19 +35,15 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
           }
           if (!INVOCABLE_STATES.has(state)) return;
           const onboardingMode = onboardingVoiceBridge.reportGesture();
-          if (onboardingMode === "advanceWelcome") {
+          if (onboardingMode !== "inactive") {
             void playClick();
-            void Haptics.notificationAsync(
-              Haptics.NotificationFeedbackType.Success,
-            );
+            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             return;
           }
           void playClick();
           void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           void startVoiceSession({
-            source: onboardingMode === "startVoicePractice"
-              ? "onboardingPractice"
-              : "doubleTap",
+            source: "doubleTap",
           });
         }),
     [screenReaderEnabled, startVoiceSession, state, stop],
@@ -64,15 +60,13 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
         onAccessibilityAction={(event) => {
           if (event.nativeEvent.actionName === "startVoiceCommand") {
             const onboardingMode = onboardingVoiceBridge.reportGesture();
-            if (onboardingMode === "advanceWelcome") {
+            if (onboardingMode !== "inactive") {
               void playClick();
               void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
               return;
             }
             void startVoiceSession({
-              source: onboardingMode === "startVoicePractice"
-                ? "onboardingPractice"
-                : "accessibilityAction",
+              source: "accessibilityAction",
             });
           }
         }}

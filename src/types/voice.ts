@@ -75,6 +75,8 @@ export type ActiveVoiceSession = {
   startedAt: number;
   speechDetected: boolean;
   playbackWasPlaying: boolean;
+  source?: VoiceInvocationSource;
+  screenSnapshot?: ScreenVoiceContext | null;
 };
 
 export type VoiceStore = {
@@ -284,10 +286,16 @@ export interface VoiceResolver {
   resolve(request: VoiceResolveRequest): Promise<VoiceResolution>;
 }
 export type ScreenVoiceContext = {
+  id?: VoiceScreenId;
+  pathname?: string;
   title?: string;
   orientation?: string;
   readout?: string | (() => string);
   commands?: string[];
+  screenState?: string;
+  voiceEnabled?: boolean;
+  resolverContext?: Record<string, unknown>;
+  localCommands?: string[];
 };
 
 export type VoiceContextValue = {

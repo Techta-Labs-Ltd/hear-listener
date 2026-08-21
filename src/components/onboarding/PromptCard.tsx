@@ -17,7 +17,7 @@ export function PromptCard({ label, command, size = "regular", className }: Prom
       <AppText
         className={cn(
           "font-display text-ink",
-          size === "large" ? "text-[22px] leading-[26px]" : "text-[19px] leading-[23px]",
+          size === "large" ? "text-[23px] leading-[28px]" : "text-[19px] leading-[23px]",
         )}
       >
         {command}

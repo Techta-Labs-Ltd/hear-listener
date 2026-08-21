@@ -2,7 +2,14 @@ import type { ReactNode } from "react";
 import type { AccountProvider } from "./account";
 import type { VoiceState } from "./voice";
 
-export type OnboardingScreenId = "welcome" | "voiceAccess" | "voiceTest" | "account";
+export type OnboardingScreenId =
+  | "welcome"
+  | "voiceAccess"
+  | "permissionDenied"
+  | "permissionBlocked"
+  | "voiceTestReady"
+  | "voiceTest"
+  | "account";
 
 export type OnboardingStepProps = {
   screenReaderEnabled: boolean;
@@ -13,12 +20,15 @@ export type WelcomeStepProps = OnboardingStepProps & {
 };
 
 export type VoiceAccessStepProps = OnboardingStepProps & {
-  onEnableVoice: () => void;
-};
-
-export type VoiceTestStepProps = OnboardingStepProps & {
+  phase: OnboardingPhase;
   voiceState: VoiceState;
   voiceMessage?: string;
+  transcript?: string;
+  onRequestPermission: () => void;
+  onOpenSettings: () => void;
+  onRetryVoiceTest: () => void;
+  /** @deprecated */
+  onEnableVoice?: () => void;
 };
 
 export type AccountStepProps = OnboardingStepProps & {
@@ -71,21 +81,24 @@ export type ProviderButtonProps = {
 
 export type OnboardingPhase =
   | "welcome"
-  | "permissionPrimer"
+  | "permissionIntro"
   | "requestingPermission"
-  | "preparing"
-  | "listening"
-  | "resolving"
-  | "clarification"
-  | "denied"
-  | "unsupported"
-  | "error"
+  | "permissionDenied"
+  | "permissionBlocked"
+  | "voiceTestReady"
+  | "voiceTestListening"
+  | "voiceTestSuccess"
+  | "voiceTestError"
+  | "account"
   | "complete";
 
 export type OnboardingGestureMode =
   | "inactive"
   | "advanceWelcome"
-  | "startVoicePractice";
+  | "requestPermission"
+  | "startVoiceTest"
+  | "permissionDenied"
+  | "accountSelection";
 
 export type OnboardingChapterId = "welcome" | "voiceExperience" | "ready";
 export type CapabilityStatus = "idle" | "requesting" | "ready" | "skipped" | "denied" | "error";

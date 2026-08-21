@@ -5,14 +5,13 @@ import { useOnboardingSetup } from "@/hooks/useOnboardingSetup";
 import { View } from "@/tw";
 import { WelcomeStep } from "@/components/onboarding/WelcomeStep";
 import { VoiceAccessStep } from "@/components/onboarding/VoiceAccessStep";
-import { VoiceTestStep } from "@/components/onboarding/VoiceTestStep";
 import { AccountStep } from "@/components/onboarding/AccountStep";
 
 export function OnboardingScreen() {
   const setup = useOnboardingSetup();
 
   useEffect(() => {
-    if (setup.screen === "welcome") return;
+    if (setup.phase === "welcome") return;
     const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
       setup.back();
       return true;
@@ -20,13 +19,11 @@ export function OnboardingScreen() {
     return () => subscription.remove();
   }, [setup]);
 
-  const heroStep = setup.screen === "welcome" || setup.screen === "voiceAccess";
-
   return (
-    <View className="flex-1 bg-canvas" onLayout={setup.announceCurrent}>
-      <StatusBar style={heroStep ? "light" : "dark"} />
+    <View className="flex-1 bg-canvas">
+      <StatusBar style="dark" />
 
-      {setup.screen === "welcome" && (
+      {setup.phase === "welcome" && (
         <WelcomeStep
           screenReaderEnabled={setup.screenReaderEnabled}
           onContinue={setup.advanceWelcome}
@@ -35,20 +32,18 @@ export function OnboardingScreen() {
 
       {setup.screen === "voiceAccess" && (
         <VoiceAccessStep
-          screenReaderEnabled={setup.screenReaderEnabled}
-          onEnableVoice={setup.startVoicePractice}
-        />
-      )}
-
-      {setup.screen === "voiceTest" && (
-        <VoiceTestStep
+          phase={setup.phase}
           screenReaderEnabled={setup.screenReaderEnabled}
           voiceState={setup.voiceState}
           voiceMessage={setup.voiceMessage}
+          transcript={setup.transcript}
+          onRequestPermission={setup.requestPermission}
+          onOpenSettings={setup.openSettings}
+          onRetryVoiceTest={setup.retryVoiceTest}
         />
       )}
 
-      {setup.screen === "account" && (
+      {setup.phase === "account" && (
         <AccountStep
           screenReaderEnabled={setup.screenReaderEnabled}
           signingIn={setup.account.status === "signingIn"}

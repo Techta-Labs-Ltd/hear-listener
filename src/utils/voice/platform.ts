@@ -31,8 +31,42 @@ export function supportsOnDeviceSpeechRecognition(): boolean {
   }
 }
 
+export type MicrophonePermissionStatus = {
+  granted: boolean;
+  status: "granted" | "denied" | "undetermined" | "blocked";
+  canAskAgain?: boolean;
+};
+
+export async function checkMicrophonePermissionStatus(): Promise<MicrophonePermissionStatus> {
+  if (Platform.OS === "web") {
+    return { granted: true, status: "granted", canAskAgain: true };
+  }
+
+  try {
+    const perm = await ExpoSpeechRecognitionModule.getPermissionsAsync();
+    if (!perm) return { granted: false, status: "undetermined", canAskAgain: true };
+    const granted = Boolean(perm.granted);
+    let status: "granted" | "denied" | "undetermined" | "blocked" =
+      perm.status === "granted"
+        ? "granted"
+        : perm.status === "undetermined"
+          ? "undetermined"
+          : perm.canAskAgain === false
+            ? "blocked"
+            : "denied";
+    return {
+      granted,
+      status,
+      canAskAgain: perm.canAskAgain !== false,
+    };
+  } catch {
+    return { granted: false, status: "denied", canAskAgain: true };
+  }
+}
+
 export async function requestMicrophonePermissionSafely(): Promise<{
   granted: boolean;
+  status: "granted" | "denied" | "undetermined" | "blocked";
   undetermined?: boolean;
 }> {
   if (Platform.OS === "web") {
@@ -45,12 +79,12 @@ export async function requestMicrophonePermissionSafely(): Promise<{
           audio: true,
         });
         stream.getTracks().forEach((track) => track.stop());
-        return { granted: true };
+        return { granted: true, status: "granted" };
       } catch {
-        return { granted: false };
+        return { granted: false, status: "denied" };
       }
     }
-    return { granted: true };
+    return { granted: true, status: "granted" };
   }
 
   try {
@@ -59,12 +93,19 @@ export async function requestMicrophonePermissionSafely(): Promise<{
 
     const requested =
       await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+    const granted = Boolean(requested?.granted);
+    const status: "granted" | "denied" | "undetermined" | "blocked" = granted
+      ? "granted"
+      : requested?.canAskAgain === false
+        ? "blocked"
+        : "denied";
     return {
-      granted: Boolean(requested?.granted),
+      granted,
+      status,
       undetermined: isUndetermined,
     };
   } catch {
-    return { granted: false };
+    return { granted: false, status: "denied" };
   }
 }
 

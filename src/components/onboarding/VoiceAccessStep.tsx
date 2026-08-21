@@ -1,62 +1,177 @@
-import { FactListRow } from "@/components/onboarding/FactListRow";
-import { InstructionFooter } from "@/components/onboarding/InstructionFooter";
-import { OnboardingHero } from "@/components/onboarding/OnboardingHero";
-import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
-import { VoiceStatusBadge } from "@/components/voice/VoiceStatusBadge";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 import { AppText } from "@/components/ui/AppText";
-import { onboardingFacts } from "@/data/onboarding";
-import { ScrollView } from "@/tw";
+import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
+import { PromptCard } from "@/components/onboarding/PromptCard";
+import { VoiceStatusBadge } from "@/components/voice/VoiceStatusBadge";
+import { ListeningPanel } from "@/components/voice/ListeningPanel";
+import { colors } from "@/constants/theme";
+import { ONBOARDING_SPEECH } from "@/constants/onboarding-steps";
+import { Pressable, ScrollView, View } from "@/tw";
 import type { VoiceAccessStepProps } from "@/types";
 
-export function VoiceAccessStep({ screenReaderEnabled, onEnableVoice }: VoiceAccessStepProps) {
+export function VoiceAccessStep({
+  phase,
+  screenReaderEnabled,
+  voiceState,
+  voiceMessage,
+  onRequestPermission,
+  onOpenSettings,
+  onRetryVoiceTest,
+  onEnableVoice,
+}: VoiceAccessStepProps) {
+  const insets = useSafeAreaInsets();
+  const isDenied = phase === "permissionDenied" || phase === "permissionBlocked";
+  const isVoiceTest =
+    phase === "voiceTestListening" ||
+    phase === "voiceTestError" ||
+    phase === "voiceTestSuccess" ||
+    phase === "voiceTestReady";
+
+  const handleAction = isDenied
+    ? onOpenSettings
+    : isVoiceTest
+      ? onRetryVoiceTest
+      : onRequestPermission || onEnableVoice || (() => {});
+
+  const accessibilityLabel = isDenied
+    ? ONBOARDING_SPEECH.permissionDenied
+    : isVoiceTest
+      ? voiceState === "error"
+        ? ONBOARDING_SPEECH.voiceTestNoSpeech
+        : "Hear is listening. Say: Play my local news."
+      : ONBOARDING_SPEECH.permissionIntro;
+
+  const accessibilityHint = isDenied
+    ? "Double-tap anywhere to open Settings."
+    : isVoiceTest
+      ? "Double-tap anywhere to start listening again."
+      : "Double-tap anywhere to request microphone permission.";
+
   return (
-    <ScrollView
-      className="flex-1 bg-canvas"
-      contentContainerClassName="flex-grow"
-      showsVerticalScrollIndicator={false}
+    <Pressable
+      accessible={screenReaderEnabled}
+      accessibilityRole={screenReaderEnabled ? "button" : undefined}
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
+      onPress={handleAction}
+      className="flex-1 bg-canvas justify-between"
     >
-      <OnboardingHero height={220}>
-        <VoiceStatusBadge label="HEAR IS SPEAKING" className="mt-[19px]" />
-        <AppText className="mt-[22px] font-display text-[34px] leading-[41px] text-white">
-          Your voice stays yours.
-        </AppText>
-        <AppText className="mt-[10px] text-[15px] leading-[18px] text-voice-muted">
-          Permission first. Listening only when invited.
-        </AppText>
-      </OnboardingHero>
-      <OnboardingProgress current={2} className="mx-6 mt-[34px]" />
-      <AppText variant="overline" tone="primary" className="mx-6 mt-[26px] tracking-[0.4px]">
-        VOICE ACCESS · 2 OF 3
-      </AppText>
-      <AppText
-        accessibilityRole="header"
-        accessibilityActions={[{ name: "enableVoice", label: "Show microphone access" }]}
-        accessibilityHint="Requests microphone and speech access, then listens for one command."
-        onAccessibilityAction={(event) => {
-          if (event.nativeEvent.actionName === "enableVoice") onEnableVoice();
-        }}
-        className="mx-6 mt-[28px] font-display text-[30px] leading-9 text-ink"
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="px-6 pb-6"
+        showsVerticalScrollIndicator={false}
+        accessible={!screenReaderEnabled}
       >
-        Hear listens only after{"\n"}you call it.
-      </AppText>
-      {onboardingFacts.map((fact, index) => (
-        <FactListRow
-          key={fact.title}
-          title={fact.title}
-          description={fact.description}
-          className={index === 0 ? "mx-6 mt-[46px]" : "mx-6 mt-[28px]"}
-        />
-      ))}
-      <InstructionFooter
-        className="mx-6 mt-[40px] mb-10"
-        title="Double-tap to show microphone access"
-        subtitle={
-          screenReaderEnabled
-            ? "Or activate “Show microphone access,” then choose Allow in your phone’s permission dialog."
-            : "Then choose Allow in your phone’s permission dialog."
-        }
-        notes={["Say “repeat” after access is granted to hear this again."]}
-      />
-    </ScrollView>
+        <View style={{ paddingTop: insets.top }}>
+          <OnboardingProgress current={2} className="mt-4" />
+          <AppText variant="overline" tone="primary" className="mt-5 tracking-[0.4px]">
+            VOICE ACCESS · 2 OF 3
+          </AppText>
+
+          {isDenied ? (
+            <>
+              <AppText
+                accessibilityRole="header"
+                className="mt-4 font-display text-[34px] leading-[40px] text-ink"
+              >
+                Microphone{"\n"}access is off.
+              </AppText>
+              <AppText tone="muted" className="mt-3 text-[16px] leading-[22px]">
+                Hear! can still guide you. One double-tap opens Settings—there are no buttons to find.
+              </AppText>
+              <View className="my-6 h-[1px] bg-border" />
+              <VoiceStatusBadge label="HEAR IS SPEAKING" className="mb-3" />
+              <AppText className="font-display text-[22px] leading-[28px] text-ink">
+                “Microphone access is off.{"\n"}Double-tap anywhere to open Settings.”
+              </AppText>
+            </>
+          ) : isVoiceTest ? (
+            <>
+              <AppText
+                accessibilityRole="header"
+                className="mt-4 font-display text-[34px] leading-[40px] text-ink"
+              >
+                Let’s try one command
+              </AppText>
+              <AppText tone="muted" className="mt-2 text-[16px] leading-[22px]">
+                Hear started listening after permission was allowed.
+              </AppText>
+              <PromptCard
+                label="SAY THIS"
+                command="“Play my local news.”"
+                size="large"
+                className="mt-6"
+              />
+            </>
+          ) : (
+            <>
+              <AppText
+                accessibilityRole="header"
+                className="mt-4 font-display text-[34px] leading-[40px] text-ink"
+              >
+                Hear listens only after{"\n"}you call it.
+              </AppText>
+              <AppText tone="muted" className="mt-3 text-[16px] leading-[22px]">
+                Permission first. Listening only when invited. The microphone stops after each command.
+              </AppText>
+              <PromptCard
+                label="SAY THIS"
+                command="“Play my local news.”"
+                size="large"
+                className="mt-6"
+              />
+            </>
+          )}
+        </View>
+      </ScrollView>
+
+      {isVoiceTest ? (
+        <View className="flex-1 justify-end" accessible={!screenReaderEnabled}>
+          <ListeningPanel state={voiceState} message={voiceMessage} />
+        </View>
+      ) : (
+        <LinearGradient
+          colors={[colors.voiceCanvas, colors.voicePanel]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={{
+            borderTopLeftRadius: 32,
+            borderTopRightRadius: 32,
+            paddingBottom: insets.bottom + 20,
+          }}
+          accessible={!screenReaderEnabled}
+        >
+          <View
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            className="mt-3 h-1 w-[64px] self-center rounded-full bg-voice-muted opacity-65"
+          />
+          <View className="mt-4 sm:mt-7 px-5 sm:px-6">
+            <AppText variant="overline" className="text-voice-muted tracking-[0.4px]">
+              ONE GESTURE
+            </AppText>
+            <AppText className="mt-2 font-display text-[32px] sm:text-[38px] leading-[36px] sm:leading-[44px] text-white">
+              Double-tap{"\n"}anywhere.
+            </AppText>
+            <AppText className="mt-2 text-[15px] sm:text-[16px] leading-[20px] sm:leading-[21px] text-voice-muted">
+              {isDenied
+                ? "We’ll open Settings. Allow Microphone, then return here to continue by voice."
+                : "Your phone will ask for microphone permission next."}
+            </AppText>
+            {isDenied && (
+              <View className="mt-5 border-t border-voice-track pt-4">
+                <AppText variant="overline" className="text-voice-muted tracking-[0.4px]">
+                  WHEN YOU RETURN
+                </AppText>
+                <AppText className="mt-1 font-body-bold text-[16px] text-white">
+                  Hear! starts your first voice test automatically.
+                </AppText>
+              </View>
+            )}
+          </View>
+        </LinearGradient>
+      )}
+    </Pressable>
   );
 }

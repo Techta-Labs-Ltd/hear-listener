@@ -46,13 +46,13 @@ export function SavedSection() {
         </AppText>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel={copy.emptyAction}
+          accessibilityLabel={copy.browse}
           accessibilityHint="Starts voice to find stories."
           onPress={() => void voice.startVoiceSession({ source: "contextualAction" })}
           className="mt-7 sm:mt-[38px] h-[52px] sm:h-[54px] w-[184px] sm:w-[196px] self-center items-center justify-center rounded-full bg-primary active:opacity-85"
         >
           <AppText className="font-body-bold text-sm leading-[18px] text-white">
-            {copy.emptyAction}
+            {copy.browse}
           </AppText>
         </Pressable>
       </>

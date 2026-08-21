@@ -6,15 +6,19 @@ export const ONBOARDING_SPEECH = {
   welcome:
     "Welcome to Hear. Step 1 of 3. Double-tap anywhere to continue.",
   welcomeLong:
-    "Welcome to Hear. Step 1 of 3. Hear helps you use the app through spoken guidance and voice. Double-tap anywhere to continue.",
+    "Welcome to Hear. Step 1 of 3. Hear what matters. Skip the screens. Hear helps you listen and use the app without needing to see the screen. Example: Play my local news. Double-tap anywhere to begin voice setup.",
   permissionIntro:
     "Voice access. Step 2 of 3. Hear listens only when you ask. The microphone stops after each command. Double-tap anywhere to continue and your phone will ask for microphone permission.",
   permissionGrantedFirstTest:
     "Microphone access granted. Voice access is ready. Let's try one command. After the tone, say Play my local news.",
   permissionDenied:
     "Voice access. Step 2 of 3. Microphone access is off. Double-tap anywhere to open Settings.",
+  permissionDeniedWeb:
+    "Voice access. Step 2 of 3. Microphone access is off. Double-tap anywhere to request permission, or allow microphone access in your browser address bar.",
   permissionStillDenied:
     "Microphone access is still off. Double-tap anywhere to open Settings.",
+  permissionStillDeniedWeb:
+    "Microphone access is still off. Double-tap anywhere to request permission, or allow microphone access in your browser address bar.",
   permissionNowOn:
     "Microphone access is now on. Let's try your first voice command. After the tone, say Play my local news.",
   permissionBlocked:

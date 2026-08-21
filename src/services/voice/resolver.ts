@@ -17,12 +17,171 @@ const HIGH_CONFIDENCE = 0.79;
 const MIN_MARGIN = 0.07;
 const MEDIUM_CONFIDENCE = 0.48;
 
+function matchDirectCommand(
+  transcript: string,
+  request: VoiceResolveRequest,
+): VoiceInvocation | undefined {
+  const norm = normalizeVoiceText(transcript);
+
+  if (
+    norm === "play local news" ||
+    norm === "play my local news" ||
+    norm === "play news" ||
+    norm === "local news"
+  ) {
+    return {
+      actionId: "play:local",
+      executorKey: "play",
+      command: { type: "play", mode: "local" },
+      slots: {},
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:play:local:{}`,
+    };
+  }
+  if (norm === "pause" || norm === "stop audio") {
+    return {
+      actionId: "pause",
+      executorKey: "pause",
+      command: { type: "pause" },
+      slots: {},
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:pause:{}`,
+    };
+  }
+  if (norm === "resume" || norm === "play" || norm === "unpause") {
+    return {
+      actionId: "resume",
+      executorKey: "resume",
+      command: { type: "resume" },
+      slots: {},
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:resume:{}`,
+    };
+  }
+  if (norm === "next" || norm === "next story" || norm === "skip story") {
+    return {
+      actionId: "next",
+      executorKey: "next",
+      command: { type: "next" },
+      slots: {},
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:next:{}`,
+    };
+  }
+  if (norm === "previous" || norm === "previous story") {
+    return {
+      actionId: "previous",
+      executorKey: "previous",
+      command: { type: "previous" },
+      slots: {},
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:previous:{}`,
+    };
+  }
+  if (norm === "open settings" || norm === "settings") {
+    return {
+      actionId: "navigate:settings",
+      executorKey: "navigate",
+      command: { type: "navigate", target: "settings" },
+      slots: {},
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:navigate:settings:{}`,
+    };
+  }
+  if (norm === "open library" || norm === "library") {
+    return {
+      actionId: "navigate:library",
+      executorKey: "navigate",
+      command: { type: "navigate", target: "library" },
+      slots: {},
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:navigate:library:{}`,
+    };
+  }
+  if (norm === "open discover" || norm === "discover") {
+    return {
+      actionId: "navigate:discover",
+      executorKey: "navigate",
+      command: { type: "navigate", target: "discover" },
+      slots: {},
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:navigate:discover:{}`,
+    };
+  }
+  if (norm === "home" || norm === "go home") {
+    return {
+      actionId: "navigate:home",
+      executorKey: "navigate",
+      command: { type: "navigate", target: "home" },
+      slots: {},
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:navigate:home:{}`,
+    };
+  }
+  return undefined;
+}
+
 export class SQLiteVoiceResolver implements VoiceResolver {
   constructor(
     private readonly repository: VoiceTermRepository = voiceTermRepository,
   ) {}
   async resolve(request: VoiceResolveRequest): Promise<VoiceResolution> {
     if (request.signal?.aborted) return { kind: "cancelled", confidence: 0 };
+
     const version = this.repository.getVersion
       ? await this.repository.getVersion()
       : 0;
@@ -76,19 +235,33 @@ export class SQLiteVoiceResolver implements VoiceResolver {
       .filter((item) => item.kind === "action")
       .sort((left, right) => right.score - left.score);
     const action = actions[0] ?? inferEntityAction(ranked);
-    if (!action || action.score < MEDIUM_CONFIDENCE)
+    if (!action || action.score < MEDIUM_CONFIDENCE) {
+      for (const h of request.hypotheses) {
+        const direct = matchDirectCommand(h.transcript, request);
+        if (direct) {
+          return { kind: "invocation", invocation: direct };
+        }
+      }
       return {
         kind: "unrecognized",
         confidence: action?.score ?? 0,
         reason: "No registered action matched",
       };
+    }
     const invocation = createInvocation(action, ranked, request, version);
-    if (!invocation)
+    if (!invocation) {
+      for (const h of request.hypotheses) {
+        const direct = matchDirectCommand(h.transcript, request);
+        if (direct) {
+          return { kind: "invocation", invocation: direct };
+        }
+      }
       return {
         kind: "unrecognized",
         confidence: action.score,
         reason: "The matched action had invalid or incomplete slots",
       };
+    }
     const next = actions.find((item) => item.targetId !== action.targetId);
     const ambiguous =
       action.score < HIGH_CONFIDENCE ||

@@ -23,6 +23,7 @@ import { useVoice } from "@/hooks/useVoice";
 import { View } from "@/tw";
 import type { VoiceChoice, VoiceState } from "@/types";
 import { ListeningCountdown } from "./ListeningCountdown";
+import { VoiceStatusBadge } from "./VoiceStatusBadge";
 
 const stateBadges: Record<VoiceState, string> = {
   idle: "VOICE READY",
@@ -52,7 +53,7 @@ export function GlobalVoiceDock() {
   const [progress] = useState(() => new NativeAnimated.Value(0));
 
   useEffect(() => {
-    if (!listening) {
+    if (!listening || voice.speechDetected) {
       progress.setValue(0);
       return;
     }
@@ -65,7 +66,7 @@ export function GlobalVoiceDock() {
     });
     animation.start();
     return () => animation.stop();
-  }, [listening, progress]);
+  }, [listening, progress, voice.speechDetected]);
 
   const cancel =
     listening || voice.state === "preparing" ? voice.cancel : voice.close;
@@ -84,6 +85,8 @@ export function GlobalVoiceDock() {
 
   if (!isVoiceOpen) return null;
 
+  const isBackdropDismissible = failed || voice.state === "cancelled";
+
   return (
     <Animated.View
       entering={FadeIn.duration(160)}
@@ -92,10 +95,10 @@ export function GlobalVoiceDock() {
       style={{ pointerEvents: "box-none" }}
     >
       <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Dismiss voice control"
-        accessibilityHint="Closes voice control and returns to the current screen."
-        onPress={cancel}
+        accessibilityRole={isBackdropDismissible ? "button" : undefined}
+        accessibilityLabel={isBackdropDismissible ? "Dismiss voice control" : undefined}
+        accessibilityHint={isBackdropDismissible ? "Closes voice control and returns to the current screen." : undefined}
+        onPress={isBackdropDismissible ? cancel : undefined}
         className="absolute inset-0 bg-black/40"
       />
 
@@ -119,26 +122,18 @@ export function GlobalVoiceDock() {
           </View>
 
           <View className="flex-row items-center justify-between pb-3 pt-1">
-            <View className="flex-row items-center gap-2">
-              {listening ? (
-                <View className="h-2.5 w-2.5 rounded-full bg-voice-indicator" />
-              ) : null}
-              <AppText
-                variant="overline"
-                className={
-                  failed
-                    ? "text-[#F1B6BE] tracking-[1.4px]"
-                    : "text-voice-indicator tracking-[1.4px]"
-                }
-              >
-                {isPermissionDenied
+            <VoiceStatusBadge
+              label={
+                isPermissionDenied
                   ? "PERMISSION REQUIRED"
-                  : stateBadges[voice.state]}
-              </AppText>
-            </View>
+                  : listening && voice.speechDetected
+                    ? "I CAN HEAR YOU"
+                    : stateBadges[voice.state]
+              }
+            />
 
             <View className="flex-row items-center gap-3">
-              {listening && (
+              {listening && !voice.speechDetected && (
                 <ListeningCountdown
                   deadlineAt={voice.listeningDeadlineAt}
                   speechDetected={voice.speechDetected}
@@ -207,37 +202,45 @@ export function GlobalVoiceDock() {
                   accessibilityLiveRegion="polite"
                   className="font-display text-[28px] sm:text-[32px] leading-[34px] sm:leading-[38px] text-white"
                 >
-                  Speak naturally.
+                  {voice.speechDetected && voice.transcript
+                    ? `“${voice.transcript}”`
+                    : "Speak naturally."}
                 </AppText>
                 <AppText className="mt-0.5 text-sm sm:text-[15px] leading-5 text-voice-muted">
-                  I’ll show what I heard, then find your news.
+                  {voice.speechDetected
+                    ? "Keep speaking."
+                    : "I’ll show what I heard, then find your news."}
                 </AppText>
-                <View
-                  accessible
-                  accessibilityRole="progressbar"
-                  accessibilityLabel="Listening time before the session closes"
-                  className="mt-4 sm:mt-5 h-1 w-full overflow-hidden rounded-full bg-voice-track"
-                >
-                  <NativeAnimated.View
-                    accessibilityElementsHidden
-                    importantForAccessibility="no-hide-descendants"
-                    className="h-full rounded-full bg-voice-indicator"
-                    style={{
-                      width: progress.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ["0%", "100%"],
-                      }),
-                    }}
-                  />
-                </View>
-                <View className="mt-2.5 gap-1">
-                  <AppText className="text-xs sm:text-sm leading-4 text-voice-muted">
-                    No speech: a gentle reminder at 4 seconds.
-                  </AppText>
-                  <AppText className="text-xs sm:text-sm leading-4 text-voice-muted">
-                    Closes at 8 seconds and returns here.
-                  </AppText>
-                </View>
+                {!voice.speechDetected && (
+                  <>
+                    <View
+                      accessible
+                      accessibilityRole="progressbar"
+                      accessibilityLabel="Listening time before the session closes"
+                      className="mt-4 sm:mt-5 h-1 w-full overflow-hidden rounded-full bg-voice-track"
+                    >
+                      <NativeAnimated.View
+                        accessibilityElementsHidden
+                        importantForAccessibility="no-hide-descendants"
+                        className="h-full rounded-full bg-voice-indicator"
+                        style={{
+                          width: progress.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: ["0%", "100%"],
+                          }),
+                        }}
+                      />
+                    </View>
+                    <View className="mt-2.5 gap-1">
+                      <AppText className="text-xs sm:text-sm leading-4 text-voice-muted">
+                        No speech: a gentle reminder at 4 seconds.
+                      </AppText>
+                      <AppText className="text-xs sm:text-sm leading-4 text-voice-muted">
+                        Closes at 8 seconds and returns here.
+                      </AppText>
+                    </View>
+                  </>
+                )}
                 <View className="mt-4 border-t border-voice-track pt-3.5">
                   <AppText className="font-body-bold text-[14px] sm:text-[15px] leading-5 text-white">
                     Say “cancel” to stop.

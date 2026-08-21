@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { AppState, type AppStateStatus, Linking } from "react-native";
+import { AppState, type AppStateStatus, Linking, Platform } from "react-native";
 import { useVoice } from "@/hooks/useVoice";
 import { useAccountAccess } from "@/hooks/useAccountAccess";
 import { speechCoordinator } from "@/services/voice/speech-coordinator";
@@ -15,14 +15,20 @@ import { ACTIVE_VOICE_STATES } from "@/constants/voice";
 import { ONBOARDING_SPEECH } from "@/constants/onboarding-steps";
 import {
   ONBOARDING_IDLE_HINTS,
-  SCREEN_IDLE_TIMEOUT,
+  ONBOARDING_IDLE_HINTS_2,
+  SCREEN_IDLE_TIMEOUT_1,
+  SCREEN_IDLE_TIMEOUT_2,
 } from "@/constants/screen-hints";
 import { appHaptics } from "@/lib/haptics";
-import { playClick } from "@/lib/audio/one-shots";
+import { playListeningStartTone } from "@/lib/audio/one-shots";
 import {
   checkMicrophonePermissionStatus,
   requestMicrophonePermissionSafely,
 } from "@/utils/voice";
+import {
+  validateAccountChoice,
+  validateVoiceTestCommand,
+} from "@/validation/onboarding-validation";
 import type {
   AccountProvider,
   OnboardingPhase,
@@ -45,12 +51,20 @@ export function useOnboardingSetup() {
   const lastCommandId = useRef(0);
   const isAccountListening = useRef(false);
   const isTransitioning = useRef(false);
-  const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const idleTimer1 = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const idleTimer2 = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const clearIdleTimers = useCallback(() => {
+    if (idleTimer1.current) clearTimeout(idleTimer1.current);
+    if (idleTimer2.current) clearTimeout(idleTimer2.current);
+    idleTimer1.current = undefined;
+    idleTimer2.current = undefined;
+  }, []);
 
   const complete = useCallback(() => {
     if (completed.current) return;
     completed.current = true;
-    if (idleTimer.current) clearTimeout(idleTimer.current);
+    clearIdleTimers();
     onboardingVoiceBridge.setGestureMode("inactive");
     void speechCoordinator.cancel();
     voice.close();
@@ -61,7 +75,7 @@ export function useOnboardingSetup() {
       spokenGuidanceEnabled: true,
     });
     accessibility.announce(ONBOARDING_SPEECH.complete, "onboarding:complete", true);
-  }, [accessibility, router, updatePreferences, voice]);
+  }, [accessibility, clearIdleTimers, router, updatePreferences, voice]);
 
   useLayoutEffect(() => {
     let gestureMode:
@@ -97,7 +111,10 @@ export function useOnboardingSetup() {
       if (phase === "permissionDenied" || phase === "permissionBlocked") {
         gestureMode = "permissionDenied";
         description = "Microphone access is off.";
-        options = ["Double-tap anywhere to open Settings"];
+        options =
+          Platform.OS === "web"
+            ? ["Double-tap anywhere to request microphone permission"]
+            : ["Double-tap anywhere to open Settings"];
       } else if (phase === "voiceTestReady" || phase === "voiceTestError") {
         gestureMode = "startVoiceTest";
         description = "Let's try one command.";
@@ -116,7 +133,10 @@ export function useOnboardingSetup() {
       stepIndex = 2;
       title = "Optional account";
       description = "Keep your listening with you.";
-      options = ["Say Apple", "Say Google", "Say Not now"];
+      options =
+        Platform.OS === "ios"
+          ? ["Say Apple", "Say Not now"]
+          : ["Say Google", "Say Not now"];
     }
 
     onboardingVoiceBridge.setGestureMode(gestureMode);
@@ -130,6 +150,7 @@ export function useOnboardingSetup() {
   }, [phase]);
 
   const startVoiceTestSession = useCallback(async (instructionText?: string) => {
+    clearIdleTimers();
     setPhase("voiceTestListening");
     if (instructionText) {
       await speechCoordinator.speakBeforeListening({
@@ -138,30 +159,37 @@ export function useOnboardingSetup() {
       });
     }
     await new Promise((r) => setTimeout(r, 200));
-    void playClick();
+    playListeningStartTone();
     void appHaptics.listening();
     void voice.startVoiceSession({
       source: "onboardingPractice",
       announceLocation: false,
     });
-  }, [voice]);
+  }, [clearIdleTimers, voice]);
 
   const startAccountVoiceSelection = useCallback(async () => {
+    clearIdleTimers();
     isAccountListening.current = true;
+    const accountSpeech =
+      Platform.OS === "ios"
+        ? "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Apple, or Not now."
+        : "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Google, or Not now.";
+
     await speechCoordinator.speakBeforeListening({
-      text: ONBOARDING_SPEECH.account,
+      text: accountSpeech,
       force: true,
     });
     await new Promise((r) => setTimeout(r, 200));
-    void playClick();
+    playListeningStartTone();
     void appHaptics.listening();
     void voice.startVoiceSession({
       source: "onboardingPractice",
       announceLocation: false,
     });
-  }, [voice]);
+  }, [clearIdleTimers, voice]);
 
   const advanceWelcome = useCallback(async () => {
+    clearIdleTimers();
     void speechCoordinator.cancel();
     const perm = await checkMicrophonePermissionStatus();
     if (perm.granted) {
@@ -170,14 +198,18 @@ export function useOnboardingSetup() {
     } else {
       setPhase("permissionIntro");
     }
-  }, [startVoiceTestSession]);
+  }, [clearIdleTimers, startVoiceTestSession]);
 
   useEffect(() => {
     if (prevPhase.current === phase) return;
     prevPhase.current = phase;
 
     if (phase === "welcome") {
-      accessibility.announce(ONBOARDING_SPEECH.welcome, "onboarding:welcome", true);
+      accessibility.announce(
+        ONBOARDING_SPEECH.welcomeLong,
+        "onboarding:welcome",
+        true,
+      );
     } else if (phase === "permissionIntro") {
       accessibility.announce(
         ONBOARDING_SPEECH.permissionIntro,
@@ -186,18 +218,18 @@ export function useOnboardingSetup() {
       );
     } else if (phase === "permissionDenied") {
       void appHaptics.clarification();
-      accessibility.announce(
-        ONBOARDING_SPEECH.permissionDenied,
-        "onboarding:permissionDenied",
-        true,
-      );
+      const msg =
+        Platform.OS === "web"
+          ? ONBOARDING_SPEECH.permissionDeniedWeb
+          : ONBOARDING_SPEECH.permissionDenied;
+      accessibility.announce(msg, "onboarding:permissionDenied", true);
     } else if (phase === "permissionBlocked") {
       void appHaptics.clarification();
-      accessibility.announce(
-        ONBOARDING_SPEECH.permissionBlocked,
-        "onboarding:permissionBlocked",
-        true,
-      );
+      const msg =
+        Platform.OS === "web"
+          ? ONBOARDING_SPEECH.permissionDeniedWeb
+          : ONBOARDING_SPEECH.permissionBlocked;
+      accessibility.announce(msg, "onboarding:permissionBlocked", true);
     } else if (phase === "voiceTestError") {
       void appHaptics.error();
       const isNoSpeech =
@@ -224,7 +256,7 @@ export function useOnboardingSetup() {
   ]);
 
   useEffect(() => {
-    if (idleTimer.current) clearTimeout(idleTimer.current);
+    clearIdleTimers();
 
     if (
       phase === "welcome" ||
@@ -234,17 +266,17 @@ export function useOnboardingSetup() {
       phase === "voiceTestError" ||
       phase === "account"
     ) {
-      idleTimer.current = setTimeout(() => {
+      idleTimer1.current = setTimeout(() => {
         if (phase === "welcome") {
           accessibility.announce(
             ONBOARDING_IDLE_HINTS.welcome,
-            "idle:welcome",
+            "idle1:welcome",
             true,
           );
         } else if (phase === "permissionIntro") {
           accessibility.announce(
             ONBOARDING_IDLE_HINTS.permissionIntro,
-            "idle:permissionIntro",
+            "idle1:permissionIntro",
             true,
           );
         } else if (
@@ -253,31 +285,69 @@ export function useOnboardingSetup() {
         ) {
           accessibility.announce(
             ONBOARDING_IDLE_HINTS.permissionDenied,
-            "idle:permissionDenied",
+            "idle1:permissionDenied",
             true,
           );
         } else if (phase === "voiceTestError") {
           accessibility.announce(
             ONBOARDING_IDLE_HINTS.voiceTestError,
-            "idle:voiceTestError",
+            "idle1:voiceTestError",
             true,
           );
         } else if (phase === "account" && !isAccountListening.current) {
           accessibility.announce(
             ONBOARDING_IDLE_HINTS.account,
-            "idle:account",
+            "idle1:account",
             true,
           );
         }
-      }, SCREEN_IDLE_TIMEOUT);
+      }, SCREEN_IDLE_TIMEOUT_1);
+
+      idleTimer2.current = setTimeout(() => {
+        if (phase === "welcome") {
+          accessibility.announce(
+            ONBOARDING_IDLE_HINTS_2.welcome,
+            "idle2:welcome",
+            true,
+          );
+        } else if (phase === "permissionIntro") {
+          accessibility.announce(
+            ONBOARDING_IDLE_HINTS_2.permissionIntro,
+            "idle2:permissionIntro",
+            true,
+          );
+        } else if (
+          phase === "permissionDenied" ||
+          phase === "permissionBlocked"
+        ) {
+          accessibility.announce(
+            ONBOARDING_IDLE_HINTS_2.permissionDenied,
+            "idle2:permissionDenied",
+            true,
+          );
+        } else if (phase === "voiceTestError") {
+          accessibility.announce(
+            ONBOARDING_IDLE_HINTS_2.voiceTestError,
+            "idle2:voiceTestError",
+            true,
+          );
+        } else if (phase === "account" && !isAccountListening.current) {
+          accessibility.announce(
+            ONBOARDING_IDLE_HINTS_2.account,
+            "idle2:account",
+            true,
+          );
+        }
+      }, SCREEN_IDLE_TIMEOUT_2);
     }
 
     return () => {
-      if (idleTimer.current) clearTimeout(idleTimer.current);
+      clearIdleTimers();
     };
-  }, [accessibility, phase]);
+  }, [accessibility, clearIdleTimers, phase]);
 
   const requestPermission = useCallback(async () => {
+    clearIdleTimers();
     void speechCoordinator.cancel();
     void appHaptics.changed();
     setPhase("requestingPermission");
@@ -291,15 +361,22 @@ export function useOnboardingSetup() {
     } else {
       setPhase("permissionDenied");
     }
-  }, [startVoiceTestSession]);
+  }, [clearIdleTimers, startVoiceTestSession]);
 
   const openSettings = useCallback(async () => {
+    clearIdleTimers();
     void speechCoordinator.cancel();
     void appHaptics.changed();
+    if (Platform.OS === "web") {
+      void requestPermission();
+      return;
+    }
     try {
       await Linking.openSettings();
-    } catch {}
-  }, []);
+    } catch {
+      void requestPermission();
+    }
+  }, [clearIdleTimers, requestPermission]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -316,11 +393,11 @@ export function useOnboardingSetup() {
               void appHaptics.success();
               void startVoiceTestSession(ONBOARDING_SPEECH.permissionNowOn);
             } else {
-              accessibility.announce(
-                ONBOARDING_SPEECH.permissionStillDenied,
-                "onboarding:stillDenied",
-                true,
-              );
+              const msg =
+                Platform.OS === "web"
+                  ? ONBOARDING_SPEECH.permissionStillDeniedWeb
+                  : ONBOARDING_SPEECH.permissionStillDenied;
+              accessibility.announce(msg, "onboarding:stillDenied", true);
             }
           });
         }
@@ -332,80 +409,150 @@ export function useOnboardingSetup() {
   useEffect(() => {
     return useVoiceStore.subscribe((state, previous) => {
       if (phase === "voiceTestListening") {
-        if (state.state === "success" && previous.state !== "success") {
-          voiceReady.current = true;
-          isTransitioning.current = true;
-          setPhase("voiceTestSuccess");
-          void (async () => {
-            await speechCoordinator.speakBeforeListening({
-              text: "Great. I heard “Play my local news.” Voice access is working.",
-              force: true,
-            });
-            setPhase("account");
-            await startAccountVoiceSelection();
-          })();
-          return;
+        if (state.transcript && !voiceReady.current) {
+          const result = validateVoiceTestCommand(state.transcript);
+          if (result.valid) {
+            voiceReady.current = true;
+            isTransitioning.current = true;
+            voice.close();
+            setPhase("voiceTestSuccess");
+            void (async () => {
+              await speechCoordinator.speakBeforeListening({
+                text: result.speechText,
+                force: true,
+              });
+              setPhase("account");
+              await startAccountVoiceSelection();
+            })();
+            return;
+          }
         }
 
-        const sessionEndedWithError =
+        const sessionEnded =
           (state.state === "error" ||
             state.state === "cancelled" ||
             state.state === "idle") &&
           ACTIVE_VOICE_STATES.has(previous.state);
 
-        if (sessionEndedWithError && !voiceReady.current) {
+        if (sessionEnded && !voiceReady.current) {
+          const result = validateVoiceTestCommand(state.transcript || "");
+          void appHaptics.error();
           setPhase("voiceTestError");
+          useVoiceStore.getState().setVoice({
+            state: "error",
+            message: result.feedbackText,
+            transcript: result.transcript,
+            retryable: true,
+            choices: [],
+          });
+          accessibility.announce(
+            result.speechText,
+            "onboarding:voiceTestError",
+            true,
+          );
         }
       }
 
       if (phase === "account" && isAccountListening.current) {
         if (state.transcript) {
-          const raw = state.transcript.toLowerCase().trim();
-          if (raw.includes("apple")) {
+          const result = validateAccountChoice(state.transcript, Platform.OS);
+          if (result.valid) {
             isAccountListening.current = false;
             void appHaptics.success();
             voice.close();
             void (async () => {
               await speechCoordinator.speakBeforeListening({
-                text: "Apple selected. Opening Apple sign-in.",
+                text: result.speechText,
                 force: true,
               });
-              const signedIn = await account.signIn("apple");
-              if (signedIn) complete();
-              else {
-                accessibility.announce(ONBOARDING_SPEECH.accountCancelled, undefined, true);
+              if (result.choice === "apple") {
+                const signedIn = await account.signIn("apple");
+                if (signedIn) complete();
+                else {
+                  accessibility.announce(
+                    ONBOARDING_SPEECH.accountCancelled,
+                    undefined,
+                    true,
+                  );
+                }
+              } else if (result.choice === "google") {
+                const signedIn = await account.signIn("google");
+                if (signedIn) complete();
+                else {
+                  accessibility.announce(
+                    ONBOARDING_SPEECH.accountCancelled,
+                    undefined,
+                    true,
+                  );
+                }
+              } else {
+                complete();
               }
             })();
-          } else if (raw.includes("google")) {
+            return;
+          }
+        }
+
+        const sessionEnded =
+          (state.state === "error" ||
+            state.state === "cancelled" ||
+            state.state === "idle") &&
+          ACTIVE_VOICE_STATES.has(previous.state);
+
+        if (sessionEnded) {
+          const result = validateAccountChoice(
+            state.transcript || "",
+            Platform.OS,
+          );
+          if (result.valid) {
             isAccountListening.current = false;
             void appHaptics.success();
             voice.close();
             void (async () => {
               await speechCoordinator.speakBeforeListening({
-                text: "Google selected. Opening Google sign-in.",
+                text: result.speechText,
                 force: true,
               });
-              const signedIn = await account.signIn("google");
-              if (signedIn) complete();
-              else {
-                accessibility.announce(ONBOARDING_SPEECH.accountCancelled, undefined, true);
+              if (result.choice === "apple") {
+                const signedIn = await account.signIn("apple");
+                if (signedIn) complete();
+                else {
+                  accessibility.announce(
+                    ONBOARDING_SPEECH.accountCancelled,
+                    undefined,
+                    true,
+                  );
+                }
+              } else if (result.choice === "google") {
+                const signedIn = await account.signIn("google");
+                if (signedIn) complete();
+                else {
+                  accessibility.announce(
+                    ONBOARDING_SPEECH.accountCancelled,
+                    undefined,
+                    true,
+                  );
+                }
+              } else {
+                complete();
               }
             })();
-          } else if (
-            raw.includes("not now") ||
-            raw.includes("skip") ||
-            raw.includes("no")
-          ) {
+          } else {
             isAccountListening.current = false;
-            void appHaptics.success();
+            void appHaptics.error();
             voice.close();
-            void (async () => {
-              await speechCoordinator.speakBeforeListening({
-                text: "Not now selected. Setup complete. Opening Hear.",
-                force: true,
-              });
-              complete();
-            })();
+            useVoiceStore.getState().setVoice({
+              state: "error",
+              message: result.feedbackText,
+              transcript: result.transcript,
+              retryable: true,
+              choices: [],
+            });
+            accessibility.announce(
+              result.speechText,
+              "onboarding:accountError",
+              true,
+            );
           }
         }
       }
@@ -483,11 +630,11 @@ export function useOnboardingSetup() {
 
   useEffect(() => {
     return () => {
-      if (idleTimer.current) clearTimeout(idleTimer.current);
+      clearIdleTimers();
       onboardingVoiceBridge.setGestureMode("inactive");
       void speechCoordinator.cancel();
     };
-  }, []);
+  }, [clearIdleTimers]);
 
   const isStep2 =
     phase === "permissionIntro" ||

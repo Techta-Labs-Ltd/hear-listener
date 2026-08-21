@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { AppText } from "@/components/ui/AppText";
@@ -24,6 +25,7 @@ export function VoiceAccessStep({
   onEnableVoice,
 }: VoiceAccessStepProps) {
   const insets = useSafeAreaInsets();
+  const isWeb = Platform.OS === "web";
   const isDenied = phase === "permissionDenied" || phase === "permissionBlocked";
   const isVoiceTest =
     phase === "voiceTestListening" ||
@@ -32,13 +34,17 @@ export function VoiceAccessStep({
     phase === "voiceTestReady";
 
   const handleAction = isDenied
-    ? onOpenSettings
+    ? isWeb
+      ? onRequestPermission || onOpenSettings
+      : onOpenSettings
     : isVoiceTest
       ? onRetryVoiceTest
       : onRequestPermission || onEnableVoice || (() => {});
 
   const accessibilityLabel = isDenied
-    ? ONBOARDING_SPEECH.permissionDenied
+    ? isWeb
+      ? ONBOARDING_SPEECH.permissionDeniedWeb
+      : ONBOARDING_SPEECH.permissionDenied
     : isVoiceTest
       ? voiceState === "error"
         ? ONBOARDING_SPEECH.voiceTestNoSpeech
@@ -46,7 +52,9 @@ export function VoiceAccessStep({
       : ONBOARDING_SPEECH.permissionIntro;
 
   const accessibilityHint = isDenied
-    ? "Double-tap anywhere to open Settings."
+    ? isWeb
+      ? "Double-tap anywhere to request microphone permission."
+      : "Double-tap anywhere to open Settings."
     : isVoiceTest
       ? "Double-tap anywhere to start listening again."
       : "Double-tap anywhere to request microphone permission.";
@@ -57,7 +65,11 @@ export function VoiceAccessStep({
       accessibilityRole={screenReaderEnabled ? "button" : undefined}
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
-      onPress={handleAction}
+      onPress={
+        screenReaderEnabled && phase !== "voiceTestListening"
+          ? handleAction
+          : undefined
+      }
       className="flex-1 bg-canvas justify-between"
     >
       <ScrollView
@@ -81,12 +93,16 @@ export function VoiceAccessStep({
                 Microphone{"\n"}access is off.
               </AppText>
               <AppText tone="muted" className="mt-3 text-[16px] leading-[22px]">
-                Hear! can still guide you. One double-tap opens Settings—there are no buttons to find.
+                {isWeb
+                  ? "Hear! can still guide you. Double-tap anywhere to request permission again, or allow microphone access in your browser address bar."
+                  : "Hear! can still guide you. One double-tap opens Settings—there are no buttons to find."}
               </AppText>
               <View className="my-6 h-[1px] bg-border" />
               <VoiceStatusBadge label="HEAR IS SPEAKING" className="mb-3" />
               <AppText className="font-display text-[22px] leading-[28px] text-ink">
-                “Microphone access is off.{"\n"}Double-tap anywhere to open Settings.”
+                {isWeb
+                  ? "“Microphone access is off.\nDouble-tap anywhere to request permission.”"
+                  : "“Microphone access is off.\nDouble-tap anywhere to open Settings.”"}
               </AppText>
             </>
           ) : isVoiceTest ? (
@@ -166,7 +182,9 @@ export function VoiceAccessStep({
             </AppText>
             <AppText className="mt-2 text-[15px] sm:text-[16px] leading-[20px] sm:leading-[21px] text-voice-muted">
               {isDenied
-                ? "We’ll open Settings. Allow Microphone, then return here to continue by voice."
+                ? isWeb
+                  ? "We’ll request microphone access. Allow microphone in your browser to continue by voice."
+                  : "We’ll open Settings. Allow Microphone, then return here to continue by voice."
                 : "Your phone will ask for microphone permission next."}
             </AppText>
             {isDenied && (

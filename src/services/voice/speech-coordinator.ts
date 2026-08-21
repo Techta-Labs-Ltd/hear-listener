@@ -1,6 +1,6 @@
-import { AccessibilityInfo } from "react-native";
 import type { SpeechPriority, SpeechRequest } from "@/types";
 import { ukSpeech } from "./speech";
+import { voiceAudioGate } from "./audio-gate";
 
 const priorityRank: Record<SpeechPriority, number> = {
   screen: 1,
@@ -10,9 +10,27 @@ const priorityRank: Record<SpeechPriority, number> = {
 
 class SpeechCoordinator {
   private active?: { key: string; priority: SpeechPriority };
+  private quietMode = false;
+
+  enterQuietMode(): void {
+    this.quietMode = true;
+    void voiceAudioGate.enterQuietMode();
+    void ukSpeech.stop();
+    this.active = undefined;
+  }
+
+  exitQuietMode(): void {
+    this.quietMode = false;
+    voiceAudioGate.exitQuietMode();
+  }
+
+  isQuiet(): boolean {
+    return this.quietMode || voiceAudioGate.isQuiet();
+  }
 
   async speak(request: SpeechRequest): Promise<void> {
     if (!request.text.trim()) return;
+    if (this.isQuiet()) return;
     const priority = request.priority ?? "screen";
     if (
       this.active &&
@@ -24,11 +42,6 @@ class SpeechCoordinator {
     const key = request.key;
     this.active = { key, priority };
     try {
-      void AccessibilityInfo.isScreenReaderEnabled().then((enabled) => {
-        if (enabled) {
-          AccessibilityInfo.announceForAccessibility(request.text);
-        }
-      });
       await ukSpeech.speak(request.text, { interrupt: true });
     } finally {
       if (this.active?.key === key) this.active = undefined;
@@ -45,14 +58,10 @@ class SpeechCoordinator {
     force?: boolean;
   }): Promise<void> {
     if (!request.text.trim()) return;
+    this.exitQuietMode();
     const key = request.key ?? `beforeListening:${request.text}`;
     this.active = { key, priority: "instruction" };
     try {
-      void AccessibilityInfo.isScreenReaderEnabled().then((enabled) => {
-        if (enabled) {
-          AccessibilityInfo.announceForAccessibility(request.text);
-        }
-      });
       await ukSpeech.stop();
       await ukSpeech.speak(request.text, { interrupt: true });
     } finally {

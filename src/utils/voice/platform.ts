@@ -139,7 +139,7 @@ export function buildSpeechRecognitionOptions(params: {
   return {
     lang: VOICE_LANGUAGE,
     interimResults: true,
-    continuous: false,
+    continuous: true,
     maxAlternatives: VOICE_MAX_ALTERNATIVES,
     contextualStrings: params.contextualStrings,
     requiresOnDeviceRecognition: isAndroid
@@ -148,7 +148,7 @@ export function buildSpeechRecognitionOptions(params: {
         ? true
         : false,
     addsPunctuation: false,
-    iosTaskHint: "confirmation" as const,
+    iosTaskHint: "dictation" as const,
     iosVoiceProcessingEnabled: true,
     iosCategory: isIos
       ? {
@@ -164,8 +164,10 @@ export function buildSpeechRecognitionOptions(params: {
       ? {
           EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS:
             VOICE_TIMING.androidMinSpeechInputMs,
+          EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS:
+            VOICE_TIMING.androidPossibleSilenceMs,
           EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS:
-            VOICE_TIMING.androidSilenceLengthMs,
+            VOICE_TIMING.androidCompleteSilenceMs,
         }
       : undefined,
   };

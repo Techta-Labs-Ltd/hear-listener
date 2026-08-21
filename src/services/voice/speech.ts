@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import * as Speech from "expo-speech";
 
 const preferredUkNames = [
@@ -71,9 +72,23 @@ export class UkSpeechService {
     } = {},
   ): Promise<void> {
     if (!text || options.sensitive) return;
+    if (
+      Platform.OS === "web" &&
+      typeof window !== "undefined" &&
+      window.speechSynthesis
+    ) {
+      window.speechSynthesis.resume();
+    }
     try {
       if (options.interrupt !== false) {
         await Speech.stop();
+        if (
+          Platform.OS === "web" &&
+          typeof window !== "undefined" &&
+          window.speechSynthesis
+        ) {
+          window.speechSynthesis.resume();
+        }
       }
       const voice = await this.getUkVoiceIdentifier();
       const succeeded = await new Promise<boolean>((resolve) => {

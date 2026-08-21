@@ -1,13 +1,22 @@
 import type { VoiceExecutorKey, VoiceState } from "@/types";
 
 export const VOICE_TIMING = {
+  preSpeechTimeout: 8000,
+  noSpeechHapticReminder: 4000,
   noSpeechTimeout: 8000,
   gentleReminder: 4000,
-  maxRecognitionDuration: 30000,
+  postSpeechSilence: 3500,
+  maxTranscriptCharacters: 800,
+  recognitionActivityWatchdog: 60000,
+  maxRecognitionDuration: 60000,
   resolutionTimeout: 5000,
   contextualTermsLimit: 80,
-  androidMinSpeechInputMs: 500,
-  androidSilenceLengthMs: 1400,
+  androidMinSpeechInputMs: 1000,
+  androidPossibleSilenceMs: 2500,
+  androidCompleteSilenceMs: 3500,
+  androidSilenceLengthMs: 3500,
+  firstIdleReminder: 15000,
+  secondIdleReminder: 35000,
 } as const;
 
 export const PLAYBACK_EXECUTORS: ReadonlySet<VoiceExecutorKey> =
@@ -65,4 +74,3 @@ export const VOICE_STATE_BADGES: Record<VoiceState, string> = {
   error: "I DIDN’T HEAR A COMMAND",
   cancelled: "VOICE CLOSED",
 };
-

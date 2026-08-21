@@ -8,6 +8,7 @@ import { LISTENING_PHASE_COPY, VOICE_TIMING } from "@/constants/voice";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { View } from "@/tw";
 import type { ListeningPanelProps, PanelPhase, VoiceState } from "@/types";
+import { ListeningCountdown } from "./ListeningCountdown";
 import { VoiceStatusBadge } from "./VoiceStatusBadge";
 
 function phaseFor(state: VoiceState): PanelPhase {
@@ -22,6 +23,7 @@ export function ListeningPanel({
   message,
   prompt,
   transcript,
+  deadlineAt,
   speechDetected,
 }: ListeningPanelProps) {
   const insets = useSafeAreaInsets();
@@ -42,7 +44,13 @@ export function ListeningPanel({
           title: "Let’s try one command.",
           sub: message || prompt || "Say “Play my local news.”",
         }
-      : LISTENING_PHASE_COPY[phase];
+      : speechDetected
+        ? {
+            badge: "I CAN HEAR YOU",
+            title: transcript ? `“${transcript}”` : "Keep speaking.",
+            sub: "I can hear you.",
+          }
+        : LISTENING_PHASE_COPY[phase];
 
   const [progress] = useState(() => new Animated.Value(0));
 
@@ -84,19 +92,31 @@ export function ListeningPanel({
         className="mt-3 h-1 w-[64px] self-center rounded-full bg-voice-muted opacity-65"
       />
       <View className="mt-4 sm:mt-7 px-5 sm:px-6">
-        <VoiceStatusBadge label={copy.badge} />
+        <View className="flex-row items-center justify-between">
+          <VoiceStatusBadge label={copy.badge} />
+          {phase === "listening" && !isError && !speechDetected && (
+            <ListeningCountdown
+              deadlineAt={deadlineAt}
+              speechDetected={speechDetected}
+              size={30}
+              strokeWidth={2.5}
+            />
+          )}
+        </View>
 
         <AppText
           accessibilityLiveRegion="polite"
           className="mt-4 sm:mt-[28px] font-display text-[32px] sm:text-[38px] leading-[36px] sm:leading-[44px] text-white"
         >
-          {transcript && phase === "working" ? `“${transcript}”` : copy.title}
+          {transcript && (phase === "working" || speechDetected || isError)
+            ? `“${transcript}”`
+            : copy.title}
         </AppText>
         <AppText className="mt-2 sm:mt-[12px] text-[15px] sm:text-[16px] leading-[20px] sm:leading-[21px] text-voice-muted">
           {message || prompt || copy.sub}
         </AppText>
 
-        {phase === "listening" && !isError ? (
+        {phase === "listening" && !isError && !speechDetected ? (
           <>
             <View
               accessible

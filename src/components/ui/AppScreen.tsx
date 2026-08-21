@@ -7,7 +7,9 @@ import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { getVoiceScreenDefinition } from "@/services/voice/screen-registry";
 import {
   SCREEN_IDLE_HINTS,
-  SCREEN_IDLE_TIMEOUT,
+  SCREEN_IDLE_HINTS_2,
+  SCREEN_IDLE_TIMEOUT_1,
+  SCREEN_IDLE_TIMEOUT_2,
 } from "@/constants/screen-hints";
 
 export function AppScreen({
@@ -21,8 +23,10 @@ export function AppScreen({
 }: AppScreenProps) {
   const pathname = usePathname();
   const voice = useVoice();
+  const registerScreen = voice.registerScreen;
   const accessibility = useAppAccessibility();
-  const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const idleTimer1 = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const idleTimer2 = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const screenId = (() => {
     try {
@@ -34,7 +38,7 @@ export function AppScreen({
 
   useFocusEffect(
     useCallback(() => {
-      const cleanup = voice.registerScreen?.({
+      const cleanup = registerScreen?.({
         id: screenId,
         pathname,
         title: screenTitle,
@@ -48,27 +52,39 @@ export function AppScreen({
         accessibility.announce(screenOrientation, `screen:${pathname}`, true);
       }
 
-      if (idleTimer.current) clearTimeout(idleTimer.current);
-      idleTimer.current = setTimeout(() => {
-        const hint = SCREEN_IDLE_HINTS[pathname] || SCREEN_IDLE_HINTS["/"];
-        if (hint && voice.state === "idle") {
-          accessibility.announce(hint, `idle:${pathname}`, true);
+      if (idleTimer1.current) clearTimeout(idleTimer1.current);
+      if (idleTimer2.current) clearTimeout(idleTimer2.current);
+
+      idleTimer1.current = setTimeout(() => {
+        const hint1 = SCREEN_IDLE_HINTS[pathname] || SCREEN_IDLE_HINTS["/"];
+        if (hint1) {
+          accessibility.announce(hint1, `idle1:${pathname}`, true);
         }
-      }, SCREEN_IDLE_TIMEOUT);
+      }, SCREEN_IDLE_TIMEOUT_1);
+
+      idleTimer2.current = setTimeout(() => {
+        const hint2 = SCREEN_IDLE_HINTS_2[pathname] || SCREEN_IDLE_HINTS_2["/"];
+        if (hint2) {
+          accessibility.announce(hint2, `idle2:${pathname}`, true);
+        }
+      }, SCREEN_IDLE_TIMEOUT_2);
 
       return () => {
-        if (idleTimer.current) clearTimeout(idleTimer.current);
+        if (idleTimer1.current) clearTimeout(idleTimer1.current);
+        if (idleTimer2.current) clearTimeout(idleTimer2.current);
+        idleTimer1.current = undefined;
+        idleTimer2.current = undefined;
         accessibility.stopSpeaking();
         cleanup?.();
       };
     }, [
       accessibility,
       pathname,
+      registerScreen,
       screenId,
       screenOrientation,
       screenReadout,
       screenTitle,
-      voice,
       voiceCommands,
     ]),
   );

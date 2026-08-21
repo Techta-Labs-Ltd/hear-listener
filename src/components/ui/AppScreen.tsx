@@ -1,8 +1,14 @@
-import { usePathname } from "expo-router";
+import { useCallback, useRef } from "react";
+import { useFocusEffect, usePathname } from "expo-router";
 import { SafeAreaView, View } from "@/tw";
 import type { AppScreenProps } from "@/types";
-import { useRegisterScreenVoice } from "@/hooks/useVoice";
+import { useVoice } from "@/hooks/useVoice";
+import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { getVoiceScreenDefinition } from "@/services/voice/screen-registry";
+import {
+  SCREEN_IDLE_HINTS,
+  SCREEN_IDLE_TIMEOUT,
+} from "@/constants/screen-hints";
 
 export function AppScreen({
   children,
@@ -14,6 +20,10 @@ export function AppScreen({
   ...props
 }: AppScreenProps) {
   const pathname = usePathname();
+  const voice = useVoice();
+  const accessibility = useAppAccessibility();
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
   const screenId = (() => {
     try {
       return getVoiceScreenDefinition(pathname).id;
@@ -21,15 +31,47 @@ export function AppScreen({
       return undefined;
     }
   })();
-  useRegisterScreenVoice({
-    id: screenId,
-    pathname,
-    title: screenTitle,
-    orientation: screenOrientation,
-    readout: screenReadout,
-    commands: voiceCommands,
-    voiceEnabled: true,
-  });
+
+  useFocusEffect(
+    useCallback(() => {
+      const cleanup = voice.registerScreen?.({
+        id: screenId,
+        pathname,
+        title: screenTitle,
+        orientation: screenOrientation,
+        readout: screenReadout,
+        commands: voiceCommands,
+        voiceEnabled: true,
+      });
+
+      if (screenOrientation) {
+        accessibility.announce(screenOrientation, `screen:${pathname}`, true);
+      }
+
+      if (idleTimer.current) clearTimeout(idleTimer.current);
+      idleTimer.current = setTimeout(() => {
+        const hint = SCREEN_IDLE_HINTS[pathname] || SCREEN_IDLE_HINTS["/"];
+        if (hint && voice.state === "idle") {
+          accessibility.announce(hint, `idle:${pathname}`, true);
+        }
+      }, SCREEN_IDLE_TIMEOUT);
+
+      return () => {
+        if (idleTimer.current) clearTimeout(idleTimer.current);
+        accessibility.stopSpeaking();
+        cleanup?.();
+      };
+    }, [
+      accessibility,
+      pathname,
+      screenId,
+      screenOrientation,
+      screenReadout,
+      screenTitle,
+      voice,
+      voiceCommands,
+    ]),
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-canvas">

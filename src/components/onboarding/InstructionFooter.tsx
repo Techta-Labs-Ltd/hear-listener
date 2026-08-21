@@ -36,7 +36,7 @@ export function InstructionFooter({
       >
         {subtitle}
       </AppText>
-      {notes?.map((note) => (
+      {notes?.map((note: string) => (
         <AppText
           key={note}
           className={cn(

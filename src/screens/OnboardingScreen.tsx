@@ -37,6 +37,8 @@ export function OnboardingScreen() {
           voiceState={setup.voiceState}
           voiceMessage={setup.voiceMessage}
           transcript={setup.transcript}
+          deadlineAt={setup.deadlineAt}
+          speechDetected={setup.speechDetected}
           onRequestPermission={setup.requestPermission}
           onOpenSettings={setup.openSettings}
           onRetryVoiceTest={setup.retryVoiceTest}
@@ -50,6 +52,7 @@ export function OnboardingScreen() {
           error={setup.account.error}
           onSignIn={(provider) => void setup.signIn(provider)}
           onSkip={setup.skipAccount}
+          onDoubleTap={setup.startAccountVoiceSelection}
         />
       )}
     </View>

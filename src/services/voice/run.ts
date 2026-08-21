@@ -235,7 +235,7 @@ export function runCommand(
     case "onboardingUseLocation":
       onboardingVoiceBridge.dispatch({ type: "useLocation" });
       return "Finding your approximate area.";
-    case "unknown":
+    default:
       return null;
   }
 }

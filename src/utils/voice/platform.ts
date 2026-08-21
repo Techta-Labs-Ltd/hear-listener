@@ -39,7 +39,21 @@ export type MicrophonePermissionStatus = {
 
 export async function checkMicrophonePermissionStatus(): Promise<MicrophonePermissionStatus> {
   if (Platform.OS === "web") {
-    return { granted: true, status: "granted", canAskAgain: true };
+    if (typeof navigator !== "undefined" && navigator.permissions?.query) {
+      try {
+        const permissionStatus = await navigator.permissions.query({
+          name: "microphone" as PermissionName,
+        });
+        if (permissionStatus.state === "granted") {
+          return { granted: true, status: "granted", canAskAgain: true };
+        }
+        if (permissionStatus.state === "denied") {
+          return { granted: false, status: "blocked", canAskAgain: false };
+        }
+        return { granted: false, status: "undetermined", canAskAgain: true };
+      } catch {}
+    }
+    return { granted: false, status: "undetermined", canAskAgain: true };
   }
 
   try {
@@ -80,11 +94,17 @@ export async function requestMicrophonePermissionSafely(): Promise<{
         });
         stream.getTracks().forEach((track) => track.stop());
         return { granted: true, status: "granted" };
-      } catch {
-        return { granted: false, status: "denied" };
+      } catch (err: any) {
+        const isBlocked =
+          err?.name === "NotAllowedError" ||
+          err?.name === "PermissionDeniedError";
+        return {
+          granted: false,
+          status: isBlocked ? "blocked" : "denied",
+        };
       }
     }
-    return { granted: true, status: "granted" };
+    return { granted: false, status: "denied" };
   }
 
   try {

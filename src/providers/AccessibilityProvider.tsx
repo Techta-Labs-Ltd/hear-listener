@@ -50,12 +50,17 @@ export function AccessibilityProvider({ children }: PropsWithChildren) {
   const stopSpeaking = useCallback(() => {
     void speechCoordinator.cancel();
   }, []);
+
   const announce = useCallback(
-    (message: string, key = `accessibility:${message}`) => {
-      if (!screenReaderEnabled && !spokenNavigationEnabled) return;
-      void speechCoordinator.announce({ key, text: message, priority: "screen" });
+    (message: string, key = `accessibility:${message}`, force = true) => {
+      void speechCoordinator.announce({
+        key,
+        text: message,
+        priority: "screen",
+        force,
+      });
     },
-    [screenReaderEnabled, spokenNavigationEnabled],
+    [],
   );
 
   const value = useMemo<AccessibilityContextValue>(

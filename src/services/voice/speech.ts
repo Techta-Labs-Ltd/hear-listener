@@ -87,7 +87,8 @@ export class UkSpeechService {
           resolve(success);
         };
 
-        timeout = setTimeout(() => complete(true), 6000);
+        const timeoutMs = Math.max(16000, Math.ceil(text.length * 130));
+        timeout = setTimeout(() => complete(true), timeoutMs);
 
         Speech.speak(text, {
           language: "en-GB",
@@ -128,7 +129,8 @@ export class UkSpeechService {
         resolve();
       };
 
-      timeout = setTimeout(complete, 6000);
+      const timeoutMs = Math.max(16000, Math.ceil(text.length * 130));
+      timeout = setTimeout(complete, timeoutMs);
 
       Speech.speak(text, {
         language: "en-GB",

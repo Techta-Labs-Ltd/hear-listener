@@ -24,10 +24,11 @@ export type VoiceAccessStepProps = OnboardingStepProps & {
   voiceState: VoiceState;
   voiceMessage?: string;
   transcript?: string;
+  deadlineAt?: number;
+  speechDetected?: boolean;
   onRequestPermission: () => void;
   onOpenSettings: () => void;
   onRetryVoiceTest: () => void;
-  /** @deprecated */
   onEnableVoice?: () => void;
 };
 
@@ -36,46 +37,11 @@ export type AccountStepProps = OnboardingStepProps & {
   error?: string;
   onSignIn: (provider: AccountProvider) => void;
   onSkip: () => void;
+  onDoubleTap?: () => void;
 };
 
 export type OnboardingProgressProps = {
   current: 1 | 2 | 3;
-  className?: string;
-};
-
-export type PromptCardProps = {
-  label: string;
-  command: string;
-  size?: "regular" | "large";
-  className?: string;
-};
-
-export type OnboardingHeroProps = {
-  children: ReactNode;
-  height?: number;
-  wash?: boolean;
-  showWave?: boolean;
-};
-
-export type FactListRowProps = {
-  title: string;
-  description: string;
-  hideDivider?: boolean;
-  className?: string;
-};
-
-export type InstructionFooterProps = {
-  title: string;
-  subtitle: string;
-  notes?: readonly string[];
-  inverse?: boolean;
-  titleClassName?: string;
-  className?: string;
-};
-
-export type ProviderButtonProps = {
-  onPress: () => void;
-  loading?: boolean;
   className?: string;
 };
 
@@ -89,47 +55,40 @@ export type OnboardingPhase =
   | "voiceTestListening"
   | "voiceTestSuccess"
   | "voiceTestError"
-  | "account"
-  | "complete";
+  | "account";
 
 export type OnboardingGestureMode =
-  | "inactive"
   | "advanceWelcome"
   | "requestPermission"
   | "startVoiceTest"
   | "permissionDenied"
-  | "accountSelection";
+  | "accountSelection"
+  | "inactive";
 
-export type OnboardingChapterId = "welcome" | "voiceExperience" | "ready";
-export type CapabilityStatus = "idle" | "requesting" | "ready" | "skipped" | "denied" | "error";
-export type GuidanceChoice = "spoken" | "screen";
-export type OnboardingChapterDefinition = {
-  id: OnboardingChapterId;
+export type OnboardingCopyPreset = {
   eyebrow: string;
   title: string;
   description: string;
-  spokenPrompt: string;
-  voiceCommands: readonly string[];
-};
-export type OnboardingValidationState = {
-  guidanceChoice?: GuidanceChoice;
-  voiceStatus: CapabilityStatus;
-  soundStatus: CapabilityStatus;
-  locationStatus: CapabilityStatus;
-  town: string;
+  primaryActionLabel: string;
+  secondaryActionLabel?: string;
+  notes?: string[];
 };
 
-export type OnboardingVoiceCommand =
-  | { type: "continue" }
-  | { type: "back" }
-  | { type: "skip" }
-  | { type: "read" }
-  | { type: "useSpokenSetup" }
-  | { type: "useScreenControls" }
-  | { type: "playSoundCheck" }
-  | { type: "cannotHear" }
-  | { type: "useLocation" }
-  | { type: "setTown"; locationId: string; name: string };
+export type OnboardingPresetKey =
+  | "welcome"
+  | "voiceAccess"
+  | "permissionDenied"
+  | "voiceTestReady"
+  | "voiceTest"
+  | "account";
+
+export type OnboardingStepData = {
+  stepIndex: number;
+  totalSteps: number;
+  title: string;
+  description: string;
+  options: string[];
+};
 
 export type OnboardingStepReadout = {
   stepIndex: number;
@@ -139,26 +98,98 @@ export type OnboardingStepReadout = {
   options: string[];
 };
 
-export type GestureEvent = {
-  id: number;
-  mode: Exclude<OnboardingGestureMode, "inactive">;
+export type FactListRowProps = {
+  title: string;
+  description: string;
+  hideDivider?: boolean;
+  className?: string;
+};
+
+export type InstructionFooterProps = {
+  title: string;
+  subtitle: string;
+  notes?: string[];
+  inverse?: boolean;
+  titleClassName?: string;
+  className?: string;
+};
+
+export type OnboardingHeroProps = {
+  children?: ReactNode;
+  height?: number;
+  wash?: boolean;
+  showWave?: boolean;
+  className?: string;
+};
+
+export type PromptCardProps = {
+  label: string;
+  command: string;
+  size?: "small" | "medium" | "large" | "regular";
+  className?: string;
+};
+
+export type ProviderButtonProps = {
+  loading?: boolean;
+  onPress: () => void;
+  className?: string;
+};
+
+export type OnboardingVoiceCommand = {
+  type:
+    | "continue"
+    | "back"
+    | "skip"
+    | "retry"
+    | "speak"
+    | "setTown"
+    | "read"
+    | "useSpokenSetup"
+    | "useScreenControls"
+    | "playSoundCheck"
+    | "cannotHear"
+    | "useLocation";
+  id?: number;
+  town?: string;
+  locationId?: string;
+  name?: string;
+  text?: string;
 };
 
 export type OnboardingVoiceStore = {
-  lastCommand?: OnboardingVoiceCommand & { id: number };
-  stepReadout?: OnboardingStepReadout;
   gestureMode: OnboardingGestureMode;
-  gestureEvent?: GestureEvent;
   gestureLessonActive: boolean;
   gestureLessonCompleted: boolean;
   voiceInvocationAllowed: boolean;
-  registerStep: (readout: OnboardingStepReadout) => void;
+  stepReadout?: OnboardingStepReadout;
+  lastCommand?: OnboardingVoiceCommand & { id: number };
+  gestureEvent?: { id: number; mode: OnboardingGestureMode };
+  registerStep: (stepReadout: OnboardingStepReadout) => void;
   dispatch: (command: OnboardingVoiceCommand) => void;
   take: () => (OnboardingVoiceCommand & { id: number }) | undefined;
-  setGestureMode: (mode: OnboardingGestureMode) => void;
+  setGestureMode: (gestureMode: OnboardingGestureMode) => void;
   reportGesture: () => OnboardingGestureMode;
   setGestureLessonActive: (active: boolean) => void;
   completeGestureLesson: () => void;
-  setVoiceInvocationAllowed: (allowed: boolean) => void;
+  setVoiceInvocationAllowed: (voiceInvocationAllowed: boolean) => void;
   resetExperience: () => void;
+};
+
+export type OnboardingChapterId = "welcome" | "voiceExperience" | "ready";
+
+export type OnboardingChapterDefinition = {
+  id: OnboardingChapterId;
+  eyebrow: string;
+  title: string;
+  description: string;
+  spokenPrompt: string;
+  voiceCommands: readonly string[];
+};
+
+export type OnboardingValidationState = {
+  guidanceChoice?: string;
+  voiceStatus?: "idle" | "requesting" | "granted" | "denied" | "skipped";
+  soundStatus?: "idle" | "requesting" | "played" | "cannotHear" | "skipped";
+  locationStatus?: "idle" | "requesting" | "granted" | "denied";
+  town: string;
 };

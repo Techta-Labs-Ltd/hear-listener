@@ -14,10 +14,11 @@ export const useOnboardingVoiceStore = create<OnboardingVoiceStore>()((set, get)
   gestureLessonActive: false,
   gestureLessonCompleted: false,
   voiceInvocationAllowed: true,
-  registerStep: (stepReadout) => set({ stepReadout }),
-  dispatch: (command) => set({ lastCommand: { ...command, id: ++commandCounter } }),
+  registerStep: (stepReadout: OnboardingStepReadout) => set({ stepReadout }),
+  dispatch: (command: OnboardingVoiceCommand) =>
+    set({ lastCommand: { ...command, id: ++commandCounter } }),
   take: () => get().lastCommand,
-  setGestureMode: (gestureMode) => set({ gestureMode }),
+  setGestureMode: (gestureMode: OnboardingGestureMode) => set({ gestureMode }),
   reportGesture: () => {
     const mode = get().gestureMode;
     if (mode !== "inactive") set({ gestureEvent: { id: ++gestureCounter, mode } });

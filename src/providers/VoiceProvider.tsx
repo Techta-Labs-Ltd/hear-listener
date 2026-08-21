@@ -19,6 +19,7 @@ import { VoiceGestureLayer } from "@/components/voice/VoiceGestureLayer";
 import { PLAYBACK_EXECUTORS, VOICE_TIMING } from "@/constants/voice";
 import { entities, stories, topics } from "@/data/catalogue";
 import { appHaptics } from "@/lib/haptics";
+import { playClick } from "@/lib/audio/one-shots";
 import { routes, topicRoute } from "@/navigation/routes";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { voiceAnnounce } from "@/services/voice/announce";
@@ -194,9 +195,20 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       const contextualStrings = await getContextualTermsSafely();
       if (active.current?.id !== id) return;
 
+      const startedAt = Date.now();
+      const deadlineAt = startedAt + VOICE_TIMING.noSpeechTimeout;
+      if (active.current) {
+        active.current.startedAt = startedAt;
+        active.current.deadlineAt = deadlineAt;
+        active.current.speechDetected = false;
+      }
+
       useVoiceStore.getState().setVoice({
         state: "preparing",
         message: "Getting ready.",
+        listeningStartedAt: startedAt,
+        listeningDeadlineAt: deadlineAt,
+        speechDetected: false,
       });
 
       const options = buildSpeechRecognitionOptions({
@@ -219,8 +231,10 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
       reminderTimer.current = setTimeout(() => {
         if (active.current?.id !== id || active.current.speechDetected) return;
+        void playClick();
+        void appHaptics.clarification();
         useVoiceStore.getState().setVoice({
-          message: "Still listening. Say your command when you are ready.",
+          message: "Still listening. 4 seconds remaining.",
         });
       }, VOICE_TIMING.gentleReminder);
 
@@ -230,7 +244,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           ExpoSpeechRecognitionModule.stop();
         } catch {}
         finish(
-          "I did not hear a command. Try again when you are ready.",
+          "I did not hear a command. Voice listening is closed. Double-tap anywhere to listen again.",
           "no-speech-timeout",
         );
       }, VOICE_TIMING.noSpeechTimeout);
@@ -255,11 +269,13 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       const id = generateVoiceSessionId();
       const controller = new AbortController();
       const screenSnapshot = activeScreenRef.current;
+      const startedAt = Date.now();
       active.current = {
         id,
         controller,
         finalHandled: false,
-        startedAt: Date.now(),
+        startedAt,
+        deadlineAt: startedAt + VOICE_TIMING.noSpeechTimeout,
         speechDetected: false,
         playbackWasPlaying,
         source: _source,
@@ -434,7 +450,10 @@ export function VoiceProvider({ children }: PropsWithChildren) {
             latencyBand: latencyBand(Date.now() - started),
             confidenceBand: confidenceBand(result.invocation.confidence),
             actionId: result.invocation.actionId,
-            databaseVersion: result.invocation.databaseVersion,
+            databaseVersion:
+              typeof result.invocation.databaseVersion === "number"
+                ? result.invocation.databaseVersion
+                : 1,
           });
           await execute(result.invocation);
         } else if (result.kind === "choices") {
@@ -468,7 +487,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         }
       }
     },
-    [clearTimers, execute, finish],
+    [clearTimers, execute, finish, voiceAnnounce],
   );
 
   const cancel = useCallback(() => {
@@ -508,9 +527,19 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
   useSpeechRecognitionEvent("start", () => {
     if (active.current) {
-      useVoiceStore
-        .getState()
-        .setVoice({ state: "listening", message: "Listening. Speak now." });
+      const startedAt = Date.now();
+      const deadlineAt = startedAt + VOICE_TIMING.noSpeechTimeout;
+      active.current.startedAt = startedAt;
+      active.current.deadlineAt = deadlineAt;
+      active.current.speechDetected = false;
+
+      useVoiceStore.getState().setVoice({
+        state: "listening",
+        message: "Speak naturally.",
+        listeningStartedAt: startedAt,
+        listeningDeadlineAt: deadlineAt,
+        speechDetected: false,
+      });
       void appHaptics.listening();
     }
   });
@@ -525,6 +554,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     reminderTimer.current = undefined;
     useVoiceStore.getState().setVoice({
       state: "listening",
+      speechDetected: true,
       message: "I can hear you. Keep speaking.",
     });
   });
@@ -617,9 +647,10 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       ...voice,
       activeScreen,
       registerScreen,
-      startVoiceSession: ({ source }) => start(source, true),
+      startVoiceSession: (options) =>
+        start(options?.source || "doubleTap", options?.announceLocation ?? false),
       stop,
-      retry: () => start("contextualAction", true),
+      retry: () => start("contextualAction", false),
       cancel,
       close,
       choose,

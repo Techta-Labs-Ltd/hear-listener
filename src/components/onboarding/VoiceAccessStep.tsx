@@ -15,6 +15,9 @@ export function VoiceAccessStep({
   screenReaderEnabled,
   voiceState,
   voiceMessage,
+  transcript,
+  deadlineAt,
+  speechDetected,
   onRequestPermission,
   onOpenSettings,
   onRetryVoiceTest,
@@ -128,7 +131,14 @@ export function VoiceAccessStep({
 
       {isVoiceTest ? (
         <View className="flex-1 justify-end" accessible={!screenReaderEnabled}>
-          <ListeningPanel state={voiceState} message={voiceMessage} />
+          <ListeningPanel
+            state={voiceState}
+            message={voiceMessage}
+            transcript={transcript}
+            prompt="Say “Play my local news.”"
+            deadlineAt={deadlineAt}
+            speechDetected={speechDetected}
+          />
         </View>
       ) : (
         <LinearGradient

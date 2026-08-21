@@ -3,6 +3,6 @@ export type AccessibilityContextValue = {
   reduceMotionEnabled: boolean;
   spokenNavigationEnabled: boolean;
   setSpokenNavigationEnabled: (enabled: boolean) => void;
-  announce: (message: string, key?: string) => void;
+  announce: (message: string, key?: string, force?: boolean) => void;
   stopSpeaking: () => void;
 };

@@ -9,17 +9,24 @@ export function VoiceStatusBadge({ label, className }: VoiceStatusBadgeProps) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    if (label.includes("LISTENING") || label.includes("SPEAKING")) {
+    const isPulsing =
+      label.includes("LISTENING") ||
+      label.includes("SPEAKING") ||
+      label.includes("PREPARING") ||
+      label.includes("PROCESSING") ||
+      label.includes("ONE MOMENT");
+
+    if (isPulsing) {
       const loop = Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
-            toValue: 0.3,
-            duration: 700,
+            toValue: 0.35,
+            duration: 800,
             useNativeDriver: true,
           }),
           Animated.timing(pulseAnim, {
             toValue: 1,
-            duration: 700,
+            duration: 800,
             useNativeDriver: true,
           }),
         ]),
@@ -36,15 +43,15 @@ export function VoiceStatusBadge({ label, className }: VoiceStatusBadgeProps) {
       accessible
       accessibilityRole="text"
       accessibilityLabel={label}
-      className={cn("flex-row items-center gap-3", className)}
+      className={cn("flex-row items-center gap-2.5", className)}
     >
       <Animated.View
         style={{ opacity: pulseAnim }}
-        className="h-2.5 w-2.5 rounded-full bg-voice-indicator"
+        className="h-3 w-3 rounded-full bg-voice-indicator"
       />
       <AppText
         variant="overline"
-        className="text-[13px] leading-4 tracking-[0.4px] text-voice-muted"
+        className="text-[13px] font-extrabold leading-4 tracking-[0.08em] text-voice-muted uppercase"
       >
         {label}
       </AppText>

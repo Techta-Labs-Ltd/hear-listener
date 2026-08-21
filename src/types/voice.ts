@@ -45,6 +45,7 @@ export type SpeechRequest = {
   key: string;
   text: string;
   priority?: SpeechPriority;
+  force?: boolean;
 };
 
 export type VoiceScreenContext = {
@@ -73,6 +74,7 @@ export type ActiveVoiceSession = {
   controller: AbortController;
   finalHandled: boolean;
   startedAt: number;
+  deadlineAt?: number;
   speechDetected: boolean;
   playbackWasPlaying: boolean;
   source?: VoiceInvocationSource;
@@ -88,6 +90,9 @@ export type VoiceStore = {
   choices: VoiceChoice[];
   errorCode?: string;
   retryable: boolean;
+  listeningStartedAt?: number;
+  listeningDeadlineAt?: number;
+  speechDetected?: boolean;
   setVoice: (
     change: Partial<Omit<VoiceStore, "setVoice" | "resetVoice">>,
   ) => void;
@@ -156,7 +161,8 @@ export type VoiceExecutorKey =
   | "onboardingUseScreenControls"
   | "onboardingPlaySoundCheck"
   | "onboardingCannotHear"
-  | "onboardingUseLocation";
+  | "onboardingUseLocation"
+  | "unknown";
 
 export type VoiceCommand =
   | {
@@ -175,54 +181,45 @@ export type VoiceCommand =
       topicId?: string;
       locationId?: string;
     }
-  | {
-      type:
-        | "pause"
-        | "resume"
-        | "next"
-        | "previous"
-        | "restart"
-        | "saveCurrent"
-        | "removeSaved"
-        | "downloadCurrent"
-        | "removeDownload"
-        | "whatIsThis"
-        | "whoMadeThis"
-        | "cancelSleepTimer"
-        | "addToQueue"
-        | "openQueue"
-        | "clearQueue"
-        | "changeLocation"
-        | "help"
-        | "openAppSettings"
-        | "openAudioSettings"
-        | "openBluetoothSettings"
-        | "openInternetSettings"
-        | "openWifiSettings"
-        | "openAccessibilitySettings"
-        | "openLocationSettings"
-        | "resetVoiceCorrections"
-        | "readScreen"
-        | "accountSignIn"
-        | "accountSignOut"
-        | "onboardingContinue"
-        | "onboardingBack"
-        | "onboardingSkip"
-        | "onboardingRead"
-        | "onboardingUseSpokenSetup"
-        | "onboardingUseScreenControls"
-        | "onboardingPlaySoundCheck"
-        | "onboardingCannotHear"
-        | "onboardingUseLocation"
-        | "unknown";
-    }
+  | { type: "pause" | "resume" | "next" | "previous" | "restart" }
   | { type: "repeat"; mode: "on" | "off" }
-  | { type: "seek"; direction: "forward" | "backward"; seconds: number }
+  | { type: "seek"; seconds: number; direction?: "forward" | "backward" }
   | { type: "speed"; multiplier: SpeedMultiplier }
   | { type: "speedStep"; direction: "up" | "down" }
   | { type: "follow" | "unfollow"; entityId: string }
+  | { type: "saveCurrent" }
+  | { type: "removeSaved"; storyId?: string }
+  | { type: "downloadCurrent" }
+  | { type: "removeDownload"; storyId?: string }
+  | { type: "whatIsThis" | "whoMadeThis" }
   | { type: "sleepTimer"; minutes: number }
-  | { type: "onboardingSetTown"; locationId: string; name: string };
+  | { type: "cancelSleepTimer" }
+  | { type: "addToQueue"; storyId?: string }
+  | { type: "openQueue" }
+  | { type: "clearQueue" }
+  | { type: "changeLocation" }
+  | { type: "help" }
+  | { type: "openAppSettings" }
+  | { type: "openAudioSettings" }
+  | { type: "openBluetoothSettings" }
+  | { type: "openInternetSettings" }
+  | { type: "openWifiSettings" }
+  | { type: "openAccessibilitySettings" }
+  | { type: "openLocationSettings" }
+  | { type: "resetVoiceCorrections" }
+  | { type: "readScreen" }
+  | { type: "accountSignIn" }
+  | { type: "accountSignOut" }
+  | { type: "onboardingContinue" }
+  | { type: "onboardingBack" }
+  | { type: "onboardingSkip" }
+  | { type: "onboardingSetTown"; locationId: string; name: string }
+  | { type: "onboardingRead" }
+  | { type: "onboardingUseSpokenSetup" }
+  | { type: "onboardingUseScreenControls" }
+  | { type: "onboardingPlaySoundCheck" }
+  | { type: "onboardingCannotHear" }
+  | { type: "onboardingUseLocation" };
 
 export type VoiceHypothesis = {
   transcript: string;
@@ -230,7 +227,7 @@ export type VoiceHypothesis = {
   rank: number;
 };
 export type VoiceEvidence = {
-  source: "exact" | "fts" | "trigram" | "phonetic" | "learned";
+  source: "exact" | "fts" | "trigram" | "phonetic" | "learned" | "phrase" | "alias" | "entity" | "generic" | "prefix";
   termId?: number;
   score: number;
   matchedText?: string;
@@ -240,6 +237,8 @@ export type VoiceInvocation = {
   actionId: string;
   executorKey: VoiceExecutorKey;
   command: VoiceCommand;
+  label?: string;
+  transcript?: string;
   slots: VoiceSlots;
   confidence: number;
   evidence: VoiceEvidence[];
@@ -249,6 +248,7 @@ export type VoiceInvocation = {
   risk: VoiceRisk;
   requiresConfirmation: boolean;
   idempotencyKey: string;
+  feedbackSpeech?: string;
 };
 
 export type VoiceChoice = {
@@ -266,9 +266,11 @@ export type VoiceResolution =
       prompt: string;
       choices: VoiceChoice[];
       confidence: number;
+      recognitionSessionId?: string;
     }
   | { kind: "unrecognized"; confidence: number; reason?: string }
-  | { kind: "cancelled"; confidence: 0 };
+  | { kind: "cancelled"; confidence: 0 }
+  | { kind: "none"; reason: string };
 export type VoiceResolveContext = {
   currentPath?: string;
   preferences: Preferences;
@@ -307,9 +309,15 @@ export type VoiceContextValue = {
   choices: VoiceChoice[];
   errorCode?: string;
   retryable: boolean;
+  listeningStartedAt?: number;
+  listeningDeadlineAt?: number;
+  speechDetected?: boolean;
   activeScreen?: ScreenVoiceContext | null;
   registerScreen?: (screen: ScreenVoiceContext) => () => void;
-  startVoiceSession: (options: { source: VoiceInvocationSource }) => Promise<void>;
+  startVoiceSession: (options?: {
+    source?: VoiceInvocationSource;
+    announceLocation?: boolean;
+  }) => Promise<void>;
   stop: () => void;
   retry: () => Promise<void>;
   cancel: () => void;
@@ -342,13 +350,25 @@ export type VoiceActionDefinition = {
 
 export type PanelPhase = "initializing" | "listening" | "working";
 
+export type ListeningCountdownProps = {
+  durationMs?: number;
+  deadlineAt?: number;
+  speechDetected?: boolean;
+  onExpired?: () => void;
+  size?: number;
+  strokeWidth?: number;
+};
+
 export type ListeningPanelProps = {
   state: VoiceState;
   message?: string;
+  prompt?: string;
+  transcript?: string;
+  deadlineAt?: number;
+  speechDetected?: boolean;
 };
 
 export type VoiceStatusBadgeProps = {
   label: string;
   className?: string;
 };
-

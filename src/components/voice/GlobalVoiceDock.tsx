@@ -22,6 +22,7 @@ import { VOICE_TIMING } from "@/constants/voice";
 import { useVoice } from "@/hooks/useVoice";
 import { View } from "@/tw";
 import type { VoiceChoice, VoiceState } from "@/types";
+import { ListeningCountdown } from "./ListeningCountdown";
 
 const stateBadges: Record<VoiceState, string> = {
   idle: "VOICE READY",
@@ -120,7 +121,7 @@ export function GlobalVoiceDock() {
           <View className="flex-row items-center justify-between pb-3 pt-1">
             <View className="flex-row items-center gap-2">
               {listening ? (
-                <View className="h-2 w-2 rounded-full bg-voice-indicator" />
+                <View className="h-2.5 w-2.5 rounded-full bg-voice-indicator" />
               ) : null}
               <AppText
                 variant="overline"
@@ -135,20 +136,31 @@ export function GlobalVoiceDock() {
                   : stateBadges[voice.state]}
               </AppText>
             </View>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={
-                listening ? "Stop listening" : "Cancel voice session"
-              }
-              accessibilityHint="Closes voice control."
-              onPress={cancel}
-              hitSlop={8}
-              className="min-h-11 items-center justify-center rounded-xl px-3 active:bg-white/10"
-            >
-              <AppText className="font-body-semibold text-[14px] text-white">
-                {listening ? "Stop" : "Cancel"}
-              </AppText>
-            </Pressable>
+
+            <View className="flex-row items-center gap-3">
+              {listening && (
+                <ListeningCountdown
+                  deadlineAt={voice.listeningDeadlineAt}
+                  speechDetected={voice.speechDetected}
+                  size={30}
+                  strokeWidth={2.5}
+                />
+              )}
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={
+                  listening ? "Stop listening" : "Cancel voice session"
+                }
+                accessibilityHint="Closes voice control."
+                onPress={cancel}
+                hitSlop={8}
+                className="min-h-11 items-center justify-center rounded-xl px-3 active:bg-white/10"
+              >
+                <AppText className="font-body-semibold text-[14px] text-white">
+                  {listening ? "Stop" : "Cancel"}
+                </AppText>
+              </Pressable>
+            </View>
           </View>
 
           <View className="gap-3 pb-3">

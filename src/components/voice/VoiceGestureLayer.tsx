@@ -3,6 +3,7 @@ import { View } from "@/tw";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useVoice } from "@/hooks/useVoice";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
+import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { onboardingVoiceBridge } from "@/stores/onboarding-voice-store";
 import * as Haptics from "expo-haptics";
 import { playClick } from "@/lib/audio/one-shots";
@@ -17,6 +18,19 @@ const INVOCABLE_STATES = new Set([
 export function VoiceGestureLayer({ children }: PropsWithChildren) {
   const { state, startVoiceSession, stop } = useVoice();
   const { screenReaderEnabled } = useAppAccessibility();
+
+  const singleTap = useMemo(
+    () =>
+      Gesture.Tap()
+        .numberOfTaps(1)
+        .runOnJS(true)
+        .onEnd((_event, success) => {
+          if (!success) return;
+          void speechCoordinator.cancel();
+        }),
+    [],
+  );
+
   const doubleTap = useMemo(
     () =>
       Gesture.Tap()
@@ -27,6 +41,7 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
         .runOnJS(true)
         .onEnd((_event, success) => {
           if (!success) return;
+          void speechCoordinator.cancel();
           if (state === "listening") {
             void playClick();
             void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -49,8 +64,13 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
     [screenReaderEnabled, startVoiceSession, state, stop],
   );
 
+  const composedGesture = useMemo(
+    () => Gesture.Exclusive(doubleTap, singleTap),
+    [doubleTap, singleTap],
+  );
+
   return (
-    <GestureDetector gesture={doubleTap}>
+    <GestureDetector gesture={composedGesture}>
       <View
         collapsable={false}
         className="flex-1"
@@ -59,6 +79,7 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
         ]}
         onAccessibilityAction={(event) => {
           if (event.nativeEvent.actionName === "startVoiceCommand") {
+            void speechCoordinator.cancel();
             const onboardingMode = onboardingVoiceBridge.reportGesture();
             if (onboardingMode !== "inactive") {
               void playClick();

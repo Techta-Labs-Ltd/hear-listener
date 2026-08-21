@@ -1,6 +1,5 @@
-import { usePreferencesStore } from "@/stores";
-import type { SpeechPriority, SpeechRequest } from "@/types";
 import { AccessibilityInfo } from "react-native";
+import type { SpeechPriority, SpeechRequest } from "@/types";
 import { ukSpeech } from "./speech";
 
 const priorityRank: Record<SpeechPriority, number> = {
@@ -10,11 +9,10 @@ const priorityRank: Record<SpeechPriority, number> = {
 };
 
 class SpeechCoordinator {
-  private delivered = new Set<string>();
   private active?: { key: string; priority: SpeechPriority };
 
   async speak(request: SpeechRequest): Promise<void> {
-    if (!request.text.trim() || this.delivered.has(request.key)) return;
+    if (!request.text.trim()) return;
     const priority = request.priority ?? "screen";
     if (
       this.active &&
@@ -23,20 +21,17 @@ class SpeechCoordinator {
       return;
     }
 
-    this.delivered.add(request.key);
-    this.active = { key: request.key, priority };
+    const key = request.key;
+    this.active = { key, priority };
     try {
-      const screenReaderEnabled =
-        await AccessibilityInfo.isScreenReaderEnabled();
-      if (screenReaderEnabled) {
-        await ukSpeech.stop();
-        AccessibilityInfo.announceForAccessibility(request.text);
-        return;
-      }
-      if (!usePreferencesStore.getState().spokenGuidanceEnabled) return;
-      await ukSpeech.speak(request.text);
+      void AccessibilityInfo.isScreenReaderEnabled().then((enabled) => {
+        if (enabled) {
+          AccessibilityInfo.announceForAccessibility(request.text);
+        }
+      });
+      await ukSpeech.speak(request.text, { interrupt: true });
     } finally {
-      if (this.active?.key === request.key) this.active = undefined;
+      if (this.active?.key === key) this.active = undefined;
     }
   }
 
@@ -44,17 +39,34 @@ class SpeechCoordinator {
     return this.speak(request);
   }
 
-  async cancel(scope?: string): Promise<void> {
-    await ukSpeech.stop();
-    this.active = undefined;
-    if (!scope) return;
-    for (const key of this.delivered) {
-      if (key.startsWith(scope)) this.delivered.delete(key);
+  async speakBeforeListening(request: {
+    text: string;
+    key?: string;
+    force?: boolean;
+  }): Promise<void> {
+    if (!request.text.trim()) return;
+    const key = request.key ?? `beforeListening:${request.text}`;
+    this.active = { key, priority: "instruction" };
+    try {
+      void AccessibilityInfo.isScreenReaderEnabled().then((enabled) => {
+        if (enabled) {
+          AccessibilityInfo.announceForAccessibility(request.text);
+        }
+      });
+      await ukSpeech.stop();
+      await ukSpeech.speak(request.text, { interrupt: true });
+    } finally {
+      if (this.active?.key === key) this.active = undefined;
     }
   }
 
-  reset(key: string): void {
-    this.delivered.delete(key);
+  async cancel(_scope?: string): Promise<void> {
+    this.active = undefined;
+    await ukSpeech.stop();
+  }
+
+  reset(_key?: string): void {
+    this.active = undefined;
   }
 }
 

@@ -18,7 +18,7 @@ export const ONBOARDING_SPEECH = {
   permissionNowOn:
     "Microphone access is now on. Let's try your first voice command. After the tone, say Play my local news.",
   permissionBlocked:
-    "Microphone access is off. Double-tap anywhere to open Settings.",
+    "Voice access. Step 2 of 3. Microphone access is off. Double-tap anywhere to open Settings.",
   voiceTestNoSpeech:
     "I didn't hear anything. Double-tap anywhere to try again.",
   voiceTestNotRecognised:
@@ -45,9 +45,7 @@ export const ONBOARDING_SPEECH = {
     "Setup complete. Hear is ready.",
   completeWithoutVoice:
     "Setup complete. Hear is ready. You can enable voice access later in Settings.",
-  // Legacy aliases
   access:
     "Voice access. Step 2 of 3. Hear listens only when you ask. The microphone stops after each command. Double-tap anywhere to continue and your phone will ask for microphone permission.",
   test: "Listening. Speak naturally. Say: Play my local news.",
 } as const;
-

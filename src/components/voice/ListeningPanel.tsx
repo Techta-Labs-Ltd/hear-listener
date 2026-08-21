@@ -17,23 +17,37 @@ function phaseFor(state: VoiceState): PanelPhase {
   return "initializing";
 }
 
-export function ListeningPanel({ state, message }: ListeningPanelProps) {
+export function ListeningPanel({
+  state,
+  message,
+  prompt,
+  transcript,
+  speechDetected,
+}: ListeningPanelProps) {
   const insets = useSafeAreaInsets();
   const { reduceMotionEnabled } = useAppAccessibility();
   const isError = state === "error" || state === "cancelled";
+  const isSpeaking = state === "preparing" || state === "permission";
   const phase = phaseFor(state);
+
   const copy = isError
     ? {
         badge: "TRY AGAIN",
         title: "I didn’t hear that.",
         sub: message || "Double-tap anywhere to listen again.",
       }
-    : LISTENING_PHASE_COPY[phase];
+    : isSpeaking
+      ? {
+          badge: "HEAR IS SPEAKING",
+          title: "Let’s try one command.",
+          sub: message || prompt || "Say “Play my local news.”",
+        }
+      : LISTENING_PHASE_COPY[phase];
 
   const [progress] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
-    if (phase !== "listening" || isError) {
+    if (phase !== "listening" || isError || speechDetected) {
       progress.setValue(0);
       return;
     }
@@ -50,7 +64,7 @@ export function ListeningPanel({ state, message }: ListeningPanelProps) {
     });
     animation.start();
     return () => animation.stop();
-  }, [isError, phase, progress, reduceMotionEnabled]);
+  }, [isError, phase, progress, reduceMotionEnabled, speechDetected]);
 
   return (
     <LinearGradient
@@ -71,28 +85,39 @@ export function ListeningPanel({ state, message }: ListeningPanelProps) {
       />
       <View className="mt-4 sm:mt-7 px-5 sm:px-6">
         <VoiceStatusBadge label={copy.badge} />
+
         <AppText
           accessibilityLiveRegion="polite"
           className="mt-4 sm:mt-[28px] font-display text-[32px] sm:text-[38px] leading-[36px] sm:leading-[44px] text-white"
         >
-          {copy.title}
+          {transcript && phase === "working" ? `“${transcript}”` : copy.title}
         </AppText>
         <AppText className="mt-2 sm:mt-[12px] text-[15px] sm:text-[16px] leading-[20px] sm:leading-[21px] text-voice-muted">
-          {message && phase === "working" ? message : copy.sub}
+          {message || prompt || copy.sub}
         </AppText>
+
         {phase === "listening" && !isError ? (
           <>
             <View
               accessible
               accessibilityRole="progressbar"
               accessibilityLabel="Listening time before the session closes"
-              className="mt-5 sm:mt-[32px] h-1.5 overflow-hidden rounded-full bg-voice-track"
+              style={{
+                marginTop: 20,
+                height: 6,
+                width: "100%",
+                backgroundColor: colors.voiceTrack,
+                borderRadius: 9999,
+                overflow: "hidden",
+              }}
             >
               <Animated.View
                 accessibilityElementsHidden
                 importantForAccessibility="no-hide-descendants"
-                className="h-full rounded-full bg-voice-indicator"
                 style={{
+                  height: "100%",
+                  backgroundColor: colors.voiceIndicator,
+                  borderRadius: 9999,
                   width: progress.interpolate({
                     inputRange: [0, 1],
                     outputRange: ["0%", "100%"],
@@ -108,6 +133,7 @@ export function ListeningPanel({ state, message }: ListeningPanelProps) {
             </AppText>
           </>
         ) : null}
+
         <View className="mt-5 sm:mt-[32px] border-t border-voice-track pt-4 sm:pt-[20px]">
           <AppText className="font-body-bold text-[16px] sm:text-[18px] leading-[20px] text-white">
             {isError ? "Say “Play my local news.”" : "Say “cancel” to stop."}

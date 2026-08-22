@@ -529,7 +529,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   );
 
   const cancel = useCallback(() => {
-    endSession(copy.pausedAnnounce);
+    endSession();
   }, [endSession]);
 
   const stop = useCallback(() => {
@@ -547,11 +547,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   }, [finish, resolve]);
 
   const close = useCallback(() => {
-    endSession(
-      useVoiceStore.getState().state === "success"
-        ? undefined
-        : copy.pausedAnnounce,
-    );
+    endSession();
   }, [endSession]);
 
   const choose = useCallback(
@@ -595,7 +591,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     useVoiceStore.getState().setVoice({
       state: "listening",
       speechDetected: true,
-      message: "I can hear you. Keep speaking.",
+      message: "Listening…",
     });
 
     if (postSpeechSilenceTimer.current)
@@ -612,8 +608,22 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   });
 
   useSpeechRecognitionEvent("speechend", () => {
-    if (!active.current || active.current.finalHandled) return;
+    const session = active.current;
+    if (!session || session.finalHandled) return;
     lastSpeechActivityAt.current = Date.now();
+
+    // Fast-track resolution once user finishes speaking
+    if (postSpeechSilenceTimer.current)
+      clearTimeout(postSpeechSilenceTimer.current);
+    postSpeechSilenceTimer.current = setTimeout(() => {
+      const full = [...finalSegments.current, currentPartial.current]
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .join(" ");
+      if (full && active.current?.id === session.id) {
+        void resolve(session.id, [{ transcript: full, confidence: 0.9, rank: 0 }]);
+      }
+    }, 450);
   });
 
   useSpeechRecognitionEvent("result", (event) => {
@@ -653,7 +663,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       useVoiceStore.getState().setVoice({
         transcript: fullTranscript,
         speechDetected: true,
-        message: "I can hear you. Keep speaking.",
+        message: "Listening…",
       });
 
       if (

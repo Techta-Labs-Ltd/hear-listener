@@ -202,13 +202,13 @@ export function GlobalVoiceDock() {
                   accessibilityLiveRegion="polite"
                   className="font-display text-[28px] sm:text-[32px] leading-[34px] sm:leading-[38px] text-white"
                 >
-                  {voice.speechDetected && voice.transcript
+                  {voice.transcript
                     ? `“${voice.transcript}”`
                     : "Speak naturally."}
                 </AppText>
                 <AppText className="mt-0.5 text-sm sm:text-[15px] leading-5 text-voice-muted">
-                  {voice.speechDetected
-                    ? "Keep speaking."
+                  {voice.transcript
+                    ? "Finding your news…"
                     : "I’ll show what I heard, then find your news."}
                 </AppText>
                 {!voice.speechDetected && (
@@ -246,7 +246,7 @@ export function GlobalVoiceDock() {
                     Say “cancel” to stop.
                   </AppText>
                   <AppText className="mt-1 text-xs sm:text-[13px] leading-4 text-voice-muted">
-                    After timeout, double-tap anywhere to listen again.
+                    Double-tap anywhere to speak again.
                   </AppText>
                 </View>
               </>

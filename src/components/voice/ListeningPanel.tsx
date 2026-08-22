@@ -46,9 +46,9 @@ export function ListeningPanel({
         }
       : speechDetected
         ? {
-            badge: "I CAN HEAR YOU",
-            title: transcript ? `“${transcript}”` : "Keep speaking.",
-            sub: "I can hear you.",
+            badge: "LISTENING",
+            title: transcript ? `“${transcript}”` : "Listening…",
+            sub: transcript ? "Finding your news…" : prompt || message || "Speak naturally.",
           }
         : LISTENING_PHASE_COPY[phase];
 
@@ -156,10 +156,10 @@ export function ListeningPanel({
 
         <View className="mt-5 sm:mt-[32px] border-t border-voice-track pt-4 sm:pt-[20px]">
           <AppText className="font-body-bold text-[16px] sm:text-[18px] leading-[20px] text-white">
-            {isError ? "Say “Play my local news.”" : "Say “cancel” to stop."}
+            {isError ? (prompt || "Say “Play my local news.”") : "Say “cancel” to stop."}
           </AppText>
           <AppText className="mt-1.5 sm:mt-[10px] text-[13px] sm:text-[14px] leading-4 text-voice-muted">
-            After timeout, double-tap anywhere to listen again.
+            Double-tap anywhere to speak again.
           </AppText>
         </View>
       </View>

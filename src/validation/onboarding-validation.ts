@@ -33,8 +33,6 @@ export function validateVoiceTestCommand(transcript: string): VoiceTestValidatio
     .replace(/\s+/g, " ")
     .trim();
 
-  // The requested practice command is "Play my local news"
-  // Allow exact variations: "play my local news", "play local news", "play the local news", "play our local news"
   const isMatch =
     /^(play\s+)?(my\s+|the\s+|our\s+)?local\s+news$/.test(normalized) ||
     normalized === "play my local news" ||
@@ -92,22 +90,38 @@ export function validateAccountChoice(
     .trim();
 
   if (normalized.includes("apple")) {
+    if (isIos) {
+      return {
+        valid: true,
+        choice: "apple",
+        transcript: clean,
+        feedbackText: "Apple selected. Opening Apple sign-in.",
+        speechText: "Apple selected. Opening Apple sign-in.",
+      };
+    }
     return {
-      valid: true,
-      choice: "apple",
+      valid: false,
       transcript: clean,
-      feedbackText: "Apple selected. Opening Apple sign-in.",
-      speechText: "Apple selected. Opening Apple sign-in.",
+      feedbackText: "Apple sign-in is only available on iOS. Say Google, or Not now.",
+      speechText: "Apple sign-in is only available on Apple devices. On this device, please say Google, or Not now.",
     };
   }
 
   if (normalized.includes("google")) {
+    if (!isIos) {
+      return {
+        valid: true,
+        choice: "google",
+        transcript: clean,
+        feedbackText: "Google selected. Opening Google sign-in.",
+        speechText: "Google selected. Opening Google sign-in.",
+      };
+    }
     return {
-      valid: true,
-      choice: "google",
+      valid: false,
       transcript: clean,
-      feedbackText: "Google selected. Opening Google sign-in.",
-      speechText: "Google selected. Opening Google sign-in.",
+      feedbackText: "Google sign-in is not available on this screen. Say Apple, or Not now.",
+      speechText: "Google sign-in is not available on this screen. Please say Apple, or Not now.",
     };
   }
 

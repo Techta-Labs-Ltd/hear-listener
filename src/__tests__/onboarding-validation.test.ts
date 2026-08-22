@@ -80,5 +80,21 @@ describe("onboarding validation", () => {
       expect(result.speechText).toContain("play my sports news");
       expect(result.speechText).toContain("Apple, or Not now");
     });
+
+    it("rejects Google on iOS and informs user to say Apple or Not now", () => {
+      const result = validateAccountChoice("google", "ios");
+      expect(result.valid).toBe(false);
+      expect(result.feedbackText).toContain("Say Apple, or Not now");
+      expect(result.speechText).toContain("Google sign-in is not available");
+      expect(result.speechText).toContain("Apple, or Not now");
+    });
+
+    it("rejects Apple on Android/Web and informs user to say Google or Not now", () => {
+      const result = validateAccountChoice("apple", "android");
+      expect(result.valid).toBe(false);
+      expect(result.feedbackText).toContain("Say Google, or Not now");
+      expect(result.speechText).toContain("Apple sign-in is only available on Apple devices");
+      expect(result.speechText).toContain("Google, or Not now");
+    });
   });
 });

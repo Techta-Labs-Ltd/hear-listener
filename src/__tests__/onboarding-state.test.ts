@@ -57,9 +57,12 @@ describe("Onboarding Spec Verification", () => {
       );
     });
 
-    it("has exact account speech matching Spec §47", () => {
-      expect(ONBOARDING_SPEECH.account).toBe(
-        "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Apple, Google, or Not now.",
+    it("has exact account speech matching platform capabilities", () => {
+      expect(ONBOARDING_SPEECH.accountIos).toBe(
+        "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Apple, or Not now.",
+      );
+      expect(ONBOARDING_SPEECH.accountAndroid).toBe(
+        "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Google, or Not now.",
       );
     });
 

@@ -34,15 +34,31 @@ export const ONBOARDING_SPEECH = {
   voiceTestSuccess:
     "Voice access is working. Step 2 complete. Moving to the final setup step.",
   account:
-    "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Apple, Google, or Not now.",
+    "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Apple, or Not now.",
+  accountIos:
+    "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Apple, or Not now.",
+  accountAndroid:
+    "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Google, or Not now.",
   accountTimeout:
     "I didn't hear a choice. Double-tap anywhere when you're ready.",
   accountUnrecognised:
-    "I didn't match that choice. Say Apple, Google, or Not now.",
+    "I didn't match that choice. Double-tap anywhere when you're ready.",
+  accountUnrecognisedIos:
+    "I didn't match that choice. Say Apple, or Not now.",
+  accountUnrecognisedAndroid:
+    "I didn't match that choice. Say Google, or Not now.",
   accountCancelled:
-    "Sign-in was cancelled. Say Apple, Google, or Not now.",
+    "Sign-in was cancelled.",
+  accountCancelledIos:
+    "Sign-in was cancelled. Say Apple, or Not now.",
+  accountCancelledAndroid:
+    "Sign-in was cancelled. Say Google, or Not now.",
   accountFailed:
-    "Sign-in didn't complete. Say Apple or Google to try again, or say Not now.",
+    "Sign-in didn't complete.",
+  accountFailedIos:
+    "Sign-in didn't complete. Say Apple to try again, or say Not now.",
+  accountFailedAndroid:
+    "Sign-in didn't complete. Say Google to try again, or say Not now.",
   complete:
     "Setup complete. Hear is ready.",
   completeWithVoice:

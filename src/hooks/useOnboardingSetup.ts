@@ -296,7 +296,9 @@ export function useOnboardingSetup() {
           );
         } else if (phase === "account" && !isAccountListening.current) {
           accessibility.announce(
-            ONBOARDING_IDLE_HINTS.account,
+            Platform.OS === "ios"
+              ? ONBOARDING_IDLE_HINTS.accountIos
+              : ONBOARDING_IDLE_HINTS.accountOther,
             "idle1:account",
             true,
           );
@@ -333,7 +335,9 @@ export function useOnboardingSetup() {
           );
         } else if (phase === "account" && !isAccountListening.current) {
           accessibility.announce(
-            ONBOARDING_IDLE_HINTS_2.account,
+            Platform.OS === "ios"
+              ? ONBOARDING_IDLE_HINTS_2.accountIos
+              : ONBOARDING_IDLE_HINTS_2.accountOther,
             "idle2:account",
             true,
           );
@@ -465,25 +469,21 @@ export function useOnboardingSetup() {
                 text: result.speechText,
                 force: true,
               });
+              const cancelMsg =
+                Platform.OS === "ios"
+                  ? ONBOARDING_SPEECH.accountCancelledIos
+                  : ONBOARDING_SPEECH.accountCancelledAndroid;
               if (result.choice === "apple") {
                 const signedIn = await account.signIn("apple");
                 if (signedIn) complete();
                 else {
-                  accessibility.announce(
-                    ONBOARDING_SPEECH.accountCancelled,
-                    undefined,
-                    true,
-                  );
+                  accessibility.announce(cancelMsg, undefined, true);
                 }
               } else if (result.choice === "google") {
                 const signedIn = await account.signIn("google");
                 if (signedIn) complete();
                 else {
-                  accessibility.announce(
-                    ONBOARDING_SPEECH.accountCancelled,
-                    undefined,
-                    true,
-                  );
+                  accessibility.announce(cancelMsg, undefined, true);
                 }
               } else {
                 complete();
@@ -513,25 +513,21 @@ export function useOnboardingSetup() {
                 text: result.speechText,
                 force: true,
               });
+              const cancelMsg =
+                Platform.OS === "ios"
+                  ? ONBOARDING_SPEECH.accountCancelledIos
+                  : ONBOARDING_SPEECH.accountCancelledAndroid;
               if (result.choice === "apple") {
                 const signedIn = await account.signIn("apple");
                 if (signedIn) complete();
                 else {
-                  accessibility.announce(
-                    ONBOARDING_SPEECH.accountCancelled,
-                    undefined,
-                    true,
-                  );
+                  accessibility.announce(cancelMsg, undefined, true);
                 }
               } else if (result.choice === "google") {
                 const signedIn = await account.signIn("google");
                 if (signedIn) complete();
                 else {
-                  accessibility.announce(
-                    ONBOARDING_SPEECH.accountCancelled,
-                    undefined,
-                    true,
-                  );
+                  accessibility.announce(cancelMsg, undefined, true);
                 }
               } else {
                 complete();

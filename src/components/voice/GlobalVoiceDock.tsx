@@ -199,7 +199,6 @@ export function GlobalVoiceDock() {
               <>
                 <AppText
                   accessibilityRole="header"
-                  accessibilityLiveRegion="polite"
                   className="font-display text-[28px] sm:text-[32px] leading-[34px] sm:leading-[38px] text-white"
                 >
                   {voice.transcript

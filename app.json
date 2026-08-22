@@ -81,7 +81,14 @@
         }
       ],
       "expo-audio",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/hear-icon.png",
+          "color": "#7B3068"
+        }
+      ]
     ],
     "assetBundlePatterns": [
       "assets/**/*"

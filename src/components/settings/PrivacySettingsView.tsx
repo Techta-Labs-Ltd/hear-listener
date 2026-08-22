@@ -73,6 +73,26 @@ export function PrivacySettingsView({ onBack }: { onBack: () => void }) {
                 </AppText>
               </Pressable>
             </View>
+            <View className="flex-row items-center justify-between rounded-[20px] border border-border bg-surface p-5">
+              <View className="gap-1 flex-1 pr-3">
+                <AppText className="font-body-bold text-base leading-5 text-ink">
+                  Creator notifications
+                </AppText>
+                <AppText tone="muted" className="text-xs leading-4">
+                  New tracks from followed creators
+                </AppText>
+              </View>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Manage notification settings"
+                onPress={() => void Linking.openSettings()}
+                className="min-h-11 justify-center active:opacity-70"
+              >
+                <AppText className="font-body-bold text-xs leading-4 text-primary">
+                  SETTINGS
+                </AppText>
+              </Pressable>
+            </View>
           </View>
 
           <View className="gap-3">

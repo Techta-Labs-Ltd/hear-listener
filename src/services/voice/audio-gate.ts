@@ -1,8 +1,6 @@
-export type VoiceAudioGate = {
-  enterQuietMode(): Promise<void>;
-  exitQuietMode(): void;
-  isQuiet(): boolean;
-};
+import type { VoiceAudioGate } from "@/types";
+
+export type { VoiceAudioGate };
 
 class AudioGateService implements VoiceAudioGate {
   private quiet = false;

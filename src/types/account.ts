@@ -1,3 +1,5 @@
+import type { User } from "firebase/auth";
+
 export type AccountProvider = "apple" | "google";
 
 export type AccountProfile = {
@@ -23,4 +25,16 @@ export type AccountCommandEvent = { id: number; command: AccountCommand };
 export type AccountCommandStore = {
   event?: AccountCommandEvent;
   dispatch: (command: AccountCommand) => void;
+};
+
+export type FirebaseAuthContextValue = {
+  user: User | null;
+  profile?: AccountProfile;
+  status: AccountStatus;
+  error?: string;
+  isAppleAvailable: boolean;
+  signIn: (provider?: AccountProvider) => Promise<boolean>;
+  signInWithGoogle: () => Promise<boolean>;
+  signInWithApple: () => Promise<boolean>;
+  signOut: () => Promise<void>;
 };

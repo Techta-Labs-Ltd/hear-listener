@@ -31,11 +31,9 @@ export function supportsOnDeviceSpeechRecognition(): boolean {
   }
 }
 
-export type MicrophonePermissionStatus = {
-  granted: boolean;
-  status: "granted" | "denied" | "undetermined" | "blocked";
-  canAskAgain?: boolean;
-};
+import type { MicrophonePermissionStatus } from "@/types";
+
+export type { MicrophonePermissionStatus };
 
 export async function checkMicrophonePermissionStatus(): Promise<MicrophonePermissionStatus> {
   if (Platform.OS === "web") {
@@ -142,11 +140,7 @@ export function buildSpeechRecognitionOptions(params: {
     continuous: true,
     maxAlternatives: VOICE_MAX_ALTERNATIVES,
     contextualStrings: params.contextualStrings,
-    requiresOnDeviceRecognition: isAndroid
-      ? params.onDevice
-      : isIos
-        ? true
-        : false,
+    requiresOnDeviceRecognition: params.onDevice,
     addsPunctuation: false,
     iosTaskHint: "dictation" as const,
     iosVoiceProcessingEnabled: true,

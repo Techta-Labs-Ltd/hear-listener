@@ -206,7 +206,7 @@ describe("runCommand", () => {
       playback: { ...makeServices().playback, current: stories[0] },
     });
     expect(runCommand({ type: "downloadCurrent" }, s)).toBe(
-      "Downloading for offline listening",
+      "Download started",
     );
     expect(s.preferences.update).toHaveBeenCalledWith({
       downloadedIds: ["daily"],

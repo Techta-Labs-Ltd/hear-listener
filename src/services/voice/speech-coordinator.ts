@@ -11,6 +11,7 @@ const priorityRank: Record<SpeechPriority, number> = {
 class SpeechCoordinator {
   private active?: { key: string; priority: SpeechPriority };
   private quietMode = false;
+  lastCompletion: "DONE" | "INTERRUPTED" | "ERROR" | "TIMEOUT" = "DONE";
 
   enterQuietMode(): void {
     this.quietMode = true;
@@ -42,7 +43,7 @@ class SpeechCoordinator {
     const key = request.key;
     this.active = { key, priority };
     try {
-      await ukSpeech.speak(request.text, { interrupt: true });
+      this.lastCompletion = await ukSpeech.speak(request.text, { interrupt: true });
     } finally {
       if (this.active?.key === key) this.active = undefined;
     }
@@ -63,7 +64,7 @@ class SpeechCoordinator {
     this.active = { key, priority: "instruction" };
     try {
       await ukSpeech.stop();
-      await ukSpeech.speak(request.text, { interrupt: true });
+      this.lastCompletion = await ukSpeech.speak(request.text, { interrupt: true });
     } finally {
       if (this.active?.key === key) this.active = undefined;
     }

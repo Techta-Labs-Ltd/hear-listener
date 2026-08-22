@@ -6,6 +6,9 @@ import { buildScreenReadout } from "@/utils/copy/readScreen";
 
 const definitions: VoiceScreenDefinition<VoiceScreenContext>[] = [
   definition("onboarding", "Setup", (path) => path === "/onboarding", "Setup. Follow the spoken instructions.", ["continue", "go back"]),
+  definition("sleepTimer", "Sleep timer", (path) => path === "/sleep-timer" || path === "/sleep", "Sleep timer. Say set a timer, cancel the timer, or read this screen.", ["set a sleep timer for 20 minutes", "cancel sleep timer", "read this screen"]),
+  definition("queue", "Queue", (path) => path === "/queue", "Queue. Say clear queue, go back, or read this screen.", ["clear queue", "go back", "read this screen"]),
+  definition("search", "Search", (path) => path === "/search", "Search. Say what you want to find, or read this screen.", ["search for local news", "read this screen"]),
   definition("player", "Player", (path) => path === "/player", "Player. Say pause, resume, skip, change speed, or read this screen.", ["pause", "skip forward", "change speed", "read this screen"]),
   definition("settings", "Settings", (path) => path === "/settings", "Settings. Say change accessibility, change location, set up Hear again, or read this screen.", ["change accessibility", "change location", "set up Hear again", "read this screen"]),
   definition("topic", "Topic", (path) => path.startsWith("/topic/"), "Topic. Say play a story, go back, or read this screen.", ["play this story", "go back", "read this screen"]),
@@ -32,8 +35,19 @@ function definition(
   };
 }
 
+function unknownDefinition(): VoiceScreenDefinition<VoiceScreenContext> {
+  return {
+    id: "unknown",
+    title: "Hear Listener",
+    matches: () => true,
+    orientation: () => "You are browsing Hear Listener. Double-tap anywhere to speak.",
+    readout: () => "You are browsing Hear Listener.",
+    commands: [],
+  };
+}
+
 export function getVoiceScreenDefinition(pathname: string) {
-  return definitions.find((item) => item.matches(pathname)) ?? definitions.at(-1)!;
+  return definitions.find((item) => item.matches(pathname)) ?? unknownDefinition();
 }
 
 export function buildScreenOrientation(context: VoiceScreenContext): string {

@@ -6,6 +6,7 @@ import {
 } from "@/navigation/routes";
 import { onboardingVoiceBridge } from "@/stores/onboarding-voice-store";
 import { accountVoiceBridge } from "@/stores/account-command-store";
+import { searchCatalogue } from "@/utils/search";
 import { runPlayCommand } from "./play-commands";
 
 export function runCommand(
@@ -30,8 +31,27 @@ export function runCommand(
     case "setLocation":
       s.preferences.update({ town: command.name });
       return `Local area set to ${command.name}`;
-    case "search":
-      return "I could not find a match for that. Try a topic name, or say play local news.";
+    case "search": {
+      const results = searchCatalogue(command.query);
+      const story = results.audio[0];
+      if (story) {
+        s.playback.play(story);
+        return `Playing ${story.title}`;
+      }
+      const entity = results.shows[0];
+      if (entity) {
+        const match = s.data.stories.find(
+          (item) =>
+            item.creator.toLowerCase() === entity.name.toLowerCase() ||
+            item.publication.toLowerCase() === entity.name.toLowerCase(),
+        );
+        if (match) {
+          s.playback.play(match);
+          return `Playing from ${entity.name}`;
+        }
+      }
+      return `I couldn't find anything for ${command.query}. Try a topic name or say play local news.`;
+    }
     case "play":
       return runPlayCommand(command, s);
     case "pause":
@@ -91,7 +111,7 @@ export function runCommand(
       s.preferences.update({
         downloadedIds: [...s.preferences.downloadedIds, current.id],
       });
-      return "Downloading for offline listening";
+      return "Download started";
     }
     case "removeDownload": {
       const current = s.playback.current;

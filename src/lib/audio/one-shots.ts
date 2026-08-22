@@ -22,7 +22,23 @@ export function playClick() {
 }
 
 export function playListeningStartTone() {
+  if (voiceAudioGate.isQuiet()) return Promise.resolve();
   clickPlayer = play(clickPlayer, appAssets.audio.click);
+  const player = clickPlayer;
+  if (!player) return Promise.resolve();
+  return new Promise<void>((resolve) => {
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    try {
+      setTimeout(done, 800);
+    } catch {
+      done();
+    }
+  });
 }
 
 export function playSplash() {

@@ -1,3 +1,5 @@
+import type { AppIcon } from "@/types";
+
 export const icons = {
   settings: "gearshape",
   microphone: "mic.fill",
@@ -42,4 +44,4 @@ export const icons = {
   queue: "list.bullet",
 } as const;
 
-export type AppIcon = (typeof icons)[keyof typeof icons];
+export type { AppIcon };

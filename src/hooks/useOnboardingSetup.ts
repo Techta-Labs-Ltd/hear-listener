@@ -152,15 +152,26 @@ export function useOnboardingSetup() {
   const startVoiceTestSession = useCallback(async (instructionText?: string) => {
     clearIdleTimers();
     setPhase("voiceTestListening");
+
     if (instructionText) {
-      await speechCoordinator.speakBeforeListening({
+      await speechCoordinator.speak({
         text: instructionText,
-        force: true,
+        key: "onboarding:voiceTestPrompt",
+        priority: "instruction",
       });
     }
-    await new Promise((r) => setTimeout(r, 200));
-    playListeningStartTone();
+    if (speechCoordinator.lastCompletion !== "DONE") {
+      setPhase("voiceTestError");
+      return;
+    }
+
+    if (speechCoordinator.isQuiet()) return;
+
+    await playListeningStartTone();
+    if (speechCoordinator.isQuiet()) return;
+
     void appHaptics.listening();
+
     void voice.startVoiceSession({
       source: "onboardingPractice",
       announceLocation: false,
@@ -179,8 +190,12 @@ export function useOnboardingSetup() {
       text: accountSpeech,
       force: true,
     });
-    await new Promise((r) => setTimeout(r, 200));
-    playListeningStartTone();
+    await new Promise<void>((resolve) => setTimeout(resolve, 300));
+    if (speechCoordinator.isQuiet()) return;
+
+    await playListeningStartTone();
+    if (speechCoordinator.isQuiet()) return;
+
     void appHaptics.listening();
     void voice.startVoiceSession({
       source: "onboardingPractice",
@@ -413,7 +428,17 @@ export function useOnboardingSetup() {
   useEffect(() => {
     return useVoiceStore.subscribe((state, previous) => {
       if (phase === "voiceTestListening") {
-        if (state.transcript && !voiceReady.current) {
+        const isVoiceStillActive =
+          state.state === "listening" ||
+          state.state === "preparing" ||
+          state.state === "permission";
+
+        if (isVoiceStillActive && !voiceReady.current) {
+          void state.transcript;
+          return;
+        }
+
+        if (state.transcript && !voiceReady.current && !isVoiceStillActive) {
           const result = validateVoiceTestCommand(state.transcript);
           if (result.valid) {
             voiceReady.current = true;

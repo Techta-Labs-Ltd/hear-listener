@@ -11,4 +11,5 @@ export * from "./voice-updates";
 export * from "./voice-execution";
 export * from "./account";
 export * from "./accessibility";
-
+export * from "./notifications";
+export * from "./icons";

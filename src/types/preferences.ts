@@ -10,6 +10,8 @@ export type Preferences = {
   voiceDiagnosticsEnabled: boolean;
   voiceConsentVersion: number;
   homeGuideDismissed: boolean;
+  notificationsEnabled: boolean;
+  notifiedReleaseIds: string[];
 };
 
 export type PreferencesStore = Preferences & {

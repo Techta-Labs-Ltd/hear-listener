@@ -40,6 +40,7 @@ export function voiceScore(voice: Speech.Voice): number {
 
 export class UkSpeechService {
   private voicePromise?: Promise<string | undefined>;
+  private interrupted = false;
 
   private async getUkVoiceIdentifier(): Promise<string | undefined> {
     if (this.voicePromise) return this.voicePromise;
@@ -70,8 +71,9 @@ export class UkSpeechService {
       rate?: number;
       sensitive?: boolean;
     } = {},
-  ): Promise<void> {
-    if (!text || options.sensitive) return;
+  ): Promise<"DONE" | "INTERRUPTED" | "ERROR" | "TIMEOUT"> {
+    if (!text || options.sensitive) return "DONE";
+    this.interrupted = false;
     if (
       Platform.OS === "web" &&
       typeof window !== "undefined" &&
@@ -91,19 +93,19 @@ export class UkSpeechService {
         }
       }
       const voice = await this.getUkVoiceIdentifier();
-      const succeeded = await new Promise<boolean>((resolve) => {
+      const succeeded = await new Promise<"DONE" | "INTERRUPTED" | "ERROR" | "TIMEOUT">((resolve) => {
         let settled = false;
         let timeout: ReturnType<typeof setTimeout> | undefined;
 
-        const complete = (success: boolean) => {
+        const complete = (result: "DONE" | "INTERRUPTED" | "ERROR" | "TIMEOUT") => {
           if (settled) return;
           settled = true;
           if (timeout) clearTimeout(timeout);
-          resolve(success);
+          resolve(result);
         };
 
         const timeoutMs = Math.max(16000, Math.ceil(text.length * 130));
-        timeout = setTimeout(() => complete(true), timeoutMs);
+        timeout = setTimeout(() => complete("TIMEOUT"), timeoutMs);
 
         Speech.speak(text, {
           language: "en-GB",
@@ -111,18 +113,26 @@ export class UkSpeechService {
           rate: options.rate ?? 0.92,
           pitch: options.pitch ?? 0.94,
           useApplicationAudioSession: false,
-          onDone: () => complete(true),
-          onStopped: () => complete(true),
+          onDone: () => complete("DONE"),
+          onStopped: () => {
+            this.interrupted = true;
+            complete("INTERRUPTED");
+          },
           onError: () => {
             this.resetVoiceCache();
-            complete(false);
+            complete("ERROR");
           },
         });
       });
-      if (!succeeded) await this.speakWithDefaults(text, options);
+      if (succeeded === "ERROR" || succeeded === "TIMEOUT") {
+        await this.speakWithDefaults(text, options);
+        return "ERROR";
+      }
+      return succeeded;
     } catch {
       this.resetVoiceCache();
       await this.speakWithDefaults(text, options);
+      return "ERROR";
     }
   }
 

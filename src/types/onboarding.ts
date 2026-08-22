@@ -209,3 +209,19 @@ export type OnboardingValidationState = {
   locationStatus: "idle" | "requesting" | "granted" | "denied" | "skipped";
   town: string;
 };
+
+export type VoiceTestValidationResult = {
+  valid: boolean;
+  transcript: string;
+  feedbackText: string;
+  speechText: string;
+};
+
+export type AccountChoiceValidationResult = {
+  valid: boolean;
+  choice?: "apple" | "google" | "skip";
+  transcript: string;
+  feedbackText: string;
+  speechText: string;
+};
+

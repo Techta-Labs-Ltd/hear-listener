@@ -16,6 +16,8 @@ export const initialPreferences: Preferences = {
   voiceDiagnosticsEnabled: false,
   voiceConsentVersion: 1,
   homeGuideDismissed: false,
+  notificationsEnabled: true,
+  notifiedReleaseIds: [],
 };
 export const usePreferencesStore = create<PreferencesStore>()(
   persist(
@@ -28,7 +30,7 @@ export const usePreferencesStore = create<PreferencesStore>()(
     }),
     {
       name: "hear-preferences",
-      version: 5,
+      version: 6,
       storage: createJSONStorage(() => safeAsyncStorage),
       partialize: ({
         setupComplete,
@@ -42,6 +44,8 @@ export const usePreferencesStore = create<PreferencesStore>()(
         voiceDiagnosticsEnabled,
         voiceConsentVersion,
         homeGuideDismissed,
+        notificationsEnabled,
+        notifiedReleaseIds,
       }) => ({
         setupComplete,
         onboardingVersion,
@@ -54,6 +58,8 @@ export const usePreferencesStore = create<PreferencesStore>()(
         voiceDiagnosticsEnabled,
         voiceConsentVersion,
         homeGuideDismissed,
+        notificationsEnabled,
+        notifiedReleaseIds,
       }),
       migrate: migratePreferences,
       onRehydrateStorage: () => (state) => state?.setHydrated(true),
@@ -76,6 +82,8 @@ export function usePreferences() {
         voiceDiagnosticsEnabled,
         voiceConsentVersion,
         homeGuideDismissed,
+        notificationsEnabled,
+        notifiedReleaseIds,
       }) => ({
         setupComplete,
         onboardingVersion,
@@ -88,6 +96,8 @@ export function usePreferences() {
         voiceDiagnosticsEnabled,
         voiceConsentVersion,
         homeGuideDismissed,
+        notificationsEnabled,
+        notifiedReleaseIds,
       }),
     ),
   );
@@ -136,6 +146,11 @@ export function migratePreferences(stored: unknown): Preferences {
       typeof stored.homeGuideDismissed === "boolean"
         ? stored.homeGuideDismissed
         : false,
+    notificationsEnabled:
+      typeof stored.notificationsEnabled === "boolean"
+        ? stored.notificationsEnabled
+        : true,
+    notifiedReleaseIds: stringArray(stored.notifiedReleaseIds),
   };
 }
 

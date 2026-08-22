@@ -1,22 +1,29 @@
-import type { OnboardingChapterId, OnboardingValidationState } from "@/types";
+import type {
+  AccountChoiceValidationResult,
+  OnboardingChapterId,
+  OnboardingValidationState,
+  VoiceTestValidationResult,
+} from "@/types";
 
-export function isOnboardingChapterValid(chapterId: OnboardingChapterId, state: OnboardingValidationState) {
+export type { AccountChoiceValidationResult, VoiceTestValidationResult };
+
+export function isOnboardingChapterValid(
+  chapterId: OnboardingChapterId,
+  state: OnboardingValidationState,
+) {
   if (chapterId === "welcome") return Boolean(state.guidanceChoice);
   if (chapterId === "voiceExperience") {
-    return state.voiceStatus !== "requesting" && state.soundStatus !== "requesting";
+    return (
+      state.voiceStatus !== "requesting" && state.soundStatus !== "requesting"
+    );
   }
   if (state.locationStatus === "requesting") return false;
   return state.town.length === 0 || state.town.trim().length >= 2;
 }
 
-export interface VoiceTestValidationResult {
-  valid: boolean;
-  transcript: string;
-  feedbackText: string;
-  speechText: string;
-}
-
-export function validateVoiceTestCommand(transcript: string): VoiceTestValidationResult {
+export function validateVoiceTestCommand(
+  transcript: string,
+): VoiceTestValidationResult {
   const clean = transcript.trim();
   if (!clean) {
     return {
@@ -56,14 +63,6 @@ export function validateVoiceTestCommand(transcript: string): VoiceTestValidatio
     feedbackText: `I heard “${clean}”. Say “Play my local news.” Double-tap to try again.`,
     speechText: `I heard “${clean}”. For this test, please say “Play my local news.” Double-tap anywhere to try again.`,
   };
-}
-
-export interface AccountChoiceValidationResult {
-  valid: boolean;
-  choice?: "apple" | "google" | "skip";
-  transcript: string;
-  feedbackText: string;
-  speechText: string;
 }
 
 export function validateAccountChoice(

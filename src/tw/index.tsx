@@ -26,7 +26,7 @@ SafeAreaView.displayName = "CSS(SafeAreaView)";
 
 export const Link = (
   props: React.ComponentProps<typeof RouterLink> & { className?: string },
-) => useCssElement(RouterLink, props, { className: "style" });
+) => useCssElement(RouterLink as React.ComponentType<any>, props, { className: "style" });
 Link.Trigger = RouterLink.Trigger;
 Link.Menu = RouterLink.Menu;
 Link.MenuAction = RouterLink.MenuAction;

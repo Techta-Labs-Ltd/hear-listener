@@ -5,7 +5,7 @@ export const VOICE_TIMING = {
   noSpeechHapticReminder: 4000,
   noSpeechTimeout: 8000,
   gentleReminder: 4000,
-  postSpeechSilence: 800,
+  postSpeechSilence: 3000,
   maxTranscriptCharacters: 800,
   recognitionActivityWatchdog: 60000,
   maxRecognitionDuration: 60000,

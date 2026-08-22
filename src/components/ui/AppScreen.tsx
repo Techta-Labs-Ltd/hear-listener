@@ -4,6 +4,7 @@ import { SafeAreaView, View } from "@/tw";
 import type { AppScreenProps } from "@/types";
 import { useVoice } from "@/hooks/useVoice";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
+import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { getVoiceScreenDefinition } from "@/services/voice/screen-registry";
 import {
   SCREEN_IDLE_HINTS,
@@ -56,6 +57,7 @@ export function AppScreen({
       if (idleTimer2.current) clearTimeout(idleTimer2.current);
 
       idleTimer1.current = setTimeout(() => {
+        if (speechCoordinator.isQuiet()) return;
         const hint1 = SCREEN_IDLE_HINTS[pathname] || SCREEN_IDLE_HINTS["/"];
         if (hint1) {
           accessibility.announce(hint1, `idle1:${pathname}`, true);
@@ -63,6 +65,7 @@ export function AppScreen({
       }, SCREEN_IDLE_TIMEOUT_1);
 
       idleTimer2.current = setTimeout(() => {
+        if (speechCoordinator.isQuiet()) return;
         const hint2 = SCREEN_IDLE_HINTS_2[pathname] || SCREEN_IDLE_HINTS_2["/"];
         if (hint2) {
           accessibility.announce(hint2, `idle2:${pathname}`, true);

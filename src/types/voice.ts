@@ -23,7 +23,11 @@ export type VoiceScreenId =
   | "settings"
   | "topic"
   | "onboarding"
-  | "account";
+  | "account"
+  | "sleepTimer"
+  | "queue"
+  | "search"
+  | "unknown";
 
 export type VoiceCommandExample = {
   phrase: string;
@@ -73,6 +77,7 @@ export type ActiveVoiceSession = {
   id: string;
   controller: AbortController;
   finalHandled: boolean;
+  asrConfirmed: boolean;
   startedAt: number;
   deadlineAt?: number;
   speechDetected: boolean;
@@ -272,7 +277,20 @@ export type VoiceResolution =
   | { kind: "cancelled"; confidence: 0 }
   | { kind: "none"; reason: string };
 export type VoiceResolveContext = {
+  screenId?: string;
   currentPath?: string;
+  pathname?: string;
+  screenState?: string;
+  activeContent?: {
+    id: string;
+    type: string;
+    title: string;
+  };
+  playback?: {
+    playing: boolean;
+    contentId?: string;
+    title?: string;
+  };
   preferences: Preferences;
   stories: ContentItem[];
   topics: Topic[];
@@ -372,3 +390,16 @@ export type VoiceStatusBadgeProps = {
   label: string;
   className?: string;
 };
+
+export type MicrophonePermissionStatus = {
+  granted: boolean;
+  status: "granted" | "denied" | "undetermined" | "blocked";
+  canAskAgain?: boolean;
+};
+
+export type VoiceAudioGate = {
+  enterQuietMode(): Promise<void>;
+  exitQuietMode(): void;
+  isQuiet(): boolean;
+};
+

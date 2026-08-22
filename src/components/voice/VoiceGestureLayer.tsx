@@ -1,4 +1,5 @@
 import { useMemo, type PropsWithChildren } from "react";
+import { Linking } from "react-native";
 import { View } from "@/tw";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useVoice } from "@/hooks/useVoice";
@@ -16,8 +17,11 @@ const INVOCABLE_STATES = new Set([
 ]);
 
 export function VoiceGestureLayer({ children }: PropsWithChildren) {
-  const { state, startVoiceSession, stop } = useVoice();
+  const { state, errorCode, startVoiceSession, stop, close } = useVoice();
   const { screenReaderEnabled } = useAppAccessibility();
+
+  const isPermissionDenied =
+    state === "error" && errorCode === "permission-denied";
 
   const singleTap = useMemo(
     () =>
@@ -26,9 +30,11 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
         .runOnJS(true)
         .onEnd((_event, success) => {
           if (!success) return;
+          if (screenReaderEnabled) return;
+          if (state === "listening" || state === "preparing") return;
           void speechCoordinator.cancel();
         }),
-    [],
+    [screenReaderEnabled, state],
   );
 
   const doubleTap = useMemo(
@@ -42,6 +48,12 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
         .onEnd((_event, success) => {
           if (!success) return;
           void speechCoordinator.cancel();
+
+          if (isPermissionDenied) {
+            void Linking.openSettings();
+            return;
+          }
+
           if (state === "listening") {
             void playClick();
             void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -49,6 +61,9 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
             return;
           }
           if (!INVOCABLE_STATES.has(state)) return;
+          if (state === "error") {
+            close();
+          }
           const onboardingMode = onboardingVoiceBridge.reportGesture();
           if (onboardingMode !== "inactive") {
             void playClick();
@@ -61,7 +76,7 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
             source: "doubleTap",
           });
         }),
-    [screenReaderEnabled, startVoiceSession, state, stop],
+    [close, isPermissionDenied, screenReaderEnabled, startVoiceSession, state, stop],
   );
 
   const composedGesture = useMemo(

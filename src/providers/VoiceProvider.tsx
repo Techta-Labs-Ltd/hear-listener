@@ -17,7 +17,9 @@ import { VoiceGestureLayer } from "@/components/voice/VoiceGestureLayer";
 import { PLAYBACK_EXECUTORS, VOICE_TIMING } from "@/constants/voice";
 import { entities, stories, topics } from "@/data/catalogue";
 import { appHaptics } from "@/lib/haptics";
+import { playListeningStartTone } from "@/lib/audio/one-shots";
 import { routes, topicRoute } from "@/navigation/routes";
+import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { voiceAnnounce } from "@/services/voice/announce";
 import {
   confidenceBand,
@@ -66,9 +68,32 @@ async function getContextualTermsSafely(): Promise<string[]> {
   }
 }
 
+function overlapAwareAppend(existing: string, incoming: string): boolean {
+  const existingTokens = existing.toLowerCase().split(/\s+/).filter(Boolean);
+  const incomingTokens = incoming.toLowerCase().split(/\s+/).filter(Boolean);
+  if (incomingTokens.length === 0) return true;
+  if (existingTokens.length === 0) return false;
+
+  const maxOverlap = Math.min(existingTokens.length, incomingTokens.length);
+  for (let overlapLength = maxOverlap; overlapLength > 0; overlapLength--) {
+    const existingSuffix = existingTokens.slice(-overlapLength);
+    const incomingPrefix = incomingTokens.slice(0, overlapLength);
+    if (existingSuffix.join(" ") === incomingPrefix.join(" ")) {
+      const newTokens = incomingTokens.slice(overlapLength);
+      if (newTokens.length > 0) {
+        existingTokens.push(...newTokens);
+        return true;
+      }
+      return true;
+    }
+  }
+  return false;
+}
+
 export function VoiceProvider({ children }: PropsWithChildren) {
   const voice = useVoiceStore();
   const router = useRouter();
+  const accessibility = useAppAccessibility();
 
   const [activeScreen, setActiveScreen] = useState<ScreenVoiceContext | null>(
     null,
@@ -99,6 +124,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   }, []);
 
   const active = useRef<ActiveVoiceSession | undefined>(undefined);
+  const microphoneClosed = useRef(true);
   const preSpeechTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
@@ -111,24 +137,62 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   const activityWatchdogTimer = useRef<
     ReturnType<typeof setTimeout> | undefined
   >(undefined);
+  const asrStartTimeoutTimer = useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined);
+  const asrStopWaitTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const onDeviceRecognition = useRef(false);
 
   const finalSegments = useRef<string[]>([]);
   const currentPartial = useRef<string>("");
   const lastSpeechActivityAt = useRef<number>(0);
 
-  const clearTimers = useCallback(() => {
+  const clearTimersInternal = () => {
     if (preSpeechTimer.current) clearTimeout(preSpeechTimer.current);
     if (noSpeechHapticTimer.current) clearTimeout(noSpeechHapticTimer.current);
     if (postSpeechSilenceTimer.current)
       clearTimeout(postSpeechSilenceTimer.current);
     if (activityWatchdogTimer.current)
       clearTimeout(activityWatchdogTimer.current);
+    if (asrStartTimeoutTimer.current) clearTimeout(asrStartTimeoutTimer.current);
+    if (asrStopWaitTimer.current) clearTimeout(asrStopWaitTimer.current);
     preSpeechTimer.current = undefined;
     noSpeechHapticTimer.current = undefined;
     postSpeechSilenceTimer.current = undefined;
     activityWatchdogTimer.current = undefined;
+    asrStartTimeoutTimer.current = undefined;
+    asrStopWaitTimer.current = undefined;
+  };
+
+  const clearTimers = useCallback(() => {
+    clearTimersInternal();
   }, []);
+
+  const waitForMicrophoneClose = useCallback(
+    async (timeoutMs = 1500): Promise<void> => {
+      if (microphoneClosed.current) return;
+      return new Promise((resolve) => {
+        let settled = false;
+        const done = () => {
+          if (settled) return;
+          settled = true;
+          if (asrStopWaitTimer.current) clearTimeout(asrStopWaitTimer.current);
+          asrStopWaitTimer.current = undefined;
+          resolve();
+        };
+        microphoneCloseResolvers.current.add(done);
+        asrStopWaitTimer.current = setTimeout(() => {
+          microphoneClosed.current = true;
+          done();
+        }, timeoutMs);
+      });
+    },
+    [],
+  );
+
+  const microphoneCloseResolvers = useRef(new Set<() => void>());
 
   const endSession = useCallback(
     (announce?: string) => {
@@ -136,16 +200,18 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       session?.controller.abort();
       active.current = undefined;
       clearTimers();
-      speechCoordinator.exitQuietMode();
       try {
         ExpoSpeechRecognitionModule.abort();
       } catch {}
+      microphoneClosed.current = false;
+      void waitForMicrophoneClose().then(() => {
+        speechCoordinator.exitQuietMode();
+        if (announce) void voiceAnnounce(announce);
+      });
       void ukSpeech.stop();
-      if (session?.playbackWasPlaying) usePlaybackStore.getState().resume();
       useVoiceStore.getState().resetVoice();
-      if (announce) void voiceAnnounce(announce);
     },
-    [clearTimers],
+    [clearTimers, waitForMicrophoneClose],
   );
 
   const services = useCallback(() => {
@@ -188,10 +254,37 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       const session = active.current;
       session?.controller.abort();
       clearTimers();
-      speechCoordinator.exitQuietMode();
       try {
         ExpoSpeechRecognitionModule.stop();
       } catch {}
+      microphoneClosed.current = false;
+      useVoiceStore.getState().setVoice({
+        state: "error",
+        message,
+        errorCode,
+        retryable: true,
+        choices: [],
+        prompt: "",
+      });
+      void waitForMicrophoneClose().then(() => {
+        speechCoordinator.exitQuietMode();
+        if (session?.playbackWasPlaying) usePlaybackStore.getState().resume();
+        void appHaptics.error();
+        void voiceAnnounce(message, `voice:error:${errorCode ?? "general"}`);
+      });
+    },
+    [clearTimers, waitForMicrophoneClose],
+  );
+
+  const finishWithoutResume = useCallback(
+    (message: string, errorCode?: string) => {
+      const session = active.current;
+      session?.controller.abort();
+      clearTimers();
+      try {
+        ExpoSpeechRecognitionModule.stop();
+      } catch {}
+      microphoneClosed.current = false;
       useVoiceStore.getState().setVoice({
         state: "error",
         message,
@@ -201,11 +294,13 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         prompt: "",
       });
       active.current = undefined;
-      if (session?.playbackWasPlaying) usePlaybackStore.getState().resume();
-      void appHaptics.error();
-      void voiceAnnounce(message, `voice:error:${errorCode ?? "general"}`);
+      void waitForMicrophoneClose().then(() => {
+        speechCoordinator.exitQuietMode();
+        void appHaptics.error();
+        void voiceAnnounce(message, `voice:error:${errorCode ?? "general"}`);
+      });
     },
-    [clearTimers],
+    [clearTimers, waitForMicrophoneClose],
   );
 
   const execute = useCallback(
@@ -250,13 +345,6 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       }
 
       const message = result.feedback ?? "Done";
-      if (
-        current?.playbackWasPlaying &&
-        !PLAYBACK_EXECUTORS.has(invocation.executorKey)
-      ) {
-        usePlaybackStore.getState().resume();
-      }
-
       active.current = undefined;
       useVoiceStore.getState().setVoice({
         state: "success",
@@ -267,6 +355,14 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       });
       void appHaptics.success();
       await voiceAnnounce(message, `voice:success:${invocation.idempotencyKey}`);
+
+      if (
+        current?.playbackWasPlaying &&
+        !PLAYBACK_EXECUTORS.has(invocation.executorKey)
+      ) {
+        usePlaybackStore.getState().resume();
+      }
+
       useVoiceStore.getState().resetVoice();
     },
     [finish, services],
@@ -278,13 +374,14 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       if (!session || session.id !== id || session.finalHandled) return;
       session.finalHandled = true;
       clearTimers();
-      speechCoordinator.exitQuietMode();
       try {
         ExpoSpeechRecognitionModule.stop();
       } catch {}
+      microphoneClosed.current = false;
 
       if (session.source === "onboardingPractice") {
-        clearTimers();
+        await waitForMicrophoneClose();
+        speechCoordinator.exitQuietMode();
         active.current = undefined;
         const transcript = hypotheses[0]?.transcript?.trim() ?? "";
         useVoiceStore.getState().setVoice({
@@ -293,6 +390,19 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         });
         return;
       }
+
+      useVoiceStore.getState().setVoice({
+        state: "resolving",
+        transcript: hypotheses[0]?.transcript ?? "",
+        message: "Finding the best match.",
+      });
+
+      try {
+        await waitForMicrophoneClose();
+      } catch {}
+
+      if (active.current?.id !== id) return;
+      speechCoordinator.exitQuietMode();
 
       useVoiceStore.getState().setVoice({
         state: "resolving",
@@ -317,12 +427,32 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           session.screenSnapshot?.pathname ??
           activeScreenRef.current?.pathname ??
           activeScreenRef.current?.title;
+        const playback = usePlaybackStore.getState();
+        const screenId =
+          session.screenSnapshot?.id ??
+          activeScreenRef.current?.id ??
+          "unknown";
         const result = await voiceResolver.resolve({
           sessionId: id,
           hypotheses,
           signal: session.controller.signal,
           context: {
+            screenId,
             currentPath: snapshotPath,
+            pathname: snapshotPath ?? "",
+            screenState: session.screenSnapshot?.screenState,
+            activeContent: playback.current
+              ? {
+                  id: playback.current.id,
+                  type: "story" as const,
+                  title: playback.current.title,
+                }
+              : undefined,
+            playback: {
+              playing: playback.playing,
+              contentId: playback.current?.id,
+              title: playback.current?.title,
+            },
             preferences,
             stories,
             topics,
@@ -377,7 +507,26 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         }
       }
     },
-    [clearTimers, execute, finish],
+    [clearTimers, execute, finish, waitForMicrophoneClose],
+  );
+
+  const resetActivityWatchdog = useCallback(
+    (id: string) => {
+      if (activityWatchdogTimer.current)
+        clearTimeout(activityWatchdogTimer.current);
+      activityWatchdogTimer.current = setTimeout(() => {
+        const session = active.current;
+        if (!session || session.id !== id) return;
+        try {
+          ExpoSpeechRecognitionModule.stop();
+        } catch {}
+        finish(
+          "The listening session ended. Start a new voice command when you are ready.",
+          "recognition-timeout",
+        );
+      }, VOICE_TIMING.recognitionActivityWatchdog);
+    },
+    [finish],
   );
 
   const beginRecognition = useCallback(
@@ -389,21 +538,13 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       currentPartial.current = "";
       lastSpeechActivityAt.current = 0;
 
-      const startedAt = Date.now();
-      const deadlineAt = startedAt + VOICE_TIMING.preSpeechTimeout;
-      if (active.current) {
-        active.current.startedAt = startedAt;
-        active.current.deadlineAt = deadlineAt;
-        active.current.speechDetected = false;
-      }
-
       useVoiceStore.getState().setVoice({
-        state: "listening",
-        message: "Speak naturally.",
+        state: "preparing",
+        message: "Starting the microphone.",
         transcript: "",
-        listeningStartedAt: startedAt,
-        listeningDeadlineAt: deadlineAt,
         speechDetected: false,
+        listeningStartedAt: undefined,
+        listeningDeadlineAt: undefined,
       });
 
       speechCoordinator.enterQuietMode();
@@ -414,40 +555,21 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       });
 
       try {
-        ExpoSpeechRecognitionModule.start(options);
+        await ExpoSpeechRecognitionModule.start(options);
       } catch {}
 
-      activityWatchdogTimer.current = setTimeout(() => {
-        if (active.current?.id !== id) return;
-        try {
-          ExpoSpeechRecognitionModule.stop();
-        } catch {}
-        finish(
-          "The listening session ended. Start a new voice command when you are ready.",
-          "recognition-timeout",
+      asrStartTimeoutTimer.current = setTimeout(() => {
+        if (active.current?.id !== id || active.current.asrConfirmed) return;
+        finishWithoutResume(
+          "I couldn't start voice recognition. Double-tap anywhere to try again.",
+          "asr-start-failed",
         );
-      }, VOICE_TIMING.recognitionActivityWatchdog);
+      }, 3000);
 
-      noSpeechHapticTimer.current = setTimeout(() => {
-        if (active.current?.id !== id || active.current.speechDetected) return;
-        void appHaptics.listening();
-        useVoiceStore.getState().setVoice({
-          message: "Still listening. 4 seconds remaining.",
-        });
-      }, VOICE_TIMING.noSpeechHapticReminder);
+      resetActivityWatchdog(id);
 
-      preSpeechTimer.current = setTimeout(() => {
-        if (active.current?.id !== id || active.current.speechDetected) return;
-        try {
-          ExpoSpeechRecognitionModule.stop();
-        } catch {}
-        finish(
-          "I didn't hear anything. Listening is closed. Double-tap anywhere when you're ready to listen again.",
-          "no-speech-timeout",
-        );
-      }, VOICE_TIMING.preSpeechTimeout);
     },
-    [finish],
+    [finish, finishWithoutResume, resetActivityWatchdog],
   );
 
   const announceListeningPrompt = useCallback(async () => {
@@ -472,6 +594,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         id,
         controller,
         finalHandled: false,
+        asrConfirmed: false,
         startedAt,
         deadlineAt: startedAt + VOICE_TIMING.preSpeechTimeout,
         speechDetected: false,
@@ -508,7 +631,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         }
         if (active.current?.id !== id) return;
         if (!granted) {
-          finish(
+          finishWithoutResume(
             "Microphone access is off. Double-tap anywhere to open Settings.",
             "permission-denied",
           );
@@ -517,6 +640,10 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
         if (announceLocation) await announceListeningPrompt();
         if (active.current?.id !== id) return;
+
+        await playListeningStartTone();
+        if (active.current?.id !== id) return;
+
         await beginRecognition(id);
       } catch {
         finish(
@@ -525,7 +652,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         );
       }
     },
-    [announceListeningPrompt, beginRecognition, endSession, finish],
+    [announceListeningPrompt, beginRecognition, endSession, finish, finishWithoutResume],
   );
 
   const cancel = useCallback(() => {
@@ -561,6 +688,10 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
   useSpeechRecognitionEvent("start", () => {
     if (active.current) {
+      active.current.asrConfirmed = true;
+      if (asrStartTimeoutTimer.current) clearTimeout(asrStartTimeoutTimer.current);
+      asrStartTimeoutTimer.current = undefined;
+
       const startedAt = Date.now();
       const deadlineAt = startedAt + VOICE_TIMING.preSpeechTimeout;
       active.current.startedAt = startedAt;
@@ -575,6 +706,36 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         speechDetected: false,
       });
       void appHaptics.listening();
+
+      noSpeechHapticTimer.current = setTimeout(() => {
+        if (active.current?.speechDetected) return;
+        void appHaptics.listening();
+        useVoiceStore.getState().setVoice({
+          message: "Still listening. 4 seconds remaining.",
+        });
+      }, VOICE_TIMING.noSpeechHapticReminder);
+
+      preSpeechTimer.current = setTimeout(() => {
+        if (active.current?.speechDetected) return;
+        try {
+          ExpoSpeechRecognitionModule.stop();
+        } catch {}
+        finish(
+          "I didn't hear anything. Listening is closed. Double-tap anywhere when you're ready to listen again.",
+          "no-speech-timeout",
+        );
+      }, VOICE_TIMING.preSpeechTimeout);
+    }
+  });
+
+  useSpeechRecognitionEvent("end", () => {
+    microphoneClosed.current = true;
+    const resolvers = Array.from(microphoneCloseResolvers.current);
+    microphoneCloseResolvers.current.clear();
+    for (const resolveFn of resolvers) {
+      try {
+        resolveFn();
+      } catch {}
     }
   });
 
@@ -582,6 +743,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     const session = active.current;
     if (!session) return;
     session.speechDetected = true;
+    resetActivityWatchdog(session.id);
     if (preSpeechTimer.current) clearTimeout(preSpeechTimer.current);
     if (noSpeechHapticTimer.current) clearTimeout(noSpeechHapticTimer.current);
     preSpeechTimer.current = undefined;
@@ -612,7 +774,13 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     if (!session || session.finalHandled) return;
     lastSpeechActivityAt.current = Date.now();
 
-    // Fast-track resolution once user finishes speaking
+    lastSpeechActivityAt.current = Date.now();
+    useVoiceStore.getState().setVoice({
+      state: "listening",
+      speechDetected: true,
+      message: "Listening…",
+    });
+
     if (postSpeechSilenceTimer.current)
       clearTimeout(postSpeechSilenceTimer.current);
     postSpeechSilenceTimer.current = setTimeout(() => {
@@ -623,12 +791,16 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       if (full && active.current?.id === session.id) {
         void resolve(session.id, [{ transcript: full, confidence: 0.9, rank: 0 }]);
       }
-    }, 450);
+    }, VOICE_TIMING.postSpeechSilence);
   });
 
   useSpeechRecognitionEvent("result", (event) => {
     const session = active.current;
     if (!session || session.controller.signal.aborted) return;
+
+    if (session.speechDetected) {
+      resetActivityWatchdog(session.id);
+    }
 
     if (!session.speechDetected) {
       session.speechDetected = true;
@@ -640,11 +812,19 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
     lastSpeechActivityAt.current = Date.now();
 
-    const rawTranscript = event.results[0]?.transcript?.trim() || "";
+    const hypotheses = event.results
+      .map((item, rank) => ({
+        transcript: item.transcript?.trim() ?? "",
+        confidence: typeof item.confidence === "number" ? item.confidence : 0.8,
+        rank,
+      }))
+      .filter((item) => Boolean(item.transcript));
+
+    const rawTranscript = hypotheses[0]?.transcript ?? "";
     if (rawTranscript) {
       if (event.isFinal) {
         const last = finalSegments.current[finalSegments.current.length - 1];
-        if (last !== rawTranscript) {
+        if (!last || !overlapAwareAppend(last, rawTranscript)) {
           finalSegments.current.push(rawTranscript);
         }
         currentPartial.current = "";
@@ -671,9 +851,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       ) {
         if (postSpeechSilenceTimer.current)
           clearTimeout(postSpeechSilenceTimer.current);
-        void resolve(session.id, [
-          { transcript: fullTranscript, confidence: 0.9, rank: 0 },
-        ]);
+        void resolve(session.id, hypotheses);
         return;
       }
     }
@@ -686,7 +864,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         .filter(Boolean)
         .join(" ");
       if (full && active.current?.id === session.id) {
-        void resolve(session.id, [{ transcript: full, confidence: 0.9, rank: 0 }]);
+        void resolve(session.id, hypotheses);
       }
     }, VOICE_TIMING.postSpeechSilence);
   });

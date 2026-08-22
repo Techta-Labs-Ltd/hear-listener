@@ -13,6 +13,8 @@ const preferences = {
   voiceDiagnosticsEnabled: false,
   voiceConsentVersion: 1,
   homeGuideDismissed: false,
+  notificationsEnabled: true,
+  notifiedReleaseIds: [],
 };
 
 function context(pathname: string, extra: object = {}) {

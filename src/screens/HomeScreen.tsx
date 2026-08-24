@@ -4,13 +4,20 @@ import { AppScreen } from "@/components/ui/AppScreen";
 import { ReturningHome } from "@/components/home/ReturningHome";
 import { FirstUseHome } from "@/components/home/FirstUseHome";
 import { HomeSkeleton } from "@/components/home/HomeSkeleton";
-import { useContent, usePreferencesStore } from "@/stores";
+import { useContent, usePlayback, usePreferencesStore } from "@/stores";
+import { useKineticGestures } from "@/hooks/useKineticGestures";
 import { ScrollView } from "@/tw";
 
 export function HomeScreen() {
   const guideDismissed = usePreferencesStore((state) => state.homeGuideDismissed);
   const updatePreferences = usePreferencesStore((state) => state.updatePreferences);
   const { loading, refreshing, refresh, fetchCatalogue } = useContent();
+  const playback = usePlayback();
+
+  useKineticGestures({
+    onNext: () => playback.next(),
+    onPrevious: () => playback.previous(),
+  });
 
   useEffect(() => {
     void fetchCatalogue();

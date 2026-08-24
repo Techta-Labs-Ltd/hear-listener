@@ -60,7 +60,7 @@ export type VoiceScreenContext = {
 };
 
 export type VoiceInvocationSource =
-  | "doubleTap"
+  | "shakeGesture"
   | "accessibilityAction"
   | "contextualAction"
   | "onboardingPractice"
@@ -86,8 +86,16 @@ export type ActiveVoiceSession = {
   screenSnapshot?: ScreenVoiceContext | null;
 };
 
+export type ExternalResolverStatus =
+  | "idle"
+  | "resolving"
+  | "success"
+  | "error";
+
 export type VoiceStore = {
   state: VoiceState;
+  isVoiceActive: boolean;
+  isDockVisible: boolean;
   sessionId?: string;
   transcript: string;
   message: string;
@@ -98,11 +106,54 @@ export type VoiceStore = {
   listeningStartedAt?: number;
   listeningDeadlineAt?: number;
   speechDetected?: boolean;
+  activeScreenId?: string | null;
+  activeScreenTitle?: string | null;
+  externalResolving: boolean;
+  externalStatus: ExternalResolverStatus;
+  externalError?: string | null;
+  lastExternalResponse?: ExternalResolverResponse | null;
   setVoice: (
     change: Partial<Omit<VoiceStore, "setVoice" | "resetVoice">>,
   ) => void;
   resetVoice: () => void;
 };
+
+export type SpeechStore = {
+  isSpeaking: boolean;
+  currentUtterance: string | null;
+  speechState: "idle" | "speaking" | "paused";
+  setSpeaking: (isSpeaking: boolean, currentUtterance?: string | null) => void;
+  setSpeechState: (state: "idle" | "speaking" | "paused") => void;
+  resetSpeech: () => void;
+};
+
+export type ExternalResolverRequest = {
+  transcript: string;
+  screenContext: VoiceScreenContext;
+  appSummary?: {
+    currentPath: string;
+    playingTitle?: string;
+    isPlaying: boolean;
+  };
+  signal?: AbortSignal;
+};
+
+export type ExternalResolverResponse = {
+  handled: boolean;
+  spokenResponse?: string;
+  displayText?: string;
+  action?: {
+    type: string;
+    payload?: Record<string, unknown>;
+  };
+  choices?: VoiceChoice[];
+  confidence?: number;
+  error?: string;
+};
+
+export interface ExternalVoiceResolver {
+  resolve(request: ExternalResolverRequest): Promise<ExternalResolverResponse>;
+}
 
 export type PlayMode =
   | "current"

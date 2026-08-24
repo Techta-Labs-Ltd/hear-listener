@@ -4,33 +4,33 @@ export const onboardingChapters = onboardingCopy.chapters;
 
 export const ONBOARDING_SPEECH = {
   welcome:
-    "Welcome to Hear. Step 1 of 3. Double-tap anywhere to continue.",
+    "Welcome to Hear. Step 1 of 3. Shake device to continue.",
   welcomeLong:
-    "Welcome to Hear. Step 1 of 3. Hear what matters. Skip the screens. Hear helps you listen and use the app without needing to see the screen. Example: Play my local news. Double-tap anywhere to begin voice setup.",
+    "Welcome to Hear. Step 1 of 3. Hear what matters. Skip the screens. Hear helps you listen and use the app without needing to see the screen. Example: Play my local news. Shake device to begin voice setup.",
   permissionIntro:
-    "Voice access. Step 2 of 3. Hear listens only when you ask. The microphone stops after each command. Double-tap anywhere to continue and your phone will ask for microphone permission.",
+    "Voice access. Step 2 of 3. Hear listens only when you ask. The microphone stops after each command. Shake device to continue and your phone will ask for microphone permission.",
   permissionGrantedFirstTest:
     "Microphone access granted. Voice access is ready. Let's try one command. After the tone, say Play my local news.",
   permissionDenied:
-    "Voice access. Step 2 of 3. Microphone access is off. Double-tap anywhere to open Settings.",
+    "Voice access. Step 2 of 3. Microphone access is off. Shake device to open Settings.",
   permissionDeniedWeb:
-    "Voice access. Step 2 of 3. Microphone access is off. Double-tap anywhere to request permission, or allow microphone access in your browser address bar.",
+    "Voice access. Step 2 of 3. Microphone access is off. Shake device to request permission, or allow microphone access in your browser address bar.",
   permissionStillDenied:
-    "Microphone access is still off. Double-tap anywhere to open Settings.",
+    "Microphone access is still off. Shake device to open Settings.",
   permissionStillDeniedWeb:
-    "Microphone access is still off. Double-tap anywhere to request permission, or allow microphone access in your browser address bar.",
+    "Microphone access is still off. Shake device to request permission, or allow microphone access in your browser address bar.",
   permissionNowOn:
     "Microphone access is now on. Let's try your first voice command. After the tone, say Play my local news.",
   permissionBlocked:
-    "Voice access. Step 2 of 3. Microphone access is off. Double-tap anywhere to open Settings.",
+    "Voice access. Step 2 of 3. Microphone access is off. Shake device to open Settings.",
   voiceTestNoSpeech:
-    "I didn't hear anything. Double-tap anywhere to try again.",
+    "I didn't hear anything. Shake your device to try again.",
   voiceTestNotRecognised:
-    "I heard you, but I couldn't match that command. Double-tap anywhere to try again. After the tone, say Play my local news.",
+    "I heard you, but I couldn't match that command. Shake your device to try again. After the tone, say Play my local news.",
   voiceTestCancel:
-    "Voice test stopped. Double-tap anywhere when you're ready to try again.",
+    "Voice test stopped. Shake your device when you're ready to try again.",
   voiceTestError:
-    "Voice recognition couldn't start. Double-tap anywhere to try again.",
+    "Voice recognition couldn't start. Shake your device to try again.",
   voiceTestSuccess:
     "Voice access is working. Step 2 complete. Moving to the final setup step.",
   account:
@@ -40,9 +40,9 @@ export const ONBOARDING_SPEECH = {
   accountAndroid:
     "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Google, or Not now.",
   accountTimeout:
-    "I didn't hear a choice. Double-tap anywhere when you're ready.",
+    "I didn't hear a choice. Shake your device when you're ready.",
   accountUnrecognised:
-    "I didn't match that choice. Double-tap anywhere when you're ready.",
+    "I didn't match that choice. Shake your device when you're ready.",
   accountUnrecognisedIos:
     "I didn't match that choice. Say Apple, or Not now.",
   accountUnrecognisedAndroid:
@@ -66,6 +66,6 @@ export const ONBOARDING_SPEECH = {
   completeWithoutVoice:
     "Setup complete. Hear is ready. You can enable voice access later in Settings.",
   access:
-    "Voice access. Step 2 of 3. Hear listens only when you ask. The microphone stops after each command. Double-tap anywhere to continue and your phone will ask for microphone permission.",
+    "Voice access. Step 2 of 3. Hear listens only when you ask. The microphone stops after each command. Shake device to continue and your phone will ask for microphone permission.",
   test: "Listening. Speak naturally. Say: Play my local news.",
 } as const;

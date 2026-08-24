@@ -15,7 +15,7 @@ export const playerCopy = {
   emptyTitle: "Nothing queued",
   emptyDescription: "Pick a story, or ask Hear! to play something for you.",
   browse: "Browse audio",
-  speak: "Double-tap to speak",
+  speak: "Shake to speak",
   finishedTitle: "That’s the end.",
   finishedNext: "Play next story",
   finishedReplay: "Replay",

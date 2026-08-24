@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { BackHandler } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useOnboardingSetup } from "@/hooks/useOnboardingSetup";
+import { useKineticGestures } from "@/hooks/useKineticGestures";
 import { View } from "@/tw";
 import { WelcomeStep } from "@/components/onboarding/WelcomeStep";
 import { VoiceAccessStep } from "@/components/onboarding/VoiceAccessStep";
@@ -10,12 +11,58 @@ import { AccountStep } from "@/components/onboarding/AccountStep";
 export function OnboardingScreen() {
   const setup = useOnboardingSetup();
 
+  const handleShake = useCallback(() => {
+    if (setup.phase === "welcome") {
+      setup.advanceWelcome();
+    } else if (
+      setup.phase === "permissionIntro" ||
+      setup.phase === "requestingPermission"
+    ) {
+      setup.requestPermission();
+    } else if (
+      setup.phase === "permissionDenied" ||
+      setup.phase === "permissionBlocked"
+    ) {
+      setup.openSettings();
+    } else if (
+      setup.phase === "voiceTestReady" ||
+      setup.phase === "voiceTestError"
+    ) {
+      setup.retryVoiceTest();
+    } else if (setup.phase === "account") {
+      setup.startAccountVoiceSelection();
+    }
+  }, [setup]);
+
+  const handleNext = useCallback(() => {
+    if (setup.phase === "welcome") {
+      setup.advanceWelcome();
+    } else if (setup.phase === "account") {
+      setup.skipAccount();
+    }
+  }, [setup]);
+
+  const handlePrevious = useCallback(() => {
+    if (setup.phase !== "welcome") {
+      setup.back();
+    }
+  }, [setup]);
+
+  useKineticGestures({
+    onShake: handleShake,
+    onNext: handleNext,
+    onPrevious: handlePrevious,
+  });
+
   useEffect(() => {
     if (setup.phase === "welcome") return;
-    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
-      setup.back();
-      return true;
-    });
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        setup.back();
+        return true;
+      },
+    );
     return () => subscription.remove();
   }, [setup]);
 
@@ -57,7 +104,6 @@ export function OnboardingScreen() {
           speechDetected={setup.speechDetected}
           onSignIn={(provider) => void setup.signIn(provider)}
           onSkip={setup.skipAccount}
-          onDoubleTap={setup.startAccountVoiceSelection}
         />
       )}
     </View>

@@ -1,6 +1,6 @@
 const screenSummaries: Record<string, string> = {
   "/":
-    "Home. Continue listening contains The stories shaping your evening. Your local news follows below. The bottom tabs are Home, Discover and Library. Double-tap anywhere when the screen reader is off to give a voice command.",
+    "Home. Continue listening contains The stories shaping your evening. Your local news follows below. The bottom tabs are Home, Discover and Library. Shake device or use the voice button to give a voice command.",
   "/explore":
     "Discover. Topics are Local news, Culture, Technology, Wellbeing, Business and Sport. Editor's pick is below the topics. The bottom tabs are Home, Discover and Library.",
   "/library":

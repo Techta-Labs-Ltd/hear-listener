@@ -7,6 +7,7 @@ import { AppText } from "@/components/ui/AppText";
 import { Pressable, ScrollView, View } from "@/tw";
 import { colors } from "@/constants/theme";
 import { usePlayback, usePreferences } from "@/stores";
+import { useKineticGestures } from "@/hooks/useKineticGestures";
 import { formatClock } from "@/utils/text";
 import { routes } from "@/navigation/routes";
 import { playerCopy as copy, queueCopy } from "@/utils/copy/player";
@@ -17,6 +18,11 @@ export function PlayingPlayer({ current }: { current: ContentItem }) {
   const router = useRouter();
   const playback = usePlayback();
   const { preferences, updatePreferences } = usePreferences();
+
+  useKineticGestures({
+    onNext: () => playback.seekBy(15),
+    onPrevious: () => playback.seekBy(-15),
+  });
 
   const saved = preferences.savedIds.includes(current.id);
   const durationSeconds = playback.durationSeconds || 18 * 60;

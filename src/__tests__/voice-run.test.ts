@@ -45,7 +45,7 @@ function makeServices(overrides: Partial<VoiceServices> = {}): VoiceServices {
       followingIds: [],
       update: jest.fn(),
     },
-    readScreen: jest.fn(() => "Home. Double-tap anywhere to speak."),
+    readScreen: jest.fn(() => "Home. Shake device to speak."),
     data: { stories, topics, entities },
     ...overrides,
   };
@@ -309,7 +309,7 @@ describe("runCommand", () => {
   it("reads the screen through the screen readout service", () => {
     const s = makeServices();
     expect(runCommand({ type: "readScreen" }, s)).toBe(
-      "Home. Double-tap anywhere to speak.",
+      "Home. Shake device to speak.",
     );
     expect(s.readScreen).toHaveBeenCalled();
   });
@@ -350,7 +350,7 @@ describe("runCommand", () => {
       totalSteps: 6,
       title: "Let's get Hear! ready for you.",
       description: "Setup takes about two minutes.",
-      options: ["Say continue to begin"],
+      options: ["Shake device to begin"],
     });
     expect(runCommand({ type: "onboardingRead" }, s)).toBe(
       "Step 1 of 6. Let's get Hear! ready for you. Setup takes about two minutes.",

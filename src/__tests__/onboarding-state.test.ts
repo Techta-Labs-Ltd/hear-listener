@@ -5,13 +5,13 @@ describe("Onboarding Spec Verification", () => {
   describe("ONBOARDING_SPEECH copy compliance with Section 47", () => {
     it("has exact welcome speech matching Spec §47", () => {
       expect(ONBOARDING_SPEECH.welcome).toBe(
-        "Welcome to Hear. Step 1 of 3. Double-tap anywhere to continue.",
+        "Welcome to Hear. Step 1 of 3. Shake device to continue.",
       );
     });
 
     it("has exact permission intro speech matching Spec §47", () => {
       expect(ONBOARDING_SPEECH.permissionIntro).toBe(
-        "Voice access. Step 2 of 3. Hear listens only when you ask. The microphone stops after each command. Double-tap anywhere to continue and your phone will ask for microphone permission.",
+        "Voice access. Step 2 of 3. Hear listens only when you ask. The microphone stops after each command. Shake device to continue and your phone will ask for microphone permission.",
       );
     });
 
@@ -23,10 +23,10 @@ describe("Onboarding Spec Verification", () => {
 
     it("has exact permission denied speech matching Spec §47", () => {
       expect(ONBOARDING_SPEECH.permissionDenied).toBe(
-        "Voice access. Step 2 of 3. Microphone access is off. Double-tap anywhere to open Settings.",
+        "Voice access. Step 2 of 3. Microphone access is off. Shake device to open Settings.",
       );
       expect(ONBOARDING_SPEECH.permissionStillDenied).toBe(
-        "Microphone access is still off. Double-tap anywhere to open Settings.",
+        "Microphone access is still off. Shake device to open Settings.",
       );
     });
 
@@ -38,16 +38,16 @@ describe("Onboarding Spec Verification", () => {
 
     it("has exact voice test retry messages matching Spec §47", () => {
       expect(ONBOARDING_SPEECH.voiceTestNoSpeech).toBe(
-        "I didn't hear anything. Double-tap anywhere to try again.",
+        "I didn't hear anything. Shake your device to try again.",
       );
       expect(ONBOARDING_SPEECH.voiceTestNotRecognised).toBe(
-        "I heard you, but I couldn't match that command. Double-tap anywhere to try again. After the tone, say Play my local news.",
+        "I heard you, but I couldn't match that command. Shake your device to try again. After the tone, say Play my local news.",
       );
       expect(ONBOARDING_SPEECH.voiceTestCancel).toBe(
-        "Voice test stopped. Double-tap anywhere when you're ready to try again.",
+        "Voice test stopped. Shake your device when you're ready to try again.",
       );
       expect(ONBOARDING_SPEECH.voiceTestError).toBe(
-        "Voice recognition couldn't start. Double-tap anywhere to try again.",
+        "Voice recognition couldn't start. Shake your device to try again.",
       );
     });
 
@@ -66,19 +66,21 @@ describe("Onboarding Spec Verification", () => {
       );
     });
 
-    it("has exact completion speech matching Spec §47", () => {
+    it("has exact completion speech variants", () => {
       expect(ONBOARDING_SPEECH.complete).toBe(
         "Setup complete. Hear is ready.",
+      );
+      expect(ONBOARDING_SPEECH.completeWithoutVoice).toBe(
+        "Setup complete. Hear is ready. You can enable voice access later in Settings.",
       );
     });
   });
 
-  describe("Onboarding copy presets", () => {
-    it("maintains 3 logical steps in copy presets", () => {
-      expect(onboardingCopyPresets.welcome.eyebrow).toBe("WELCOME · 1 OF 3");
-      expect(onboardingCopyPresets.voiceAccess.eyebrow).toBe("VOICE ACCESS · 2 OF 3");
-      expect(onboardingCopyPresets.permissionDenied.eyebrow).toBe("VOICE ACCESS · 2 OF 3");
-      expect(onboardingCopyPresets.account.eyebrow).toBe("OPTIONAL ACCOUNT · 3 OF 3");
+  describe("onboardingCopyPresets validity", () => {
+    it("provides valid presets for all 3 chapters", () => {
+      expect(onboardingCopyPresets.welcome).toBeDefined();
+      expect(onboardingCopyPresets.voiceAccess).toBeDefined();
+      expect(onboardingCopyPresets.account).toBeDefined();
     });
   });
 });

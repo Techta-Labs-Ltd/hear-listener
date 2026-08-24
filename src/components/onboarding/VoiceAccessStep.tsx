@@ -53,11 +53,11 @@ export function VoiceAccessStep({
 
   const accessibilityHint = isDenied
     ? isWeb
-      ? "Double-tap anywhere to request microphone permission."
-      : "Double-tap anywhere to open Settings."
+      ? "Activate to request microphone permission."
+      : "Activate to open Settings."
     : isVoiceTest
-      ? "Double-tap anywhere to start listening again."
-      : "Double-tap anywhere to request microphone permission.";
+      ? "Shake device or activate to start listening again."
+      : "Activate to request microphone permission.";
 
   return (
     <Pressable
@@ -94,15 +94,15 @@ export function VoiceAccessStep({
               </AppText>
               <AppText tone="muted" className="mt-3 text-[16px] leading-[22px]">
                 {isWeb
-                  ? "Hear! can still guide you. Double-tap anywhere to request permission again, or allow microphone access in your browser address bar."
-                  : "Hear! can still guide you. One double-tap opens Settings—there are no buttons to find."}
+                  ? "Hear! can still guide you. Request permission again, or allow microphone access in your browser address bar."
+                  : "Hear! can still guide you. Open Settings to enable microphone."}
               </AppText>
               <View className="my-6 h-[1px] bg-border" />
               <VoiceStatusBadge label="HEAR IS SPEAKING" className="mb-3" />
               <AppText className="font-display text-[22px] leading-[28px] text-ink">
                 {isWeb
-                  ? "“Microphone access is off.\nDouble-tap anywhere to request permission.”"
-                  : "“Microphone access is off.\nDouble-tap anywhere to open Settings.”"}
+                  ? "“Microphone access is off.\nTap anywhere to request permission.”"
+                  : "“Microphone access is off.\nTap anywhere to open Settings.”"}
               </AppText>
             </>
           ) : isVoiceTest ? (
@@ -178,7 +178,7 @@ export function VoiceAccessStep({
               ONE GESTURE
             </AppText>
             <AppText className="mt-2 font-display text-[32px] sm:text-[38px] leading-[36px] sm:leading-[44px] text-white">
-              Double-tap{"\n"}anywhere.
+              Tap anywhere{"\n"}to continue.
             </AppText>
             <AppText className="mt-2 text-[15px] sm:text-[16px] leading-[20px] sm:leading-[21px] text-voice-muted">
               {isDenied

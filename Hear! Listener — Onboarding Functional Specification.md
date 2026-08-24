@@ -799,7 +799,7 @@ I didn't hear a choice. Double-tap anywhere when you're ready.
 Current action becomes:
 
 DOUBLE TAP
-→ Repeat account instructions and listen again
+→ Repeat account instructions and speak again
 42. Account Unrecognised Response
 
 If speech is received but is not:
@@ -812,7 +812,7 @@ Hear says:
 
 I didn't match that choice. Say Apple, Google, or Not now.
 
-Then automatically listen again after the prompt finishes.
+Then automatically speak again after the prompt finishes.
 
 43. Authentication Cancelled
 
@@ -836,7 +836,7 @@ Announce:
 
 Sign-in didn't complete. Say Apple or Google to try again, or say Not now.
 
-Then listen again.
+Then speak again.
 
 45. Completing Onboarding
 

@@ -2,6 +2,7 @@ export type Preferences = {
   setupComplete: boolean;
   onboardingVersion: number;
   spokenGuidanceEnabled: boolean;
+  kineticGesturesEnabled: boolean;
   town: string;
   interests: string[];
   savedIds: string[];

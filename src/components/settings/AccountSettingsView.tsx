@@ -25,10 +25,9 @@ export function AccountSettingsView({ onBack }: { onBack: () => void }) {
   };
 
   return (
-    <View className="flex-1 bg-canvas">
-      <View className="w-full max-w-[720px] flex-1 self-center">
-        <ScreenHeader title="Account" onBack={onBack} />
-        <ScrollView
+    <View className="flex-1">
+      <ScreenHeader title="Account" onBack={onBack} />
+      <ScrollView
           contentContainerClassName="px-5 pt-6 pb-12 items-center"
           showsVerticalScrollIndicator={false}
         >
@@ -89,7 +88,6 @@ export function AccountSettingsView({ onBack }: { onBack: () => void }) {
             Voice requires confirmation: “Yes, sign out.”
           </AppText>
         </ScrollView>
-      </View>
     </View>
   );
 }

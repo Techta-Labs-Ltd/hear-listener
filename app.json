@@ -13,7 +13,8 @@
       "icon": "./assets/images/hear-icon.png",
       "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "Allow Hear! to turn your voice command into text.",
-        "NSMicrophoneUsageDescription": "Allow Hear! to use the microphone when you start a voice command."
+        "NSMicrophoneUsageDescription": "Allow Hear! to use the microphone when you start a voice command.",
+        "NSMotionUsageDescription": "Allow Hear! to access motion sensors for accessible spatial gesture navigation."
       }
     },
     "android": {
@@ -30,7 +31,8 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.HIGH_SAMPLING_RATE_SENSORS"
       ],
       "package": "com.samuedev33.hearlistener"
     },
@@ -87,6 +89,12 @@
         {
           "icon": "./assets/images/hear-icon.png",
           "color": "#7B3068"
+        }
+      ],
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "Allow Hear! to access motion sensors for accessible spatial gesture navigation."
         }
       ]
     ],

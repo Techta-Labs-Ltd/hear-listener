@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { Animated, Easing } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { AppText } from "@/components/ui/AppText";
 import { colors } from "@/constants/theme";
-import { LISTENING_PHASE_COPY, VOICE_TIMING } from "@/constants/voice";
+import { VOICE_TIMING } from "@/constants/voice";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { View } from "@/tw";
 import type { ListeningPanelProps, PanelPhase, VoiceState } from "@/types";
+import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useState } from "react";
+import { Animated, Easing } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ListeningCountdown } from "./ListeningCountdown";
 import { VoiceStatusBadge } from "./VoiceStatusBadge";
 
@@ -29,28 +29,36 @@ export function ListeningPanel({
   const insets = useSafeAreaInsets();
   const { reduceMotionEnabled } = useAppAccessibility();
   const isError = state === "error" || state === "cancelled";
-  const isSpeaking = state === "preparing" || state === "permission";
+  const isListening = state === "listening";
+  const isWorking =
+    state === "resolving" || state === "executing" || state === "clarifying";
   const phase = phaseFor(state);
 
   const copy = isError
     ? {
-        badge: "TRY AGAIN",
-        title: "I didn’t hear that.",
-        sub: message || "Double-tap anywhere to listen again.",
-      }
-    : isSpeaking
+      badge: "TRY AGAIN",
+      title: transcript ? `“${transcript}”` : "I didn’t hear that.",
+      sub: message || prompt || "Shake device to speak again.",
+    }
+    : isWorking
       ? {
-          badge: "HEAR IS SPEAKING",
-          title: "Let’s try one command.",
-          sub: message || prompt || "Say “Play my local news.”",
-        }
-      : speechDetected
+        badge: "ONE MOMENT",
+        title: transcript ? `“${transcript}”` : "Working on that.",
+        sub: message || "Finding your news…",
+      }
+      : isListening
         ? {
-            badge: "LISTENING",
-            title: transcript ? `“${transcript}”` : "Listening…",
-            sub: transcript ? "Finding your news…" : prompt || message || "Speak naturally.",
-          }
-        : LISTENING_PHASE_COPY[phase];
+          badge: "LISTENING",
+          title: transcript ? `“${transcript}”` : "Speak naturally.",
+          sub: transcript
+            ? "Checking what you said…"
+            : prompt || "Say “Play my local news.”",
+        }
+        : {
+          badge: "GETTING READY",
+          title: "Getting everything ready.",
+          sub: prompt || message || "Say “Play my local news.”",
+        };
 
   const [progress] = useState(() => new Animated.Value(0));
 
@@ -159,7 +167,7 @@ export function ListeningPanel({
             {isError ? (prompt || "Say “Play my local news.”") : "Say “cancel” to stop."}
           </AppText>
           <AppText className="mt-1.5 sm:mt-[10px] text-[13px] sm:text-[14px] leading-4 text-voice-muted">
-            Double-tap anywhere to speak again.
+            Shake device to speak again.
           </AppText>
         </View>
       </View>

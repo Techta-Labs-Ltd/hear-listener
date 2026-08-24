@@ -1,7 +1,7 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useFocusEffect, usePathname } from "expo-router";
 import { SafeAreaView, View } from "@/tw";
-import type { AppScreenProps } from "@/types";
+import type { AppScreenProps, ScreenVoiceContext } from "@/types";
 import { useVoice } from "@/hooks/useVoice";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { speechCoordinator } from "@/services/voice/speech-coordinator";
@@ -26,6 +26,9 @@ export function AppScreen({
   const voice = useVoice();
   const registerScreen = voice.registerScreen;
   const accessibility = useAppAccessibility();
+  const isFocusedRef = useRef(false);
+  const cleanupRef = useRef<(() => void) | undefined>(undefined);
+  const lastAnnouncedOrientationRef = useRef<string | undefined>(undefined);
   const idleTimer1 = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const idleTimer2 = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -37,20 +40,50 @@ export function AppScreen({
     }
   })();
 
+  const screenContextRef = useRef<ScreenVoiceContext>({
+    id: screenId,
+    pathname,
+    title: screenTitle,
+    orientation: screenOrientation,
+    readout: screenReadout,
+    commands: voiceCommands,
+    voiceEnabled: true,
+  });
+
+  screenContextRef.current = {
+    id: screenId,
+    pathname,
+    title: screenTitle,
+    orientation: screenOrientation,
+    readout: screenReadout,
+    commands: voiceCommands,
+    voiceEnabled: true,
+  };
+
+  useEffect(() => {
+    if (isFocusedRef.current && registerScreen) {
+      cleanupRef.current?.();
+      cleanupRef.current = registerScreen(screenContextRef.current);
+    }
+  }, [
+    registerScreen,
+    screenId,
+    pathname,
+    screenTitle,
+    screenOrientation,
+    screenReadout,
+  ]);
+
   useFocusEffect(
     useCallback(() => {
-      const cleanup = registerScreen?.({
-        id: screenId,
-        pathname,
-        title: screenTitle,
-        orientation: screenOrientation,
-        readout: screenReadout,
-        commands: voiceCommands,
-        voiceEnabled: true,
-      });
+      isFocusedRef.current = true;
+      const ctx = screenContextRef.current;
+      const pathKey = ctx.pathname || "/";
+      cleanupRef.current = registerScreen?.(ctx);
 
-      if (screenOrientation) {
-        accessibility.announce(screenOrientation, `screen:${pathname}`, true);
+      if (ctx.orientation && lastAnnouncedOrientationRef.current !== ctx.orientation) {
+        lastAnnouncedOrientationRef.current = ctx.orientation;
+        accessibility.announce(ctx.orientation, `screen:${pathKey}`, true);
       }
 
       if (idleTimer1.current) clearTimeout(idleTimer1.current);
@@ -58,38 +91,32 @@ export function AppScreen({
 
       idleTimer1.current = setTimeout(() => {
         if (speechCoordinator.isQuiet()) return;
-        const hint1 = SCREEN_IDLE_HINTS[pathname] || SCREEN_IDLE_HINTS["/"];
+        const hint1 = SCREEN_IDLE_HINTS[pathKey] || SCREEN_IDLE_HINTS["/"];
         if (hint1) {
-          accessibility.announce(hint1, `idle1:${pathname}`, true);
+          accessibility.announce(hint1, `idle1:${pathKey}`, true);
         }
       }, SCREEN_IDLE_TIMEOUT_1);
 
       idleTimer2.current = setTimeout(() => {
         if (speechCoordinator.isQuiet()) return;
-        const hint2 = SCREEN_IDLE_HINTS_2[pathname] || SCREEN_IDLE_HINTS_2["/"];
+        const hint2 = SCREEN_IDLE_HINTS_2[pathKey] || SCREEN_IDLE_HINTS_2["/"];
         if (hint2) {
-          accessibility.announce(hint2, `idle2:${pathname}`, true);
+          accessibility.announce(hint2, `idle2:${pathKey}`, true);
         }
       }, SCREEN_IDLE_TIMEOUT_2);
 
       return () => {
+        isFocusedRef.current = false;
+        lastAnnouncedOrientationRef.current = undefined;
         if (idleTimer1.current) clearTimeout(idleTimer1.current);
         if (idleTimer2.current) clearTimeout(idleTimer2.current);
         idleTimer1.current = undefined;
         idleTimer2.current = undefined;
         accessibility.stopSpeaking();
-        cleanup?.();
+        cleanupRef.current?.();
+        cleanupRef.current = undefined;
       };
-    }, [
-      accessibility,
-      pathname,
-      registerScreen,
-      screenId,
-      screenOrientation,
-      screenReadout,
-      screenTitle,
-      voiceCommands,
-    ]),
+    }, [accessibility, registerScreen]),
   );
 
   return (

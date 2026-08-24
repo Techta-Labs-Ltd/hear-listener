@@ -6,6 +6,7 @@ import {
   Linking,
   Platform,
   Pressable,
+  StyleSheet,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { usePathname } from "expo-router";
@@ -18,32 +19,20 @@ import Animated, {
   SlideOutDown,
 } from "react-native-reanimated";
 import { AppText } from "@/components/ui/AppText";
-import { VOICE_TIMING } from "@/constants/voice";
+import { VOICE_STATE_BADGES, VOICE_TIMING } from "@/constants/voice";
 import { useVoice } from "@/hooks/useVoice";
 import { View } from "@/tw";
 import type { VoiceChoice, VoiceState } from "@/types";
 import { ListeningCountdown } from "./ListeningCountdown";
 import { VoiceStatusBadge } from "./VoiceStatusBadge";
 
-const stateBadges: Record<VoiceState, string> = {
-  idle: "VOICE READY",
-  permission: "CHECKING ACCESS",
-  preparing: "GETTING READY",
-  listening: "LISTENING",
-  resolving: "I HEARD",
-  clarifying: "ONE MORE THING",
-  executing: "WORKING ON THAT",
-  success: "DONE",
-  error: "I DIDN’T HEAR A COMMAND",
-  cancelled: "VOICE CLOSED",
-};
-
 export function GlobalVoiceDock() {
   const voice = useVoice();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
 
-  const isVoiceOpen = voice.state !== "idle" && pathname !== "/onboarding";
+  const isVoiceOpen =
+    voice.state !== "idle" && !pathname?.startsWith("/onboarding");
   const listening = voice.state === "listening";
   const resolving = voice.state === "resolving" || voice.state === "executing";
   const clarifying = voice.state === "clarifying";
@@ -91,8 +80,14 @@ export function GlobalVoiceDock() {
     <Animated.View
       entering={FadeIn.duration(160)}
       exiting={FadeOut.duration(160)}
-      className="absolute inset-0 z-[9999] justify-end"
-      style={{ pointerEvents: "box-none" }}
+      style={[
+        StyleSheet.absoluteFill,
+        {
+          zIndex: 9999,
+          justifyContent: "flex-end",
+          pointerEvents: "box-none",
+        },
+      ]}
     >
       <Pressable
         accessibilityRole={isBackdropDismissible ? "button" : undefined}
@@ -128,7 +123,7 @@ export function GlobalVoiceDock() {
                   ? "PERMISSION REQUIRED"
                   : listening && voice.speechDetected
                     ? "I CAN HEAR YOU"
-                    : stateBadges[voice.state]
+                    : VOICE_STATE_BADGES[voice.state]
               }
             />
 
@@ -245,7 +240,7 @@ export function GlobalVoiceDock() {
                     Say “cancel” to stop.
                   </AppText>
                   <AppText className="mt-1 text-xs sm:text-[13px] leading-4 text-voice-muted">
-                    Double-tap anywhere to speak again.
+                    Shake device to speak again.
                   </AppText>
                 </View>
               </>
@@ -332,6 +327,24 @@ export function GlobalVoiceDock() {
                   </AppText>
                 </Pressable>
               </>
+            ) : voice.state === "preparing" ? (
+              <>
+                <AppText
+                  accessibilityRole="header"
+                  className="font-display text-[28px] sm:text-[32px] leading-[34px] sm:leading-[38px] text-white"
+                >
+                  Getting ready…
+                </AppText>
+                <AppText className="mt-0.5 text-sm sm:text-[15px] leading-5 text-voice-muted">
+                  {voice.message || "Hear is preparing voice control."}
+                </AppText>
+                <View className="mt-4 flex-row items-center justify-between border-t border-voice-track pt-3.5">
+                  <AppText className="text-xs sm:text-[13px] leading-4 text-voice-muted">
+                    Speak after the chime tone.
+                  </AppText>
+                  <ActivityIndicator size="small" color="#C49BFF" />
+                </View>
+              </>
             ) : failed ? (
               <>
                 <AppText
@@ -339,10 +352,10 @@ export function GlobalVoiceDock() {
                   accessibilityLiveRegion="polite"
                   className="font-display text-[28px] leading-[34px] text-white"
                 >
-                  Try again when{"\n"}you’re ready.
+                  I didn’t hear anything
                 </AppText>
                 <AppText className="text-[14px] leading-5 text-voice-muted">
-                  {voice.message || "I did not hear a command."}
+                  {voice.message || "Shake device or tap try again."}
                 </AppText>
                 <View className="mt-2 flex-row items-center gap-3">
                   <Pressable
@@ -367,6 +380,11 @@ export function GlobalVoiceDock() {
                       Dismiss
                     </AppText>
                   </Pressable>
+                </View>
+                <View className="mt-2">
+                  <AppText className="text-center text-xs text-voice-muted">
+                    Shake device to try again immediately.
+                  </AppText>
                 </View>
               </>
             ) : (

@@ -1,4 +1,5 @@
 import * as Speech from "expo-speech";
+import { Platform } from "react-native";
 import { isUkLanguage, UkSpeechService, voiceScore } from "@/services/voice/speech";
 
 jest.mock("expo-speech", () => ({
@@ -108,6 +109,37 @@ describe("UkSpeechService", () => {
           voice: undefined,
         }),
       );
+    });
+
+    it("lets Android initialize itself and select an installed English voice", async () => {
+      const platform = jest.replaceProperty(Platform, "OS", "android");
+      (Speech.speak as jest.Mock).mockImplementation((_text, options) => {
+        options?.onDone?.();
+      });
+
+      await service.speak("Android speech fallback");
+
+      expect(Speech.getAvailableVoicesAsync).not.toHaveBeenCalled();
+      expect(Speech.speak).toHaveBeenCalledWith(
+        "Android speech fallback",
+        expect.objectContaining({ language: "en-GB", voice: undefined }),
+      );
+      platform.restore();
+    });
+
+    it("does not block voice recognition when Android TTS never starts", async () => {
+      jest.useFakeTimers();
+      const platform = jest.replaceProperty(Platform, "OS", "android");
+      (Speech.speak as jest.Mock).mockImplementation(() => undefined);
+
+      const promise = service.speak("This engine is unavailable");
+      await Promise.resolve();
+      await Promise.resolve();
+      jest.advanceTimersByTime(8000);
+
+      await expect(promise).resolves.toBe("TIMEOUT");
+      platform.restore();
+      jest.useRealTimers();
     });
 
     it("skips sensitive or empty messages", async () => {

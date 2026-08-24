@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 import * as Speech from "expo-speech";
+import { useSpeechStore } from "@/stores/speech-store";
 
 const preferredUkNames = [
   "daniel",
@@ -84,6 +85,7 @@ export class UkSpeechService {
     try {
       if (options.interrupt !== false) {
         await Speech.stop();
+        useSpeechStore.getState().setSpeaking(false, null);
         if (
           Platform.OS === "web" &&
           typeof window !== "undefined" &&
@@ -92,27 +94,44 @@ export class UkSpeechService {
           window.speechSynthesis.resume();
         }
       }
-      const voice = await this.getUkVoiceIdentifier();
+      const voice =
+        Platform.OS === "android"
+          ? undefined
+          : await this.getUkVoiceIdentifier();
+      const language = Platform.OS === "android" ? "en-GB" : "en-GB";
       const succeeded = await new Promise<"DONE" | "INTERRUPTED" | "ERROR" | "TIMEOUT">((resolve) => {
         let settled = false;
-        let timeout: ReturnType<typeof setTimeout> | undefined;
+        let startTimeout: ReturnType<typeof setTimeout> | undefined;
+        let completionTimeout: ReturnType<typeof setTimeout> | undefined;
 
         const complete = (result: "DONE" | "INTERRUPTED" | "ERROR" | "TIMEOUT") => {
           if (settled) return;
           settled = true;
-          if (timeout) clearTimeout(timeout);
+          if (startTimeout) clearTimeout(startTimeout);
+          if (completionTimeout) clearTimeout(completionTimeout);
+          useSpeechStore.getState().setSpeaking(false, null);
           resolve(result);
         };
 
-        const timeoutMs = Math.max(16000, Math.ceil(text.length * 130));
-        timeout = setTimeout(() => complete("TIMEOUT"), timeoutMs);
+        startTimeout = setTimeout(() => complete("TIMEOUT"), 8000);
+        const completionTimeoutMs = Math.max(12000, Math.ceil(text.length * 140));
+        completionTimeout = setTimeout(
+          () => complete("DONE"),
+          completionTimeoutMs,
+        );
+
+        useSpeechStore.getState().setSpeaking(true, text);
 
         Speech.speak(text, {
-          language: "en-GB",
+          language,
           voice,
           rate: options.rate ?? 0.92,
           pitch: options.pitch ?? 0.94,
           useApplicationAudioSession: false,
+          onStart: () => {
+            if (startTimeout) clearTimeout(startTimeout);
+            useSpeechStore.getState().setSpeaking(true, text);
+          },
           onDone: () => complete("DONE"),
           onStopped: () => {
             this.interrupted = true;
@@ -124,15 +143,15 @@ export class UkSpeechService {
           },
         });
       });
-      if (succeeded === "ERROR" || succeeded === "TIMEOUT") {
+      if (succeeded === "ERROR") {
         await this.speakWithDefaults(text, options);
-        return "ERROR";
+        return "DONE";
       }
       return succeeded;
     } catch {
       this.resetVoiceCache();
       await this.speakWithDefaults(text, options);
-      return "ERROR";
+      return "DONE";
     }
   }
 
@@ -145,22 +164,30 @@ export class UkSpeechService {
   ): Promise<void> {
     return new Promise<void>((resolve) => {
       let settled = false;
-      let timeout: ReturnType<typeof setTimeout> | undefined;
+      let startTimeout: ReturnType<typeof setTimeout> | undefined;
+      let completionTimeout: ReturnType<typeof setTimeout> | undefined;
 
       const complete = () => {
         if (settled) return;
         settled = true;
-        if (timeout) clearTimeout(timeout);
+        if (startTimeout) clearTimeout(startTimeout);
+        if (completionTimeout) clearTimeout(completionTimeout);
         resolve();
       };
 
-      const timeoutMs = Math.max(16000, Math.ceil(text.length * 130));
-      timeout = setTimeout(complete, timeoutMs);
+      startTimeout = setTimeout(complete, 8000);
+      completionTimeout = setTimeout(
+        complete,
+        Math.max(12000, Math.ceil(text.length * 140)),
+      );
 
       Speech.speak(text, {
-        language: "en-GB",
+        language: "en",
         rate: options.rate ?? 0.92,
         pitch: options.pitch ?? 0.94,
+        onStart: () => {
+          if (startTimeout) clearTimeout(startTimeout);
+        },
         onDone: complete,
         onStopped: complete,
         onError: complete,
@@ -168,12 +195,29 @@ export class UkSpeechService {
     });
   }
 
-  stop(): Promise<void> {
-    return Speech.stop();
+  async stop(): Promise<void> {
+    try {
+      useSpeechStore.getState().setSpeaking(false, null);
+      await Promise.race([
+        Speech.stop(),
+        new Promise<void>((resolve) => setTimeout(resolve, 500)),
+      ]);
+    } catch {
+      this.resetVoiceCache();
+    } finally {
+      useSpeechStore.getState().setSpeaking(false, null);
+    }
   }
 
-  isSpeakingAsync(): Promise<boolean> {
-    return Speech.isSpeakingAsync();
+  async isSpeakingAsync(): Promise<boolean> {
+    try {
+      return await Promise.race([
+        Speech.isSpeakingAsync(),
+        new Promise<false>((resolve) => setTimeout(() => resolve(false), 500)),
+      ]);
+    } catch {
+      return false;
+    }
   }
 
   resetVoiceCache(): void {

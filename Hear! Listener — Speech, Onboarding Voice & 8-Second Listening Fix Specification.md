@@ -657,7 +657,7 @@ speak recovery instruction
 
 Required speech:
 
-> I didn't hear anything. Voice listening is closed. Double-tap anywhere when you're ready to listen again.
+> I didn't hear anything. Voice listening is closed. Double-tap anywhere when you're ready to speak again.
 
 For onboarding voice test:
 
@@ -713,7 +713,7 @@ TRY AGAIN
 
 and Hear says:
 
-> I didn't hear anything. Double-tap anywhere to listen again.
+> I didn't hear anything. Double-tap anywhere to speak again.
 
 ---
 

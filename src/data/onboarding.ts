@@ -21,7 +21,7 @@ export const onboardingCopyPresets = {
     title: "Hear what matters.\nSkip the screens.",
     subtitle: "Hear helps you listen and use the app without needing to see the screen.",
     examplePrompt: "“Play my local news.”",
-    instructionsTitle: "Double-tap anywhere",
+    instructionsTitle: "Shake device",
     instructionsSubtitle: "to begin voice setup.",
   },
   voiceAccess: {
@@ -29,7 +29,7 @@ export const onboardingCopyPresets = {
     heroSubtitle: "Permission first. Listening only when invited.",
     eyebrow: "VOICE ACCESS · 2 OF 3",
     title: "Hear listens only after\nyou call it.",
-    instructionsTitle: "Double-tap to show microphone access",
+    instructionsTitle: "Shake device to allow access",
   },
   permissionDenied: {
     eyebrow: "VOICE ACCESS · 2 OF 3",
@@ -44,7 +44,7 @@ export const onboardingCopyPresets = {
     subtitle: "Microphone access granted.",
     promptLabel: "SAY THIS",
     promptCommand: "“Play my local news.”",
-    instructionsTitle: "Double-tap when you're ready",
+    instructionsTitle: "Shake device or tap when you're ready",
   },
   voiceTest: {
     eyebrow: "VOICE ACCESS · 2 OF 3",

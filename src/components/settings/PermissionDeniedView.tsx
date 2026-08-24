@@ -26,7 +26,7 @@ export function PermissionDeniedView({
             Voice access is off
           </AppText>
           <AppText tone="muted" className="mt-3 text-center text-sm leading-5">
-            Allow microphone access in Settings{"\n"}to use double-tap voice control.
+            Allow microphone access in Settings{"\n"}to use voice control.
           </AppText>
 
           <View className="mt-9 w-full gap-3.5">

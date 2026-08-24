@@ -42,7 +42,6 @@ export type AccountStepProps = OnboardingStepProps & {
   speechDetected?: boolean;
   onSignIn: (provider: AccountProvider) => void;
   onSkip: () => void;
-  onDoubleTap?: () => void;
 };
 
 export type OnboardingProgressProps = {

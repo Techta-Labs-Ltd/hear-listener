@@ -13,3 +13,4 @@ export * from "./account";
 export * from "./accessibility";
 export * from "./notifications";
 export * from "./icons";
+export * from "./kinetic";

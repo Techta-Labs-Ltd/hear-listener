@@ -8,6 +8,7 @@ export const initialPreferences: Preferences = {
   setupComplete: false,
   onboardingVersion: 4,
   spokenGuidanceEnabled: false,
+  kineticGesturesEnabled: true,
   town: "",
   interests: [],
   savedIds: [],
@@ -36,6 +37,7 @@ export const usePreferencesStore = create<PreferencesStore>()(
         setupComplete,
         onboardingVersion,
         spokenGuidanceEnabled,
+        kineticGesturesEnabled,
         town,
         interests,
         savedIds,
@@ -50,6 +52,7 @@ export const usePreferencesStore = create<PreferencesStore>()(
         setupComplete,
         onboardingVersion,
         spokenGuidanceEnabled,
+        kineticGesturesEnabled,
         town,
         interests,
         savedIds,
@@ -74,6 +77,7 @@ export function usePreferences() {
         setupComplete,
         onboardingVersion,
         spokenGuidanceEnabled,
+        kineticGesturesEnabled,
         town,
         interests,
         savedIds,
@@ -88,6 +92,7 @@ export function usePreferences() {
         setupComplete,
         onboardingVersion,
         spokenGuidanceEnabled,
+        kineticGesturesEnabled,
         town,
         interests,
         savedIds,
@@ -129,6 +134,10 @@ export function migratePreferences(stored: unknown): Preferences {
       typeof stored.spokenGuidanceEnabled === "boolean"
         ? stored.spokenGuidanceEnabled
         : false,
+    kineticGesturesEnabled:
+      typeof stored.kineticGesturesEnabled === "boolean"
+        ? stored.kineticGesturesEnabled
+        : true,
     town: typeof stored.town === "string" ? stored.town : "",
     interests: stringArray(stored.interests),
     savedIds: stringArray(stored.savedIds),

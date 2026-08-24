@@ -9,10 +9,9 @@ export function PrivacySettingsView({ onBack }: { onBack: () => void }) {
   const [diagnostics, setDiagnostics] = useState(false);
 
   return (
-    <View className="flex-1 bg-canvas">
-      <View className="w-full max-w-[720px] flex-1 self-center">
-        <ScreenHeader title="Privacy and location" onBack={onBack} />
-        <ScrollView
+    <View className="flex-1">
+      <ScreenHeader title="Privacy and location" onBack={onBack} />
+      <ScrollView
           contentContainerClassName="px-5 pt-4 pb-12 gap-6"
           showsVerticalScrollIndicator={false}
         >
@@ -21,7 +20,7 @@ export function PrivacySettingsView({ onBack }: { onBack: () => void }) {
               MICROPHONE PRIVACY
             </AppText>
             <AppText className="font-display text-xl leading-6 text-[#0F6973]">
-              Hear! listens only after double-tap.
+              Hear! listens only when invited.
             </AppText>
             <AppText className="text-xs leading-4 text-[#21484C]">
               Each voice session stops after one command.
@@ -130,7 +129,6 @@ export function PrivacySettingsView({ onBack }: { onBack: () => void }) {
             </Pressable>
           </View>
         </ScrollView>
-      </View>
     </View>
   );
 }

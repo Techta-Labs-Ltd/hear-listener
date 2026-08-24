@@ -16,16 +16,17 @@ export async function isSpeechRecognitionSupported(): Promise<boolean> {
         Boolean(ExpoSpeechRecognitionModule?.isRecognitionAvailable?.())
       );
     }
-    return ExpoSpeechRecognitionModule.isRecognitionAvailable();
+    const avail = ExpoSpeechRecognitionModule?.isRecognitionAvailable?.();
+    return avail !== false;
   } catch {
-    return false;
+    return true;
   }
 }
 
 export function supportsOnDeviceSpeechRecognition(): boolean {
   try {
     if (Platform.OS === "web") return false;
-    return ExpoSpeechRecognitionModule.supportsOnDeviceRecognition();
+    return Boolean(ExpoSpeechRecognitionModule?.supportsOnDeviceRecognition?.());
   } catch {
     return false;
   }
@@ -107,6 +108,13 @@ export async function requestMicrophonePermissionSafely(): Promise<{
 
   try {
     const existing = await ExpoSpeechRecognitionModule.getPermissionsAsync();
+    if (existing?.granted) {
+      return {
+        granted: true,
+        status: "granted",
+        undetermined: false,
+      };
+    }
     const isUndetermined = existing?.status === "undetermined";
 
     const requested =
@@ -137,11 +145,21 @@ export function buildSpeechRecognitionOptions(params: {
   return {
     lang: VOICE_LANGUAGE,
     interimResults: true,
-    continuous: true,
+    continuous: isIos,
     maxAlternatives: VOICE_MAX_ALTERNATIVES,
     contextualStrings: params.contextualStrings,
-    requiresOnDeviceRecognition: params.onDevice,
+    requiresOnDeviceRecognition: false,
     addsPunctuation: false,
+    androidIntentOptions: isAndroid
+      ? {
+          EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS:
+            VOICE_TIMING.androidMinSpeechInputMs,
+          EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS:
+            VOICE_TIMING.androidPossibleSilenceMs,
+          EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS:
+            VOICE_TIMING.androidCompleteSilenceMs,
+        }
+      : undefined,
     iosTaskHint: "dictation" as const,
     iosVoiceProcessingEnabled: true,
     iosCategory: isIos
@@ -152,16 +170,6 @@ export function buildSpeechRecognitionOptions(params: {
             | "allowBluetooth"
           )[],
           mode: "voiceChat" as const,
-        }
-      : undefined,
-    androidIntentOptions: isAndroid
-      ? {
-          EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS:
-            VOICE_TIMING.androidMinSpeechInputMs,
-          EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS:
-            VOICE_TIMING.androidPossibleSilenceMs,
-          EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS:
-            VOICE_TIMING.androidCompleteSilenceMs,
         }
       : undefined,
   };

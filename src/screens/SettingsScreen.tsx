@@ -25,19 +25,59 @@ export function SettingsScreen() {
   const playback = usePlayback();
 
   if (activeSection === "account") {
-    return <AccountSettingsView onBack={() => setActiveSection(null)} />;
+    return (
+      <AppScreen
+        screenTitle="Account Settings"
+        screenOrientation="Account settings. Say sign out, go back, or read this screen."
+        voiceCommands={["sign out", "go back", "read this screen"]}
+      >
+        <AccountSettingsView onBack={() => setActiveSection(null)} />
+      </AppScreen>
+    );
   }
   if (activeSection === "voice" || activeSection === "voice-mic") {
-    return <VoiceSettingsView onBack={() => setActiveSection(null)} />;
+    return (
+      <AppScreen
+        screenTitle="Voice Settings"
+        screenOrientation="Voice and microphone settings. Say go back or read this screen."
+        voiceCommands={["go back", "read this screen"]}
+      >
+        <VoiceSettingsView onBack={() => setActiveSection(null)} />
+      </AppScreen>
+    );
   }
   if (activeSection === "playback") {
-    return <PlaybackSettingsView onBack={() => setActiveSection(null)} />;
+    return (
+      <AppScreen
+        screenTitle="Playback Settings"
+        screenOrientation="Playback settings. Say change playback speed, go back, or read this screen."
+        voiceCommands={["change playback speed", "go back", "read this screen"]}
+      >
+        <PlaybackSettingsView onBack={() => setActiveSection(null)} />
+      </AppScreen>
+    );
   }
   if (activeSection === "accessibility") {
-    return <AccessibilitySettingsView onBack={() => setActiveSection(null)} />;
+    return (
+      <AppScreen
+        screenTitle="Accessibility Settings"
+        screenOrientation="Accessibility settings. Say toggle high contrast, go back, or read this screen."
+        voiceCommands={["toggle high contrast", "go back", "read this screen"]}
+      >
+        <AccessibilitySettingsView onBack={() => setActiveSection(null)} />
+      </AppScreen>
+    );
   }
   if (activeSection === "privacy") {
-    return <PrivacySettingsView onBack={() => setActiveSection(null)} />;
+    return (
+      <AppScreen
+        screenTitle="Privacy Settings"
+        screenOrientation="Privacy settings. Say go back or read this screen."
+        voiceCommands={["go back", "read this screen"]}
+      >
+        <PrivacySettingsView onBack={() => setActiveSection(null)} />
+      </AppScreen>
+    );
   }
 
   const accountName = account.profile?.displayName || "Optional account";
@@ -163,7 +203,7 @@ export function SettingsScreen() {
 
         <View className="rounded-[20px] bg-voice-panel p-5">
           <AppText className="font-body-bold text-sm leading-[18px] text-white">
-            Double-tap and say “Open voice settings.”
+            Shake device and say “Open voice settings.”
           </AppText>
         </View>
       </ScrollView>

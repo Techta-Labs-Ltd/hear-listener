@@ -4,15 +4,18 @@ import { AccessibilityProvider } from "./AccessibilityProvider";
 import { FirebaseAuthProvider } from "./FirebaseAuthProvider";
 import { VoiceProvider } from "./VoiceProvider";
 import { NotificationProvider } from "./NotificationProvider";
+import { KineticProvider } from "./KineticProvider";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AccessibilityProvider>
         <FirebaseAuthProvider>
-          <VoiceProvider>
-            <NotificationProvider>{children}</NotificationProvider>
-          </VoiceProvider>
+          <KineticProvider>
+            <VoiceProvider>
+              <NotificationProvider>{children}</NotificationProvider>
+            </VoiceProvider>
+          </KineticProvider>
         </FirebaseAuthProvider>
       </AccessibilityProvider>
     </GestureHandlerRootView>

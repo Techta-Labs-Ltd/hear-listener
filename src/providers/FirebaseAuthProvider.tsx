@@ -1,12 +1,3 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import type { User } from "firebase/auth";
 import {
   isAppleSignInAvailable,
   onFirebaseAuthStateChanged,
@@ -21,8 +12,17 @@ import type {
   FirebaseAuthContextValue,
 } from "@/types";
 import { formatAuthError } from "@/utils/auth-errors";
-import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import type { User } from "firebase/auth";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Platform } from "react-native";
 
 const ACCOUNT_SECURE_STORAGE_KEY = "hear-account-provider-user";
 

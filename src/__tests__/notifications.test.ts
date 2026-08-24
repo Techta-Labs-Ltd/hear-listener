@@ -24,7 +24,7 @@ jest.mock("expo-notifications", () => ({
   },
 }));
 
-describe("notification-service", () => {
+describe("notifications service", () => {
   const sampleCreator: Entity = {
     id: "hear-daily",
     name: "Hear Daily",

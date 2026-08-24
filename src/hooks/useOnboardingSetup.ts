@@ -88,14 +88,14 @@ export function useOnboardingSetup() {
     let stepIndex = 0;
     let title = "Welcome";
     let description = "Hear what matters. Skip the screens.";
-    let options = ["Double-tap anywhere to begin voice setup"];
+    let options = ["Shake device to begin voice setup"];
 
     if (phase === "welcome") {
       gestureMode = "advanceWelcome";
       stepIndex = 0;
       title = "Welcome";
       description = "Hear what matters. Skip the screens.";
-      options = ["Double-tap anywhere to begin voice setup"];
+      options = ["Shake device to begin voice setup"];
     } else if (
       phase === "permissionIntro" ||
       phase === "requestingPermission" ||
@@ -113,12 +113,12 @@ export function useOnboardingSetup() {
         description = "Microphone access is off.";
         options =
           Platform.OS === "web"
-            ? ["Double-tap anywhere to request microphone permission"]
-            : ["Double-tap anywhere to open Settings"];
+            ? ["Shake device to request microphone permission"]
+            : ["Shake device to open Settings"];
       } else if (phase === "voiceTestReady" || phase === "voiceTestError") {
         gestureMode = "startVoiceTest";
         description = "Let's try one command.";
-        options = ["Say “Play my local news.”", "Double-tap to try again"];
+        options = ["Say “Play my local news.”", "Shake device to try again"];
       } else if (phase === "voiceTestListening") {
         gestureMode = "inactive";
         description = "Hear is listening.";
@@ -126,7 +126,7 @@ export function useOnboardingSetup() {
       } else {
         gestureMode = "requestPermission";
         description = "Hear listens only after you call it.";
-        options = ["Double-tap anywhere to request microphone permission"];
+        options = ["Shake device to request microphone permission"];
       }
     } else if (phase === "account") {
       gestureMode = "accountSelection";
@@ -149,52 +149,36 @@ export function useOnboardingSetup() {
     });
   }, [phase]);
 
-  const startVoiceTestSession = useCallback(async (instructionText?: string) => {
-    clearIdleTimers();
-    setPhase("voiceTestListening");
+  const startVoiceTestSession = useCallback(
+    async (introSpeech?: string) => {
+      clearIdleTimers();
+      if (introSpeech) {
+        speechCoordinator.exitQuietMode();
+        await speechCoordinator.speakBeforeListening({
+          text: introSpeech,
+          force: true,
+        });
+      } else {
+        void speechCoordinator.cancel();
+        speechCoordinator.exitQuietMode();
+      }
 
-    if (instructionText) {
-      await speechCoordinator.speak({
-        text: instructionText,
-        key: "onboarding:voiceTestPrompt",
-        priority: "instruction",
+      setPhase("voiceTestListening");
+      void appHaptics.listening();
+
+      void voice.startVoiceSession({
+        source: "onboardingPractice",
+        announceLocation: false,
       });
-    }
-    if (speechCoordinator.lastCompletion !== "DONE") {
-      setPhase("voiceTestError");
-      return;
-    }
-
-    if (speechCoordinator.isQuiet()) return;
-
-    await playListeningStartTone();
-    if (speechCoordinator.isQuiet()) return;
-
-    void appHaptics.listening();
-
-    void voice.startVoiceSession({
-      source: "onboardingPractice",
-      announceLocation: false,
-    });
-  }, [clearIdleTimers, voice]);
+    },
+    [clearIdleTimers, voice],
+  );
 
   const startAccountVoiceSelection = useCallback(async () => {
     clearIdleTimers();
     isAccountListening.current = true;
-    const accountSpeech =
-      Platform.OS === "ios"
-        ? "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Apple, or Not now."
-        : "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Google, or Not now.";
-
-    await speechCoordinator.speakBeforeListening({
-      text: accountSpeech,
-      force: true,
-    });
-    await new Promise<void>((resolve) => setTimeout(resolve, 300));
-    if (speechCoordinator.isQuiet()) return;
-
-    await playListeningStartTone();
-    if (speechCoordinator.isQuiet()) return;
+    void speechCoordinator.cancel();
+    speechCoordinator.exitQuietMode();
 
     void appHaptics.listening();
     void voice.startVoiceSession({
@@ -209,7 +193,7 @@ export function useOnboardingSetup() {
     const perm = await checkMicrophonePermissionStatus();
     if (perm.granted) {
       void appHaptics.success();
-      void startVoiceTestSession(ONBOARDING_SPEECH.permissionGrantedFirstTest);
+      void startVoiceTestSession();
     } else {
       setPhase("permissionIntro");
     }
@@ -428,17 +412,7 @@ export function useOnboardingSetup() {
   useEffect(() => {
     return useVoiceStore.subscribe((state, previous) => {
       if (phase === "voiceTestListening") {
-        const isVoiceStillActive =
-          state.state === "listening" ||
-          state.state === "preparing" ||
-          state.state === "permission";
-
-        if (isVoiceStillActive && !voiceReady.current) {
-          void state.transcript;
-          return;
-        }
-
-        if (state.transcript && !voiceReady.current && !isVoiceStillActive) {
+        if (state.transcript && !voiceReady.current) {
           const result = validateVoiceTestCommand(state.transcript);
           if (result.valid) {
             voiceReady.current = true;
@@ -676,9 +650,9 @@ export function useOnboardingSetup() {
     screenReaderEnabled: accessibility.screenReaderEnabled,
     voiceState: voice.state,
     voiceMessage: voice.message,
-    transcript: useVoiceStore.getState().transcript,
-    deadlineAt: useVoiceStore.getState().listeningDeadlineAt,
-    speechDetected: useVoiceStore.getState().speechDetected,
+    transcript: voice.transcript,
+    deadlineAt: voice.listeningDeadlineAt,
+    speechDetected: voice.speechDetected,
     advanceWelcome,
     requestPermission,
     startVoicePractice: requestPermission,

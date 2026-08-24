@@ -9,10 +9,9 @@ export function VoiceSettingsView({ onBack }: { onBack: () => void }) {
   const { preferences, updatePreferences } = usePreferences();
 
   return (
-    <View className="flex-1 bg-canvas">
-      <View className="w-full max-w-[720px] flex-1 self-center">
-        <ScreenHeader title="Voice and microphone" onBack={onBack} />
-        <ScrollView
+    <View className="flex-1">
+      <ScreenHeader title="Voice and microphone" onBack={onBack} />
+      <ScrollView
           contentContainerClassName="px-5 pt-4 pb-12 gap-6"
           showsVerticalScrollIndicator={false}
         >
@@ -24,7 +23,7 @@ export function VoiceSettingsView({ onBack }: { onBack: () => void }) {
               Microphone access is ready
             </AppText>
             <AppText className="text-xs leading-4 text-[#21484C]">
-              Double-tap is available throughout Hear!
+              Shake gesture is available throughout Hear!
             </AppText>
           </View>
 
@@ -110,7 +109,6 @@ export function VoiceSettingsView({ onBack }: { onBack: () => void }) {
             </AppText>
           </View>
         </ScrollView>
-      </View>
     </View>
   );
 }

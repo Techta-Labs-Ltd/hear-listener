@@ -1,15 +1,15 @@
-import { Platform } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { AppText } from "@/components/ui/AppText";
+import { InstructionFooter } from "@/components/onboarding/InstructionFooter";
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import {
   AppleSignInButton,
   GoogleSignInButton,
 } from "@/components/onboarding/ProviderButtons";
-import { InstructionFooter } from "@/components/onboarding/InstructionFooter";
+import { AppText } from "@/components/ui/AppText";
 import { ListeningPanel } from "@/components/voice/ListeningPanel";
 import { Pressable, ScrollView, View } from "@/tw";
 import type { AccountStepProps } from "@/types";
+import { Platform } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export function AccountStep({
   screenReaderEnabled,
@@ -22,7 +22,6 @@ export function AccountStep({
   speechDetected,
   onSignIn,
   onSkip,
-  onDoubleTap,
 }: AccountStepProps) {
   const insets = useSafeAreaInsets();
   const isIos = Platform.OS === "ios";
@@ -35,27 +34,11 @@ export function AccountStep({
     voiceState === "clarifying";
 
   return (
-    <Pressable
-      accessible={screenReaderEnabled}
-      accessibilityRole={screenReaderEnabled ? "button" : undefined}
-      accessibilityLabel={
-        isIos
-          ? "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Apple, or Not now."
-          : "Optional account. Step 3 of 3. An account keeps your saved audio and listening progress with you. Say Google, or Not now."
-      }
-      accessibilityHint="Double-tap anywhere to try voice selection again or choose an option below."
-      onPress={
-        screenReaderEnabled && voiceState !== "listening"
-          ? onDoubleTap
-          : undefined
-      }
-      className="flex-1 bg-canvas justify-between"
-    >
+    <View className="flex-1 bg-canvas justify-between">
       <ScrollView
         className="flex-1"
         contentContainerClassName="px-6 pb-6"
         showsVerticalScrollIndicator={false}
-        accessible={!screenReaderEnabled}
       >
         <View style={{ paddingTop: insets.top }}>
           <OnboardingProgress current={3} className="mt-4" />
@@ -114,7 +97,7 @@ export function AccountStep({
       </ScrollView>
 
       {isVoiceActive ? (
-        <View className="flex-1 justify-end" accessible={!screenReaderEnabled}>
+        <View className="flex-1 justify-end">
           <ListeningPanel
             state={voiceState ?? "listening"}
             message={voiceMessage}
@@ -129,7 +112,7 @@ export function AccountStep({
           />
         </View>
       ) : (
-        <View className="px-6 pb-6" accessible={!screenReaderEnabled}>
+        <View className="px-6 pb-6">
           <InstructionFooter
             title={
               screenReaderEnabled
@@ -138,10 +121,10 @@ export function AccountStep({
                   ? "Choose Apple or select Not now"
                   : "Choose Google or select Not now"
             }
-            subtitle="Double-tap anywhere to listen again. You can also sign in anytime in Settings."
+            subtitle="Shake device to speak. You can also sign in anytime in Settings."
           />
         </View>
       )}
-    </Pressable>
+    </View>
   );
 }

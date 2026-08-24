@@ -5,6 +5,7 @@ const preferences = {
   setupComplete: true,
   onboardingVersion: 2,
   spokenGuidanceEnabled: false,
+  kineticGesturesEnabled: true,
   town: "",
   interests: [],
   savedIds: ["daily"],
@@ -37,7 +38,7 @@ describe("buildScreenReadout", () => {
     expect(readout).toContain("Home.");
     expect(readout).toContain("Continue listening:");
     expect(readout).toContain("Your local news:");
-    expect(readout).toContain("Double-tap anywhere to speak.");
+    expect(readout).toContain("Tilt right for next, tilt left for previous, or shake to speak.");
   });
 
   it("reads the player with the current story", () => {
@@ -70,7 +71,7 @@ describe("buildScreenReadout", () => {
     );
     expect(readout).toContain("Step 4 of 6");
     expect(readout).toContain("Say use my location");
-    expect(readout).toContain("Say continue");
+    expect(readout).toContain("Shake device to continue.");
   });
 
   it("reads library with counts", () => {

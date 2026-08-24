@@ -5,16 +5,16 @@ export const VOICE_TIMING = {
   noSpeechHapticReminder: 4000,
   noSpeechTimeout: 8000,
   gentleReminder: 4000,
-  postSpeechSilence: 3000,
+  postSpeechSilence: 1200,
   maxTranscriptCharacters: 800,
   recognitionActivityWatchdog: 60000,
   maxRecognitionDuration: 60000,
   resolutionTimeout: 5000,
   contextualTermsLimit: 80,
-  androidMinSpeechInputMs: 800,
-  androidPossibleSilenceMs: 800,
-  androidCompleteSilenceMs: 1200,
-  androidSilenceLengthMs: 1200,
+  androidMinSpeechInputMs: 1500,
+  androidPossibleSilenceMs: 2000,
+  androidCompleteSilenceMs: 3000,
+  androidSilenceLengthMs: 3000,
   firstIdleReminder: 15000,
   secondIdleReminder: 35000,
 } as const;
@@ -74,3 +74,11 @@ export const VOICE_STATE_BADGES: Record<VoiceState, string> = {
   error: "I DIDN’T HEAR A COMMAND",
   cancelled: "VOICE CLOSED",
 };
+
+export const EXTERNAL_RESOLVER_CONFIG = {
+  baseUrl: process.env.EXPO_PUBLIC_RESOLVER_URL || "https://resolver.hear.media",
+  resolveEndpoint: "/v1/resolve",
+  timeoutMs: 8000,
+  clientName: "hear-listener",
+  clientVersion: "1.0.0",
+} as const;

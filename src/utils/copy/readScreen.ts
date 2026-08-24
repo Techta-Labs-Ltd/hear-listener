@@ -11,7 +11,7 @@ type ReadoutContext = {
   screenReaderEnabled?: boolean;
 };
 
-const DOUBLE_TAP_HINT = "Double-tap anywhere to speak.";
+const KINETIC_VOICE_HINT = "Tilt right for next, tilt left for previous, or shake to speak.";
 const SCREEN_READER_HINT =
   "Use the Start voice command accessibility action to speak.";
 
@@ -25,7 +25,7 @@ export function buildScreenReadout(context: ReadoutContext): string {
     : "";
   const voiceHint = context.screenReaderEnabled
     ? SCREEN_READER_HINT
-    : DOUBLE_TAP_HINT;
+    : KINETIC_VOICE_HINT;
   return `${base}${playing} ${voiceHint}`;
 }
 
@@ -124,5 +124,5 @@ function onboardingReadout(context: ReadoutContext): string {
     : "";
   return `Set up Hear! Step ${step.stepIndex + 1} of ${step.totalSteps}. ${
     step.title
-  }. ${step.description}.${options} Say continue, or skip this step.`;
+  }. ${step.description}.${options} Shake device to continue.`;
 }

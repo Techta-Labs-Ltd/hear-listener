@@ -29,8 +29,8 @@ export function validateVoiceTestCommand(
     return {
       valid: false,
       transcript: "",
-      feedbackText: "I didn't hear anything. Double-tap to try again.",
-      speechText: "I didn't hear anything. Double-tap anywhere to try again. After the tone, say Play my local news.",
+      feedbackText: "I didn't hear anything. Shake device to try again.",
+      speechText: "I didn't hear anything. Shake device or tap to try again. After the tone, say Play my local news.",
     };
   }
 
@@ -42,6 +42,10 @@ export function validateVoiceTestCommand(
 
   const isMatch =
     /^(play\s+)?(my\s+|the\s+|our\s+)?local\s+news$/.test(normalized) ||
+    normalized.includes("local news") ||
+    normalized.includes("play news") ||
+    normalized.includes("play local") ||
+    normalized.includes("play my news") ||
     normalized === "play my local news" ||
     normalized === "play local news" ||
     normalized === "play the local news" ||
@@ -60,8 +64,8 @@ export function validateVoiceTestCommand(
   return {
     valid: false,
     transcript: clean,
-    feedbackText: `I heard “${clean}”. Say “Play my local news.” Double-tap to try again.`,
-    speechText: `I heard “${clean}”. For this test, please say “Play my local news.” Double-tap anywhere to try again.`,
+    feedbackText: `I heard “${clean}”. Say “Play my local news.”`,
+    speechText: `I heard “${clean}”. For this test, please say “Play my local news.” Shake device to try again.`,
   };
 }
 
@@ -77,8 +81,8 @@ export function validateAccountChoice(
     return {
       valid: false,
       transcript: "",
-      feedbackText: "I didn't hear a choice. Double-tap anywhere when you're ready.",
-      speechText: `I didn't hear a choice. Double-tap anywhere to try again. Say ${defaultChoicesSpeech}.`,
+      feedbackText: "I didn't hear a choice. Shake device when you're ready.",
+      speechText: `I didn't hear a choice. Shake device to try again. Say ${defaultChoicesSpeech}.`,
     };
   }
 
@@ -144,7 +148,7 @@ export function validateAccountChoice(
     valid: false,
     transcript: clean,
     feedbackText: `I heard “${clean}”. Say ${defaultChoicesSpeech}.`,
-    speechText: `I heard “${clean}”. Please say ${defaultChoicesSpeech}. Double-tap anywhere to try again.`,
+    speechText: `I heard “${clean}”. Please say ${defaultChoicesSpeech}. Shake device to try again.`,
   };
 }
 

@@ -849,7 +849,7 @@ speak recovery instruction
 
 For normal app:
 
-I didn't hear anything. Listening is closed. Double-tap anywhere when you're ready to listen again.
+I didn't hear anything. Listening is closed. Double-tap anywhere when you're ready to speak again.
 
 For onboarding:
 
@@ -1347,7 +1347,7 @@ TRY AGAIN
 
 I didn't hear anything.
 
-Double-tap anywhere to listen again.
+Double-tap anywhere to speak again.
 60. Do Not Display False Listening States
 
 A screen must only say:
@@ -1729,7 +1729,7 @@ But they are not the only recovery path.
 
 The spoken instruction must tell the blind user:
 
-Double-tap anywhere to listen again.
+Double-tap anywhere to speak again.
 
 Global gesture/accessibility action must execute the same retry.
 

@@ -81,7 +81,7 @@ describe("Zustand stores", () => {
     });
   });
 
-  it("consumes tutorial double-tap without enabling a voice invocation", () => {
+  it("consumes tutorial gesture without enabling a voice invocation", () => {
     useOnboardingVoiceStore.getState().setGestureLessonActive(true);
     expect(onboardingVoiceBridge.isGestureLessonActive()).toBe(true);
     onboardingVoiceBridge.completeGestureLesson();

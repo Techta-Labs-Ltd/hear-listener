@@ -1,23 +1,9 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type PropsWithChildren,
-} from "react";
-import { AppState } from "react-native";
-import { useRouter } from "expo-router";
-import {
-  ExpoSpeechRecognitionModule,
-  useSpeechRecognitionEvent,
-} from "expo-speech-recognition";
 import { GlobalVoiceDock } from "@/components/voice/GlobalVoiceDock";
 import { VoiceGestureLayer } from "@/components/voice/VoiceGestureLayer";
 import { PLAYBACK_EXECUTORS, VOICE_TIMING } from "@/constants/voice";
 import { entities, stories, topics } from "@/data/catalogue";
-import { appHaptics } from "@/lib/haptics";
 import { playListeningStartTone } from "@/lib/audio/one-shots";
+import { appHaptics } from "@/lib/haptics";
 import { routes, topicRoute } from "@/navigation/routes";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { voiceAnnounce } from "@/services/voice/announce";
@@ -30,6 +16,7 @@ import { voiceEvents } from "@/services/voice/events";
 import { voiceExecutor } from "@/services/voice/executor";
 import { voiceTermRepository } from "@/services/voice/repository";
 import { voiceResolver } from "@/services/voice/resolver";
+import { externalVoiceResolver } from "@/services/voice/external-resolver";
 import { ukSpeech } from "@/services/voice/speech";
 import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { usePlaybackStore, usePreferencesStore, useVoiceStore } from "@/stores";
@@ -50,11 +37,25 @@ import {
   requestMicrophonePermissionSafely,
   supportsOnDeviceSpeechRecognition,
 } from "@/utils/voice";
+import { useRouter } from "expo-router";
+import {
+  ExpoSpeechRecognitionModule,
+  useSpeechRecognitionEvent,
+} from "expo-speech-recognition";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PropsWithChildren,
+} from "react";
+import { AppState } from "react-native";
 
-import { VoiceContext, useVoice, useRegisterScreenVoice } from "./voice-context";
 import { safeBack } from "@/utils/navigation";
+import { VoiceContext, useRegisterScreenVoice, useVoice } from "./voice-context";
 
-export { VoiceContext, useVoice, useRegisterScreenVoice };
+export { VoiceContext, useRegisterScreenVoice, useVoice };
 
 async function getContextualTermsSafely(): Promise<string[]> {
   try {
@@ -109,17 +110,25 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         prev?.pathname === screen.pathname &&
         prev?.title === screen.title &&
         prev?.orientation === screen.orientation &&
-        prev?.readout === screen.readout
+        prev?.readout === screen.readout &&
+        JSON.stringify(prev?.commands) === JSON.stringify(screen.commands)
       ) {
         return prev;
       }
       return screen;
     });
     return () => {
-      if (activeScreenRef.current === screen) {
+      if (
+        activeScreenRef.current?.pathname === screen.pathname &&
+        activeScreenRef.current?.id === screen.id
+      ) {
         activeScreenRef.current = null;
       }
-      setActiveScreen((prev) => (prev === screen ? null : prev));
+      setActiveScreen((prev) =>
+        prev?.pathname === screen.pathname && prev?.id === screen.id
+          ? null
+          : prev,
+      );
     };
   }, []);
 
@@ -202,7 +211,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       clearTimers();
       try {
         ExpoSpeechRecognitionModule.abort();
-      } catch {}
+      } catch { }
       microphoneClosed.current = false;
       void waitForMicrophoneClose().then(() => {
         speechCoordinator.exitQuietMode();
@@ -234,11 +243,11 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       readScreen: () => {
         const current = activeScreenRef.current;
         if (!current)
-          return "You are browsing Hear Listener. Double-tap anywhere to speak.";
+          return "You are browsing Hear Listener. Shake device to speak.";
         if (typeof current.readout === "function") return current.readout();
         return (
           current.readout ||
-          `${current.title || "Current screen"}. Double-tap anywhere to speak.`
+          `${current.title || "Current screen"}. Shake device to speak.`
         );
       },
       data: { stories, topics, entities },
@@ -253,10 +262,11 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     (message: string, errorCode?: string) => {
       const session = active.current;
       session?.controller.abort();
+      active.current = undefined;
       clearTimers();
       try {
         ExpoSpeechRecognitionModule.stop();
-      } catch {}
+      } catch { }
       microphoneClosed.current = false;
       useVoiceStore.getState().setVoice({
         state: "error",
@@ -270,7 +280,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         speechCoordinator.exitQuietMode();
         if (session?.playbackWasPlaying) usePlaybackStore.getState().resume();
         void appHaptics.error();
-        void voiceAnnounce(message, `voice:error:${errorCode ?? "general"}`);
+        if (session?.source !== "onboardingPractice") {
+          void voiceAnnounce(message, `voice:error:${errorCode ?? "general"}`);
+        }
       });
     },
     [clearTimers, waitForMicrophoneClose],
@@ -283,7 +295,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       clearTimers();
       try {
         ExpoSpeechRecognitionModule.stop();
-      } catch {}
+      } catch { }
       microphoneClosed.current = false;
       useVoiceStore.getState().setVoice({
         state: "error",
@@ -297,7 +309,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       void waitForMicrophoneClose().then(() => {
         speechCoordinator.exitQuietMode();
         void appHaptics.error();
-        void voiceAnnounce(message, `voice:error:${errorCode ?? "general"}`);
+        if (session?.source !== "onboardingPractice") {
+          void voiceAnnounce(message, `voice:error:${errorCode ?? "general"}`);
+        }
       });
     },
     [clearTimers, waitForMicrophoneClose],
@@ -354,6 +368,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         prompt: "",
       });
       void appHaptics.success();
+      speechCoordinator.exitQuietMode();
       await voiceAnnounce(message, `voice:success:${invocation.idempotencyKey}`);
 
       if (
@@ -363,6 +378,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         usePlaybackStore.getState().resume();
       }
 
+      await new Promise<void>((resolve) => setTimeout(resolve, 1400));
       useVoiceStore.getState().resetVoice();
     },
     [finish, services],
@@ -376,7 +392,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       clearTimers();
       try {
         ExpoSpeechRecognitionModule.stop();
-      } catch {}
+      } catch { }
       microphoneClosed.current = false;
 
       if (session.source === "onboardingPractice") {
@@ -399,7 +415,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
       try {
         await waitForMicrophoneClose();
-      } catch {}
+      } catch { }
 
       if (active.current?.id !== id) return;
       speechCoordinator.exitQuietMode();
@@ -443,10 +459,10 @@ export function VoiceProvider({ children }: PropsWithChildren) {
             screenState: session.screenSnapshot?.screenState,
             activeContent: playback.current
               ? {
-                  id: playback.current.id,
-                  type: "story" as const,
-                  title: playback.current.title,
-                }
+                id: playback.current.id,
+                type: "story" as const,
+                title: playback.current.title,
+              }
               : undefined,
             playback: {
               playing: playback.playing,
@@ -492,16 +508,41 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           });
           void voiceAnnounce(result.prompt);
         } else if (result.kind !== "cancelled") {
-          finish(
-            "I could not match that command. Double-tap and try again.",
-            result.reason ?? "unrecognised",
-          );
+          useVoiceStore.getState().setVoice({ externalResolving: true });
+          const externalResult = await externalVoiceResolver.resolve({
+            transcript: hypotheses[0]?.transcript ?? "",
+            screenContext: {
+              pathname: snapshotPath ?? "",
+              playback: {
+                current: playback.current,
+                playing: playback.playing,
+                progress: playback.progress,
+                speed: playback.speed,
+              },
+              preferences,
+            },
+            appSummary: {
+              currentPath: snapshotPath ?? "",
+              playingTitle: playback.current?.title,
+              isPlaying: playback.playing,
+            },
+          });
+          useVoiceStore.getState().setVoice({ externalResolving: false });
+
+          if (externalResult.handled && externalResult.spokenResponse) {
+            finish(externalResult.spokenResponse, "success");
+          } else {
+            finish(
+              "I could not match that command. Shake device to try again.",
+              result.reason ?? "unrecognised",
+            );
+          }
         }
       } catch (error) {
         clearTimeout(timeout);
         if (!session.controller.signal.aborted) {
           finish(
-            "I could not resolve that command. Double-tap to try again.",
+            "I could not resolve that command. Shake device to try again.",
             error instanceof Error ? error.name : "resolver-error",
           );
         }
@@ -519,7 +560,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         if (!session || session.id !== id) return;
         try {
           ExpoSpeechRecognitionModule.stop();
-        } catch {}
+        } catch { }
         finish(
           "The listening session ended. Start a new voice command when you are ready.",
           "recognition-timeout",
@@ -538,16 +579,46 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       currentPartial.current = "";
       lastSpeechActivityAt.current = 0;
 
+      const startedAt = Date.now();
+      const deadlineAt = startedAt + VOICE_TIMING.preSpeechTimeout;
+      if (active.current) {
+        active.current.startedAt = startedAt;
+        active.current.deadlineAt = deadlineAt;
+        active.current.speechDetected = false;
+      }
+
       useVoiceStore.getState().setVoice({
-        state: "preparing",
-        message: "Starting the microphone.",
+        state: "listening",
+        message: "Speak naturally.",
         transcript: "",
         speechDetected: false,
-        listeningStartedAt: undefined,
-        listeningDeadlineAt: undefined,
+        listeningStartedAt: startedAt,
+        listeningDeadlineAt: deadlineAt,
       });
 
       speechCoordinator.enterQuietMode();
+
+      if (noSpeechHapticTimer.current) clearTimeout(noSpeechHapticTimer.current);
+      if (preSpeechTimer.current) clearTimeout(preSpeechTimer.current);
+
+      noSpeechHapticTimer.current = setTimeout(() => {
+        if (active.current?.speechDetected) return;
+        void appHaptics.listening();
+        useVoiceStore.getState().setVoice({
+          message: "Still listening. 4 seconds remaining.",
+        });
+      }, VOICE_TIMING.noSpeechHapticReminder);
+
+      preSpeechTimer.current = setTimeout(() => {
+        if (active.current?.speechDetected) return;
+        try {
+          ExpoSpeechRecognitionModule.stop();
+        } catch { }
+        finish(
+          "I didn't hear anything. Listening is closed. Shake device when you're ready to speak again.",
+          "no-speech-timeout",
+        );
+      }, VOICE_TIMING.preSpeechTimeout);
 
       const options = buildSpeechRecognitionOptions({
         onDevice: onDeviceRecognition.current,
@@ -556,15 +627,15 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
       try {
         await ExpoSpeechRecognitionModule.start(options);
-      } catch {}
+      } catch { }
 
       asrStartTimeoutTimer.current = setTimeout(() => {
         if (active.current?.id !== id || active.current.asrConfirmed) return;
         finishWithoutResume(
-          "I couldn't start voice recognition. Double-tap anywhere to try again.",
+          "I couldn't start voice recognition. Shake device to try again.",
           "asr-start-failed",
         );
-      }, 3000);
+      }, 6000);
 
       resetActivityWatchdog(id);
 
@@ -579,8 +650,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
   const start = useCallback(
     async (_source: VoiceInvocationSource, announceLocation = true) => {
-      if (active.current) return;
-      endSession();
+      if (active.current) {
+        endSession();
+      }
       await ukSpeech.stop();
       const playback = usePlaybackStore.getState();
       const playbackWasPlaying = playback.playing;
@@ -616,10 +688,10 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       onDeviceRecognition.current = supportsOnDeviceSpeechRecognition();
 
       useVoiceStore.getState().setVoice({
-        state: "permission",
+        state: "preparing",
         sessionId: id,
         transcript: "",
-        message: "Checking microphone and speech access.",
+        message: "Getting ready…",
         choices: [],
       });
 
@@ -627,18 +699,22 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         const { granted, undetermined } =
           await requestMicrophonePermissionSafely();
         if (undetermined) {
+          speechCoordinator.exitQuietMode();
           await voiceAnnounce(copy.permissionExplain);
         }
         if (active.current?.id !== id) return;
         if (!granted) {
           finishWithoutResume(
-            "Microphone access is off. Double-tap anywhere to open Settings.",
+            "Microphone access is off. Open Settings to enable microphone.",
             "permission-denied",
           );
           return;
         }
 
-        if (announceLocation) await announceListeningPrompt();
+        if (announceLocation) {
+          speechCoordinator.exitQuietMode();
+          await announceListeningPrompt();
+        }
         if (active.current?.id !== id) return;
 
         await playListeningStartTone();
@@ -664,13 +740,13 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     if (!session) return;
     try {
       ExpoSpeechRecognitionModule.stop();
-    } catch {}
+    } catch { }
     const transcript = useVoiceStore.getState().transcript.trim();
     if (transcript) {
       void resolve(session.id, [{ transcript, confidence: 0.8, rank: 0 }]);
       return;
     }
-    finish("I did not hear a command. Double-tap and try again.", "no-speech");
+    finish("I did not hear a command. Shake device to try again.", "no-speech");
   }, [finish, resolve]);
 
   const close = useCallback(() => {
@@ -719,9 +795,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         if (active.current?.speechDetected) return;
         try {
           ExpoSpeechRecognitionModule.stop();
-        } catch {}
+        } catch { }
         finish(
-          "I didn't hear anything. Listening is closed. Double-tap anywhere when you're ready to listen again.",
+          "I didn't hear anything. Listening is closed. Shake device when you're ready to speak again.",
           "no-speech-timeout",
         );
       }, VOICE_TIMING.preSpeechTimeout);
@@ -735,7 +811,25 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     for (const resolveFn of resolvers) {
       try {
         resolveFn();
-      } catch {}
+      } catch { }
+    }
+
+    const session = active.current;
+    if (session && !session.finalHandled) {
+      const full = [...finalSegments.current, currentPartial.current]
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .join(" ");
+      if (full) {
+        if (postSpeechSilenceTimer.current)
+          clearTimeout(postSpeechSilenceTimer.current);
+        void resolve(session.id, [{ transcript: full, confidence: 0.85, rank: 0 }]);
+      } else {
+        finish(
+          "I didn't hear anything. Listening is closed. Shake device when you're ready to speak again.",
+          "no-speech",
+        );
+      }
     }
   });
 
@@ -774,7 +868,6 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     if (!session || session.finalHandled) return;
     lastSpeechActivityAt.current = Date.now();
 
-    lastSpeechActivityAt.current = Date.now();
     useVoiceStore.getState().setVoice({
       state: "listening",
       speechDetected: true,
@@ -847,11 +940,22 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       });
 
       if (
+        event.isFinal ||
         fullTranscript.length >= VOICE_TIMING.maxTranscriptCharacters
       ) {
         if (postSpeechSilenceTimer.current)
           clearTimeout(postSpeechSilenceTimer.current);
-        void resolve(session.id, hypotheses);
+        const resolvedHypotheses = hypotheses.map((h, i) =>
+          i === 0 ? { ...h, transcript: fullTranscript } : h,
+        );
+        if (resolvedHypotheses.length === 0) {
+          resolvedHypotheses.push({
+            transcript: fullTranscript,
+            confidence: 0.85,
+            rank: 0,
+          });
+        }
+        void resolve(session.id, resolvedHypotheses);
         return;
       }
     }
@@ -864,17 +968,39 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         .filter(Boolean)
         .join(" ");
       if (full && active.current?.id === session.id) {
-        void resolve(session.id, hypotheses);
+        const resolvedHypotheses = hypotheses.map((h, i) =>
+          i === 0 ? { ...h, transcript: full } : h,
+        );
+        if (resolvedHypotheses.length === 0) {
+          resolvedHypotheses.push({
+            transcript: full,
+            confidence: 0.85,
+            rank: 0,
+          });
+        }
+        void resolve(session.id, resolvedHypotheses);
       }
     }, VOICE_TIMING.postSpeechSilence);
   });
 
   useSpeechRecognitionEvent("error", (event) => {
     if (event.error === "aborted" || !active.current) return;
-    finish(
-      "I could not hear that. Double-tap and try the voice command again.",
-      event.error,
-    );
+    const errorCode = event.error;
+    let message =
+      "I could not hear that. Shake device and try the voice command again.";
+    if (errorCode === "service-not-allowed") {
+      finishWithoutResume(
+        "Microphone access is off. Open Settings to enable microphone.",
+        "permission-denied",
+      );
+      return;
+    } else if (errorCode === "audio-capture") {
+      message = "Microphone capture failed. Please check your microphone.";
+    } else if (errorCode === "network") {
+      message =
+        "Network error during speech recognition. Please check your connection.";
+    }
+    finish(message, errorCode);
   });
 
   useEffect(() => {
@@ -889,7 +1015,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           });
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -915,9 +1041,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       activeScreen,
       registerScreen,
       startVoiceSession: (options) =>
-        start(options?.source || "doubleTap", options?.announceLocation ?? false),
+        start(options?.source || "shakeGesture", options?.announceLocation ?? true),
       stop,
-      retry: () => start("contextualAction", false),
+      retry: () => start("contextualAction", true),
       cancel,
       close,
       choose,

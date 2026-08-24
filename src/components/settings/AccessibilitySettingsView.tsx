@@ -13,10 +13,9 @@ export function AccessibilitySettingsView({ onBack }: { onBack: () => void }) {
   const [reduceMotion, setReduceMotion] = useState(false);
 
   return (
-    <View className="flex-1 bg-canvas">
-      <View className="w-full max-w-[720px] flex-1 self-center">
-        <ScreenHeader title="Accessibility" onBack={onBack} />
-        <ScrollView
+    <View className="flex-1">
+      <ScreenHeader title="Accessibility" onBack={onBack} />
+      <ScrollView
           contentContainerClassName="px-5 pt-4 pb-12 gap-6"
           showsVerticalScrollIndicator={false}
         >
@@ -59,6 +58,33 @@ export function AccessibilitySettingsView({ onBack }: { onBack: () => void }) {
                 accessibilityLabel="Voice confirmations"
                 value={voiceConfirmations}
                 onValueChange={setVoiceConfirmations}
+                trackColor={{ false: colors.border, true: colors.primary }}
+                thumbColor={colors.surface}
+              />
+            </View>
+          </View>
+
+          <View className="gap-3">
+            <AppText variant="overline" tone="primary" className="tracking-[0.4px]">
+              MOTION & GESTURES
+            </AppText>
+            <View className="flex-row items-center justify-between rounded-[20px] border border-border bg-surface p-5">
+              <View className="gap-1 flex-1 pr-3">
+                <AppText className="font-body-bold text-base leading-5 text-ink">
+                  Kinetic gestures
+                </AppText>
+                <AppText tone="muted" className="text-xs leading-4">
+                  Shake for voice, tilt left or right to navigate
+                </AppText>
+              </View>
+              <Switch
+                accessibilityRole="switch"
+                accessibilityLabel="Kinetic gestures"
+                accessibilityHint="Shake device to trigger voice, tilt left or right to navigate without touch"
+                value={preferences.kineticGesturesEnabled}
+                onValueChange={(kineticGesturesEnabled) =>
+                  updatePreferences({ kineticGesturesEnabled })
+                }
                 trackColor={{ false: colors.border, true: colors.primary }}
                 thumbColor={colors.surface}
               />
@@ -117,7 +143,6 @@ export function AccessibilitySettingsView({ onBack }: { onBack: () => void }) {
             </AppText>
           </View>
         </ScrollView>
-      </View>
     </View>
   );
 }

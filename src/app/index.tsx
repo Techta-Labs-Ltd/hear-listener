@@ -8,7 +8,7 @@ export default function Index() {
   if (!ready) return <View className="flex-1 bg-canvas" />;
   return (
     <Redirect
-      href={routes.onboarding}
+      href={preferences.setupComplete ? routes.home : routes.onboarding}
     />
   );
 }

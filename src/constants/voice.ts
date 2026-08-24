@@ -9,12 +9,12 @@ export const VOICE_TIMING = {
   maxTranscriptCharacters: 800,
   recognitionActivityWatchdog: 60000,
   maxRecognitionDuration: 60000,
-  resolutionTimeout: 5000,
+  resolutionTimeout: 15000,
   contextualTermsLimit: 80,
   androidMinSpeechInputMs: 1500,
-  androidPossibleSilenceMs: 2000,
-  androidCompleteSilenceMs: 3000,
-  androidSilenceLengthMs: 3000,
+  androidPossibleSilenceMs: 8000,
+  androidCompleteSilenceMs: 8000,
+  androidSilenceLengthMs: 8000,
   firstIdleReminder: 15000,
   secondIdleReminder: 35000,
 } as const;
@@ -78,7 +78,7 @@ export const VOICE_STATE_BADGES: Record<VoiceState, string> = {
 export const EXTERNAL_RESOLVER_CONFIG = {
   baseUrl: process.env.EXPO_PUBLIC_RESOLVER_URL || "https://resolver.hear.media",
   resolveEndpoint: "/v1/resolve",
-  timeoutMs: 8000,
+  timeoutMs: 15000,
   clientName: "hear-listener",
   clientVersion: "1.0.0",
 } as const;

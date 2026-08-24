@@ -117,4 +117,5 @@ export function setupNotificationResponseListener(
 }
 
 export { findReleasesForFollowedCreators };
-export type { CreatorRelease } from "@/utils/notification-releases";
+export type { CreatorRelease } from "@/types";
+

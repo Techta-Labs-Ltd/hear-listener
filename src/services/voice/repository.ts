@@ -21,9 +21,9 @@ import {
   voiceTrigrams,
 } from "./normalize";
 
-const DATABASE_NAME = "hear-voice-v5.db";
-export const VOICE_SCHEMA_VERSION = 5;
-const CATALOGUE_VERSION = 3;
+const DATABASE_NAME = "hear-voice-v6.db";
+export const VOICE_SCHEMA_VERSION = 6;
+const CATALOGUE_VERSION = 4;
 const MAX_CACHE = 48;
 const MAX_BUSY_RETRIES = 3;
 const BUSY_RETRY_DELAY_MS = 200;

@@ -1,28 +1,30 @@
+import { AppText } from "@/components/ui/AppText";
+import { colors } from "@/constants/theme";
+import { VOICE_STATE_BADGES, VOICE_TIMING } from "@/constants/voice";
+import { useListeningTimer } from "@/hooks/useListeningTimer";
+import { useVoice } from "@/hooks/useVoice";
+import { useVoiceStore } from "@/stores/voice-store";
+import { View } from "@/tw";
+import { LinearGradient } from "expo-linear-gradient";
+import { usePathname } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useEffect, useRef } from "react";
 import {
   ActivityIndicator,
-  Animated as NativeAnimated,
   BackHandler,
-  Easing,
-  Linking,
   Platform,
   Pressable,
   StyleSheet,
 } from "react-native";
-import { useEffect, useState } from "react";
-import { usePathname } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, {
   FadeIn,
   FadeOut,
   SlideInDown,
   SlideOutDown,
 } from "react-native-reanimated";
-import { AppText } from "@/components/ui/AppText";
-import { VOICE_STATE_BADGES, VOICE_TIMING } from "@/constants/voice";
-import { useVoice } from "@/hooks/useVoice";
-import { View } from "@/tw";
-import type { VoiceChoice, VoiceState } from "@/types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { PermissionDeniedView } from "../settings/PermissionDeniedView";
+import { AmbiguityPanel } from "./AmbiguityPanel";
 import { ListeningCountdown } from "./ListeningCountdown";
 import { VoiceStatusBadge } from "./VoiceStatusBadge";
 
@@ -30,32 +32,30 @@ export function GlobalVoiceDock() {
   const voice = useVoice();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
+  const currentPathRef = useRef(pathname);
 
-  const isVoiceOpen =
-    voice.state !== "idle" && !pathname?.startsWith("/onboarding");
+  const isVoiceOpen = voice.state !== "idle";
   const listening = voice.state === "listening";
   const resolving = voice.state === "resolving" || voice.state === "executing";
   const clarifying = voice.state === "clarifying";
   const failed = voice.state === "error";
   const isPermissionDenied = failed && voice.errorCode === "permission-denied";
 
-  const [progress] = useState(() => new NativeAnimated.Value(0));
-
+  // Auto-dismiss voice overlay when navigation occurs to a new screen
   useEffect(() => {
-    if (!listening || voice.speechDetected) {
-      progress.setValue(0);
-      return;
+    if (currentPathRef.current !== pathname) {
+      currentPathRef.current = pathname;
+      if (voice.state !== "idle") {
+        useVoiceStore.getState().resetVoice();
+      }
     }
-    progress.setValue(0);
-    const animation = NativeAnimated.timing(progress, {
-      toValue: 1,
-      duration: VOICE_TIMING.noSpeechTimeout,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    });
-    animation.start();
-    return () => animation.stop();
-  }, [listening, progress, voice.speechDetected]);
+  }, [pathname, voice.state]);
+
+  const { fillPercent } = useListeningTimer(
+    voice.listeningDeadlineAt,
+    voice.speechDetected,
+    VOICE_TIMING.noSpeechTimeout,
+  );
 
   const cancel =
     listening || voice.state === "preparing" ? voice.cancel : voice.close;
@@ -74,6 +74,23 @@ export function GlobalVoiceDock() {
 
   if (!isVoiceOpen) return null;
 
+  // If microphone permission is denied, show full screen PermissionDeniedView
+  if (isPermissionDenied) {
+    return (
+      <Animated.View
+        entering={FadeIn.duration(180)}
+        exiting={FadeOut.duration(180)}
+        style={[StyleSheet.absoluteFill, { zIndex: 9999 }]}
+      >
+        <StatusBar style="dark" />
+        <PermissionDeniedView
+          onBack={cancel}
+          onContinueWithoutVoice={cancel}
+        />
+      </Animated.View>
+    );
+  }
+
   const isBackdropDismissible = failed || voice.state === "cancelled";
 
   return (
@@ -89,6 +106,9 @@ export function GlobalVoiceDock() {
         },
       ]}
     >
+      <StatusBar style="light" />
+
+      {/* Dismissible Backdrop */}
       <Pressable
         accessibilityRole={isBackdropDismissible ? "button" : undefined}
         accessibilityLabel={isBackdropDismissible ? "Dismiss voice control" : undefined}
@@ -97,33 +117,44 @@ export function GlobalVoiceDock() {
         className="absolute inset-0 bg-black/40"
       />
 
+      {/* Bottom Sheet Docked at Bottom */}
       <Animated.View
         entering={SlideInDown.duration(240).damping(18)}
         exiting={SlideOutDown.duration(200)}
         className="w-full max-w-[560px] self-center"
       >
-        <View
-          className="w-full overflow-hidden rounded-t-[32px] bg-[#21102F] px-6 pt-3 shadow-2xl"
+        <LinearGradient
+          colors={[colors.voiceCanvas, colors.voicePanel]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
           style={{
+            width: "100%",
+            borderTopLeftRadius: 32,
+            borderTopRightRadius: 32,
+            paddingTop: 12,
             paddingBottom: Math.max(insets.bottom + 16, 28),
+            paddingHorizontal: 24,
             borderTopWidth: 1,
             borderColor: "rgba(217, 203, 237, 0.15)",
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: -4 },
+            shadowOpacity: 0.35,
+            shadowRadius: 12,
+            elevation: 16,
           }}
         >
-          <StatusBar style="light" />
-
+          {/* Top Grab Handle */}
           <View className="items-center pb-2">
-            <View className="h-1 w-[76px] rounded-full bg-[#D9CBED] opacity-65" />
+            <View className="h-1 w-[64px] rounded-full bg-voice-muted opacity-65" />
           </View>
 
+          {/* Header Row with Badge, Circular Counter & Cancel Button */}
           <View className="flex-row items-center justify-between pb-3 pt-1">
             <VoiceStatusBadge
               label={
-                isPermissionDenied
-                  ? "PERMISSION REQUIRED"
-                  : listening && voice.speechDetected
-                    ? "I CAN HEAR YOU"
-                    : VOICE_STATE_BADGES[voice.state]
+                listening && voice.speechDetected
+                  ? "I CAN HEAR YOU"
+                  : VOICE_STATE_BADGES[voice.state]
               }
             />
 
@@ -144,7 +175,7 @@ export function GlobalVoiceDock() {
                 accessibilityHint="Closes voice control."
                 onPress={cancel}
                 hitSlop={8}
-                className="min-h-11 items-center justify-center rounded-xl px-3 active:bg-white/10"
+                className="min-h-10 items-center justify-center rounded-xl px-3 active:bg-white/10"
               >
                 <AppText className="font-body-semibold text-[14px] text-white">
                   {listening ? "Stop" : "Cancel"}
@@ -153,44 +184,9 @@ export function GlobalVoiceDock() {
             </View>
           </View>
 
+          {/* Body Content */}
           <View className="gap-3 pb-3">
-            {isPermissionDenied ? (
-              <>
-                <AppText
-                  accessibilityRole="header"
-                  className="font-display text-[26px] leading-[32px] text-white"
-                >
-                  Microphone access needed
-                </AppText>
-                <AppText className="text-[14px] leading-5 text-voice-muted">
-                  Allow microphone access in Settings to use voice control.
-                </AppText>
-                <View className="mt-2 flex-row items-center gap-3">
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel="Open Settings"
-                    accessibilityHint="Opens system settings."
-                    onPress={() => void Linking.openSettings()}
-                    className="min-h-12 flex-1 items-center justify-center rounded-full bg-white px-5 active:opacity-85"
-                  >
-                    <AppText className="font-body-bold text-[15px] text-[#21102F]">
-                      Open Settings
-                    </AppText>
-                  </Pressable>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel="Dismiss"
-                    accessibilityHint="Closes this sheet."
-                    onPress={cancel}
-                    className="min-h-12 items-center justify-center rounded-full px-5 active:bg-white/10"
-                  >
-                    <AppText className="font-body-semibold text-[14px] text-white">
-                      Dismiss
-                    </AppText>
-                  </Pressable>
-                </View>
-              </>
-            ) : listening ? (
+            {listening ? (
               <>
                 <AppText
                   accessibilityRole="header"
@@ -205,6 +201,8 @@ export function GlobalVoiceDock() {
                     ? "Finding your news…"
                     : "I’ll show what I heard, then find your news."}
                 </AppText>
+
+                {/* Delicate Progress Bar (h-1 / 4px) in exact sync with countdown */}
                 {!voice.speechDetected && (
                   <>
                     <View
@@ -213,16 +211,11 @@ export function GlobalVoiceDock() {
                       accessibilityLabel="Listening time before the session closes"
                       className="mt-4 sm:mt-5 h-1 w-full overflow-hidden rounded-full bg-voice-track"
                     >
-                      <NativeAnimated.View
+                      <View
                         accessibilityElementsHidden
                         importantForAccessibility="no-hide-descendants"
                         className="h-full rounded-full bg-voice-indicator"
-                        style={{
-                          width: progress.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: ["0%", "100%"],
-                          }),
-                        }}
+                        style={{ width: `${fillPercent}%` }}
                       />
                     </View>
                     <View className="mt-2.5 gap-1">
@@ -235,6 +228,7 @@ export function GlobalVoiceDock() {
                     </View>
                   </>
                 )}
+
                 <View className="mt-4 border-t border-voice-track pt-3.5">
                   <AppText className="font-body-bold text-[14px] sm:text-[15px] leading-5 text-white">
                     Say “cancel” to stop.
@@ -254,8 +248,8 @@ export function GlobalVoiceDock() {
                     “{voice.transcript}”
                   </AppText>
                 ) : null}
-                <View className="h-[1px] w-full bg-white/15" />
-                <View className="flex-row items-center justify-between">
+                <View className="h-[1px] w-full bg-white/15 my-1" />
+                <View className="flex-row items-center justify-between py-1">
                   <AppText className="text-[15px] text-voice-muted">
                     {voice.message || "Working on that…"}
                   </AppText>
@@ -263,70 +257,16 @@ export function GlobalVoiceDock() {
                 </View>
               </>
             ) : clarifying ? (
-              <>
-                <AppText
-                  accessibilityRole="header"
-                  className="font-display text-[28px] sm:text-[30px] leading-[34px] sm:leading-[36px] text-white"
-                >
-                  {voice.prompt ||
-                    voice.message ||
-                    "Which option would you like?"}
-                </AppText>
-                <View className="w-full gap-3 pt-2">
-                  {voice.choices.map((choice: VoiceChoice, index: number) => {
-                    const isFirst = index === 0;
-                    return (
-                      <Pressable
-                        key={choice.id}
-                        accessibilityRole="button"
-                        accessibilityLabel={`${index + 1}: ${choice.label}`}
-                        accessibilityHint={choice.detail}
-                        onPress={() => voice.choose(choice)}
-                        className={
-                          isFirst
-                            ? "min-h-[58px] items-start justify-center rounded-[20px] bg-white px-5 active:opacity-90"
-                            : "min-h-[58px] items-start justify-center rounded-[20px] border border-white/20 bg-[#543872] px-5 active:bg-[#604282]"
-                        }
-                      >
-                        <AppText
-                          className={
-                            isFirst
-                              ? "font-body-bold text-[16px] leading-5 text-ink"
-                              : "font-body-bold text-[16px] leading-5 text-white"
-                          }
-                        >
-                          {index + 1} · {choice.label}
-                        </AppText>
-                        {choice.detail ? (
-                          <AppText
-                            className={
-                              isFirst
-                                ? "mt-0.5 text-[13px] leading-4 text-muted"
-                                : "mt-0.5 text-[13px] leading-4 text-voice-muted"
-                            }
-                          >
-                            {choice.detail}
-                          </AppText>
-                        ) : null}
-                      </Pressable>
-                    );
-                  })}
-                </View>
-                <AppText className="mt-2 text-sm leading-5 text-voice-muted">
-                  Say the name or choice number.
-                </AppText>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel="Cancel"
-                  accessibilityHint="Cancels ambiguity choice and dismisses voice."
-                  onPress={cancel}
-                  className="mt-3 min-h-11 items-start justify-center active:opacity-75"
-                >
-                  <AppText className="font-body-bold text-base text-white">
-                    Cancel
-                  </AppText>
-                </Pressable>
-              </>
+              <AmbiguityPanel
+                prompt={
+                  voice.prompt ||
+                  voice.message ||
+                  "Which option would you like?"
+                }
+                choices={voice.choices}
+                onSelect={(choice) => voice.choose(choice)}
+                onCancel={cancel}
+              />
             ) : voice.state === "preparing" ? (
               <>
                 <AppText
@@ -350,40 +290,20 @@ export function GlobalVoiceDock() {
                 <AppText
                   accessibilityRole="header"
                   accessibilityLiveRegion="polite"
-                  className="font-display text-[28px] leading-[34px] text-white"
+                  className="font-display text-[28px] sm:text-[32px] leading-[34px] sm:leading-[38px] text-white"
                 >
-                  I didn’t hear anything
+                  {voice.transcript ? `“${voice.transcript}”` : "I didn’t hear that."}
                 </AppText>
-                <AppText className="text-[14px] leading-5 text-voice-muted">
-                  {voice.message || "Shake device or tap try again."}
+                <AppText className="mt-0.5 text-sm sm:text-[15px] leading-5 text-voice-muted">
+                  {voice.message || "Say “Play my local news.”"}
                 </AppText>
-                <View className="mt-2 flex-row items-center gap-3">
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel="Try again"
-                    accessibilityHint="Restarts listening."
-                    onPress={voice.retry}
-                    className="min-h-12 flex-1 items-center justify-center rounded-full bg-white px-5 active:opacity-85"
-                  >
-                    <AppText className="font-body-bold text-[15px] text-[#21102F]">
-                      Try again
-                    </AppText>
-                  </Pressable>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel="Dismiss"
-                    accessibilityHint="Closes this sheet."
-                    onPress={cancel}
-                    className="min-h-12 items-center justify-center rounded-full px-5 active:bg-white/10"
-                  >
-                    <AppText className="font-body-semibold text-[14px] text-white">
-                      Dismiss
-                    </AppText>
-                  </Pressable>
-                </View>
-                <View className="mt-2">
-                  <AppText className="text-center text-xs text-voice-muted">
-                    Shake device to try again immediately.
+
+                <View className="mt-4 border-t border-voice-track pt-3.5">
+                  <AppText className="font-body-bold text-[14px] sm:text-[15px] leading-5 text-white">
+                    Say “Play my local news.”
+                  </AppText>
+                  <AppText className="mt-1 text-xs sm:text-[13px] leading-4 text-voice-muted">
+                    Shake device to speak again.
                   </AppText>
                 </View>
               </>
@@ -398,27 +318,7 @@ export function GlobalVoiceDock() {
               </>
             )}
           </View>
-
-          <View
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
-            className="mt-2 h-[3px] w-full rounded-full bg-[#8E5CD8]"
-            style={
-              Platform.OS === "web"
-                ? ({
-                    boxShadow: listening
-                      ? "0 0 6px rgba(196, 155, 255, 0.9)"
-                      : "0 0 6px rgba(196, 155, 255, 0.4)",
-                  } as any)
-                : {
-                    shadowColor: "#C49BFF",
-                    shadowOffset: { width: 0, height: 0 },
-                    shadowOpacity: listening ? 0.9 : 0.4,
-                    shadowRadius: 6,
-                  }
-            }
-          />
-        </View>
+        </LinearGradient>
       </Animated.View>
     </Animated.View>
   );

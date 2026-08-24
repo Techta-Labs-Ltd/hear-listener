@@ -12,6 +12,9 @@ export const appHaptics = {
   listening() {
     return safely(() => Haptics.selectionAsync());
   },
+  selection() {
+    return safely(() => Haptics.selectionAsync());
+  },
   changed() {
     return safely(() =>
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),

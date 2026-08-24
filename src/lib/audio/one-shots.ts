@@ -1,6 +1,6 @@
 import { createAudioPlayer, type AudioPlayer } from "expo-audio";
 import { appAssets } from "@/constants/assets";
-import { voiceAudioGate } from "@/services/voice/audio-gate";
+import { voiceAudioGate } from "@/services/voice/speech-coordinator";
 
 let clickPlayer: AudioPlayer | null = null;
 let splashPlayer: AudioPlayer | null = null;

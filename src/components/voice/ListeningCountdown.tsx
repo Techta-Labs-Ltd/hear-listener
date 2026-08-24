@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import Svg, { Circle } from "react-native-svg";
 import { AppText } from "@/components/ui/AppText";
+import { useListeningTimer } from "@/hooks/useListeningTimer";
 import { View } from "@/tw";
 import type { ListeningCountdownProps } from "@/types";
 
@@ -8,29 +8,17 @@ export function ListeningCountdown({
   durationMs = 8000,
   deadlineAt,
   speechDetected,
-  size = 36,
-  strokeWidth = 3.5,
+  size = 30,
+  strokeWidth = 2.5,
 }: ListeningCountdownProps) {
-  const [remainingMs, setRemainingMs] = useState(durationMs);
+  const { remainingSeconds, progressRatio } = useListeningTimer(
+    deadlineAt,
+    speechDetected,
+    durationMs,
+  );
 
-  useEffect(() => {
-    if (!deadlineAt || speechDetected) return;
-
-    const updateTimer = () => {
-      const now = Date.now();
-      const left = Math.max(0, deadlineAt - now);
-      setRemainingMs(left);
-    };
-
-    updateTimer();
-    const interval = setInterval(updateTimer, 50);
-    return () => clearInterval(interval);
-  }, [deadlineAt, durationMs, speechDetected]);
-
-  const remainingSeconds = Math.max(0, Math.ceil(remainingMs / 1000));
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const progressRatio = Math.max(0, Math.min(1, remainingMs / durationMs));
   const strokeDashoffset = circumference * (1 - progressRatio);
 
   return (

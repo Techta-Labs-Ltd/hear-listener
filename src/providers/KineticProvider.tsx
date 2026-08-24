@@ -24,6 +24,8 @@ import { ukSpeech } from "@/services/voice/speech";
 import { triggerVoice } from "@/services/voice/events";
 import { DEFAULT_KINETIC_CONFIG } from "@/constants/kinetic";
 
+import { interactionController } from "@/services/voice/interaction-controller";
+
 export const KineticContext = createContext<KineticContextValue | null>(null);
 
 export function useKinetic(): KineticContextValue {
@@ -48,19 +50,29 @@ export function KineticProvider({ children }: PropsWithChildren) {
     async (gesture: KineticGestureType) => {
       useKineticStore.getState().setLastGesture(gesture);
       const listener = useKineticStore.getState().activeListener;
+      const voiceState = useVoiceStore.getState();
 
       if (gesture === "NEXT") {
         await triggerKineticFeedback("NEXT", "Next");
-        if (listener?.onNext) {
+        if (voiceState.state === "clarifying") {
+          await interactionController.handle({
+            type: "SELECT_NEXT",
+            source: "tilt-right",
+          });
+        } else if (listener?.onNext) {
           void listener.onNext();
         }
       } else if (gesture === "PREVIOUS") {
         await triggerKineticFeedback("PREVIOUS", "Previous");
-        if (listener?.onPrevious) {
+        if (voiceState.state === "clarifying") {
+          await interactionController.handle({
+            type: "SELECT_PREVIOUS",
+            source: "tilt-left",
+          });
+        } else if (listener?.onPrevious) {
           void listener.onPrevious();
         }
       } else if (gesture === "SHAKE") {
-        const voiceState = useVoiceStore.getState();
         const isResolving =
           voiceState.externalResolving ||
           voiceState.externalStatus === "resolving" ||

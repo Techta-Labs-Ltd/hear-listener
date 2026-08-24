@@ -62,7 +62,7 @@ function buildDatabase() {
     CREATE TABLE action_usage (action_id TEXT PRIMARY KEY, executions INTEGER NOT NULL DEFAULT 0, last_used_at INTEGER NOT NULL DEFAULT 0);
     INSERT INTO voice_metadata VALUES ('vocabulary_version', '2');
     INSERT INTO voice_metadata VALUES ('dataset_attribution', 'SimpleMaps UK Cities Basic, CC BY 4.0, https://simplemaps.com/data/uk-cities');
-    PRAGMA user_version = 5;
+    PRAGMA user_version = 6;
   `);
   const insert = database.prepare(
     "INSERT OR IGNORE INTO voice_terms (canonical, normalized, kind, target_id, weight, phonetic) VALUES (?, ?, ?, ?, ?, ?)",
@@ -309,11 +309,24 @@ const DEFAULT_PATTERNS = [
   ["add this to queue", "addToQueue"],
   ["open queue", "openQueue"],
   ["clear queue", "clearQueue"],
+  ["play tyndale talking magazine", "play:story"],
+  ["play tyndale magazine", "play:story"],
+  ["play tyndale", "play:story"],
+  ["play talking magazine", "play:story"],
+  ["tyndale talking magazine", "play:story"],
+  ["tyndale magazine", "play:story"],
+  ["talking magazine", "play:story"],
 ].map(([phrase, action]) => ({ phrase, action, weight: 3 }));
 const ASR_SUBSTITUTIONS = [
   ["paws", "pause", 5],
   ["ports", "pause", 3],
   ["yuck", "york", 6],
+  ["tindale", "tyndale", 6],
+  ["tindal", "tyndale", 6],
+  ["tyndall", "tyndale", 6],
+  ["tindell", "tyndale", 6],
+  ["tindall", "tyndale", 6],
+  ["magazin", "magazine", 5],
   ["wifisetting", "wifi settings", 6],
   ["wifisettings", "wifi settings", 6],
   ["why fi settings", "wifi settings", 4],

@@ -1,16 +1,11 @@
 import { EXTERNAL_RESOLVER_CONFIG } from "@/constants/voice";
 import { useVoiceStore } from "@/stores/voice-store";
 import type {
+  ExternalResolverOptions,
   ExternalResolverRequest,
   ExternalResolverResponse,
   ExternalVoiceResolver,
 } from "@/types";
-
-export interface ExternalResolverOptions {
-  baseUrl?: string;
-  endpoint?: string;
-  timeoutMs?: number;
-}
 
 export class HttpExternalVoiceResolver implements ExternalVoiceResolver {
   private readonly baseUrl: string;
@@ -157,11 +152,11 @@ export class HttpExternalVoiceResolver implements ExternalVoiceResolver {
     const action =
       obj.action && typeof obj.action === "object"
         ? {
-            type: String((obj.action as Record<string, unknown>).type || ""),
-            payload: (obj.action as Record<string, unknown>).payload as
-              | Record<string, unknown>
-              | undefined,
-          }
+          type: String((obj.action as Record<string, unknown>).type || ""),
+          payload: (obj.action as Record<string, unknown>).payload as
+            | Record<string, unknown>
+            | undefined,
+        }
         : undefined;
 
     const confidence =

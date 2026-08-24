@@ -5,7 +5,6 @@ import { AppText } from "@/components/ui/AppText";
 import { OnboardingProgress } from "@/components/onboarding/OnboardingProgress";
 import { PromptCard } from "@/components/onboarding/PromptCard";
 import { VoiceStatusBadge } from "@/components/voice/VoiceStatusBadge";
-import { ListeningPanel } from "@/components/voice/ListeningPanel";
 import { colors } from "@/constants/theme";
 import { ONBOARDING_SPEECH } from "@/constants/onboarding-steps";
 import { Pressable, ScrollView, View } from "@/tw";
@@ -53,11 +52,11 @@ export function VoiceAccessStep({
 
   const accessibilityHint = isDenied
     ? isWeb
-      ? "Activate to request microphone permission."
-      : "Activate to open Settings."
+      ? "Shake device to request microphone permission."
+      : "Shake device to open Settings."
     : isVoiceTest
-      ? "Shake device or activate to start listening again."
-      : "Activate to request microphone permission.";
+      ? "Shake device to try the voice command again."
+      : "Shake device to request microphone permission.";
 
   return (
     <Pressable
@@ -94,15 +93,15 @@ export function VoiceAccessStep({
               </AppText>
               <AppText tone="muted" className="mt-3 text-[16px] leading-[22px]">
                 {isWeb
-                  ? "Hear! can still guide you. Request permission again, or allow microphone access in your browser address bar."
-                  : "Hear! can still guide you. Open Settings to enable microphone."}
+                  ? "Microphone access is off. Allow microphone access in your browser address bar to continue."
+                  : "Microphone access is off. Open Settings to enable microphone."}
               </AppText>
               <View className="my-6 h-[1px] bg-border" />
               <VoiceStatusBadge label="HEAR IS SPEAKING" className="mb-3" />
               <AppText className="font-display text-[22px] leading-[28px] text-ink">
                 {isWeb
-                  ? "“Microphone access is off.\nTap anywhere to request permission.”"
-                  : "“Microphone access is off.\nTap anywhere to open Settings.”"}
+                  ? "“Microphone access is off.\nAllow microphone access in your browser.”"
+                  : "“Microphone access is off.\nShake device or tap to open Settings.”"}
               </AppText>
             </>
           ) : isVoiceTest ? (
@@ -145,18 +144,7 @@ export function VoiceAccessStep({
         </View>
       </ScrollView>
 
-      {isVoiceTest ? (
-        <View className="flex-1 justify-end" accessible={!screenReaderEnabled}>
-          <ListeningPanel
-            state={voiceState}
-            message={voiceMessage}
-            transcript={transcript}
-            prompt="Say “Play my local news.”"
-            deadlineAt={deadlineAt}
-            speechDetected={speechDetected}
-          />
-        </View>
-      ) : (
+      {!isVoiceTest && (
         <LinearGradient
           colors={[colors.voiceCanvas, colors.voicePanel]}
           start={{ x: 0.5, y: 0 }}

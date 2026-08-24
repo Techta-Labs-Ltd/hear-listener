@@ -14,7 +14,7 @@ export function WelcomeStep({ screenReaderEnabled, onContinue }: WelcomeStepProp
       accessible={screenReaderEnabled}
       accessibilityRole={screenReaderEnabled ? "button" : undefined}
       accessibilityLabel={ONBOARDING_SPEECH.welcome}
-      accessibilityHint="Activate to continue to voice setup."
+      accessibilityHint="Shake device to continue to voice setup."
       onPress={onContinue}
       className="flex-1 bg-canvas"
     >
@@ -48,7 +48,7 @@ export function WelcomeStep({ screenReaderEnabled, onContinue }: WelcomeStepProp
           className="mt-[46px]"
           title="Shake device"
           subtitle="to begin voice setup. Hear will guide you aloud."
-          notes={screenReaderEnabled ? ["Screen reader: shake device or activate to continue."] : undefined}
+          notes={screenReaderEnabled ? ["Screen reader: shake device to continue."] : undefined}
         />
       </ScrollView>
     </Pressable>

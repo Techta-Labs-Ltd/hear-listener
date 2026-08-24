@@ -1,6 +1,7 @@
 import type { ContentItem, Entity, LibrarySection, Topic } from "./content";
 import type { Preferences } from "./preferences";
 import type { PlaybackSnapshot, SpeedMultiplier } from "./playback";
+import type { ScreenVoicePhase } from "./interaction";
 
 export type VoiceState =
   | "idle"
@@ -331,7 +332,13 @@ export type VoiceResolveContext = {
   screenId?: string;
   currentPath?: string;
   pathname?: string;
-  screenState?: string;
+  screenState?:
+    | string
+    | {
+        phase?: ScreenVoicePhase;
+        stateVersion?: number;
+        instanceId?: string;
+      };
   activeContent?: {
     id: string;
     type: string;
@@ -363,7 +370,13 @@ export type ScreenVoiceContext = {
   orientation?: string;
   readout?: string | (() => string);
   commands?: string[];
-  screenState?: string;
+  screenState?:
+    | string
+    | {
+        phase?: ScreenVoicePhase;
+        stateVersion?: number;
+        instanceId?: string;
+      };
   voiceEnabled?: boolean;
   resolverContext?: Record<string, unknown>;
   localCommands?: string[];
@@ -453,4 +466,25 @@ export type VoiceAudioGate = {
   exitQuietMode(): void;
   isQuiet(): boolean;
 };
+
+export interface ListeningTimerResult {
+  remainingMs: number;
+  remainingSeconds: number;
+  progressRatio: number;
+  fillPercent: number;
+}
+
+export type LocalRoutingResult =
+  | { kind: "execute"; invocation: VoiceInvocation }
+  | { kind: "ambiguity"; prompt: string; choices: VoiceChoice[] }
+  | { kind: "remote"; transcript: string }
+  | { kind: "cancelled" }
+  | { kind: "unrecognised"; reason: string };
+
+export interface ExternalResolverOptions {
+  baseUrl?: string;
+  endpoint?: string;
+  timeoutMs?: number;
+}
+
 

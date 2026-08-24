@@ -140,7 +140,6 @@ export function buildSpeechRecognitionOptions(params: {
   contextualStrings: string[];
 }) {
   const isIos = Platform.OS === "ios";
-  const isAndroid = Platform.OS === "android";
 
   return {
     lang: VOICE_LANGUAGE,
@@ -150,16 +149,6 @@ export function buildSpeechRecognitionOptions(params: {
     contextualStrings: params.contextualStrings,
     requiresOnDeviceRecognition: false,
     addsPunctuation: false,
-    androidIntentOptions: isAndroid
-      ? {
-          EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS:
-            VOICE_TIMING.androidMinSpeechInputMs,
-          EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS:
-            VOICE_TIMING.androidPossibleSilenceMs,
-          EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS:
-            VOICE_TIMING.androidCompleteSilenceMs,
-        }
-      : undefined,
     iosTaskHint: "dictation" as const,
     iosVoiceProcessingEnabled: true,
     iosCategory: isIos

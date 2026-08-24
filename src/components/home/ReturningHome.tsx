@@ -9,6 +9,7 @@ import { routes } from "@/navigation/routes";
 import { homeCopy } from "@/utils/copy/home";
 import { icons } from "@/utils/icons/app-icons";
 import { colors } from "@/constants/theme";
+import { VoiceReadyBanner } from "@/components/home/VoiceReadyBanner";
 import { Pressable, View } from "@/tw";
 
 export function ReturningHome() {
@@ -37,7 +38,8 @@ export function ReturningHome() {
           className="h-10 w-10 shrink-0 ml-2 bg-surface"
         />
       </View>
-      <ContinueListeningCard item={stories[0]} className="mt-5 sm:mt-[26px]" />
+      <VoiceReadyBanner className="mt-4 sm:mt-5" />
+      <ContinueListeningCard item={stories[0]} className="mt-4 sm:mt-5" />
       <View className="mt-5 sm:mt-[23px] flex-row items-center justify-between">
         <AppText
           accessibilityRole="header"

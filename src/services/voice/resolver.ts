@@ -9,9 +9,12 @@ import type {
   VoiceResolver,
   VoiceTermRepository,
 } from "@/types";
-import { normalizeVoiceText, voiceTokens } from "./normalize";
+import {
+  normalizeVoiceText,
+  scoreVoiceCandidate,
+  voiceTokens,
+} from "./normalize";
 import { voiceTermRepository } from "./repository";
-import { scoreVoiceCandidate } from "./score";
 
 const HIGH_CONFIDENCE = 0.79;
 const MIN_MARGIN = 0.07;
@@ -43,6 +46,57 @@ function matchDirectCommand(
       requiresConfirmation: false,
       idempotencyKey: `${request.sessionId}:play:local:{}`,
     };
+  }
+  if (
+    norm === "play tyndale talking magazine" ||
+    norm === "play tyndale" ||
+    norm === "play tyndale magazine" ||
+    norm === "play talking magazine" ||
+    norm === "tyndale talking magazine" ||
+    norm === "tyndale magazine" ||
+    norm === "tyndale" ||
+    norm === "talking magazine"
+  ) {
+    return {
+      actionId: "play:story",
+      executorKey: "play",
+      command: { type: "play", mode: "story", storyId: "tyndale-edition" },
+      slots: { storyId: "tyndale-edition" },
+      confidence: 0.98,
+      evidence: [],
+      alternatives: [],
+      recognitionSessionId: request.sessionId,
+      databaseVersion: 5,
+      risk: "safe",
+      requiresConfirmation: false,
+      idempotencyKey: `${request.sessionId}:play:tyndale-edition:{}`,
+    };
+  }
+  if (
+    norm.startsWith("play news in ") ||
+    norm.startsWith("news in ") ||
+    norm.startsWith("stories in ") ||
+    norm.startsWith("set location to ")
+  ) {
+    const loc = norm
+      .replace(/^(play news in|news in|stories in|set location to)\s+/, "")
+      .trim();
+    if (loc) {
+      return {
+        actionId: "setLocation",
+        executorKey: "setLocation",
+        command: { type: "setLocation", locationId: loc.toLowerCase(), name: loc },
+        slots: { location: loc },
+        confidence: 0.95,
+        evidence: [],
+        alternatives: [],
+        recognitionSessionId: request.sessionId,
+        databaseVersion: 5,
+        risk: "safe",
+        requiresConfirmation: false,
+        idempotencyKey: `${request.sessionId}:setLocation:${loc}`,
+      };
+    }
   }
   if (norm === "pause" || norm === "stop audio") {
     return {

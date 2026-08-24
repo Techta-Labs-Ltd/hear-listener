@@ -6,7 +6,7 @@ import { playListeningStartTone } from "@/lib/audio/one-shots";
 import { appHaptics } from "@/lib/haptics";
 import { routes, topicRoute } from "@/navigation/routes";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
-import { voiceAnnounce } from "@/services/voice/announce";
+import { speechCoordinator, voiceAnnounce } from "@/services/voice/speech-coordinator";
 import {
   confidenceBand,
   latencyBand,
@@ -18,7 +18,6 @@ import { voiceTermRepository } from "@/services/voice/repository";
 import { voiceResolver } from "@/services/voice/resolver";
 import { externalVoiceResolver } from "@/services/voice/external-resolver";
 import { ukSpeech } from "@/services/voice/speech";
-import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { usePlaybackStore, usePreferencesStore, useVoiceStore } from "@/stores";
 import type {
   ActiveVoiceSession,
@@ -378,8 +377,16 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         usePlaybackStore.getState().resume();
       }
 
-      await new Promise<void>((resolve) => setTimeout(resolve, 1400));
-      useVoiceStore.getState().resetVoice();
+      if (
+        invocation.executorKey === "navigate" ||
+        invocation.executorKey.startsWith("open") ||
+        invocation.executorKey.startsWith("onboarding")
+      ) {
+        useVoiceStore.getState().resetVoice();
+      } else {
+        await new Promise<void>((resolve) => setTimeout(resolve, 1400));
+        useVoiceStore.getState().resetVoice();
+      }
     },
     [finish, services],
   );
@@ -579,46 +586,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       currentPartial.current = "";
       lastSpeechActivityAt.current = 0;
 
-      const startedAt = Date.now();
-      const deadlineAt = startedAt + VOICE_TIMING.preSpeechTimeout;
-      if (active.current) {
-        active.current.startedAt = startedAt;
-        active.current.deadlineAt = deadlineAt;
-        active.current.speechDetected = false;
-      }
-
-      useVoiceStore.getState().setVoice({
-        state: "listening",
-        message: "Speak naturally.",
-        transcript: "",
-        speechDetected: false,
-        listeningStartedAt: startedAt,
-        listeningDeadlineAt: deadlineAt,
-      });
-
       speechCoordinator.enterQuietMode();
-
-      if (noSpeechHapticTimer.current) clearTimeout(noSpeechHapticTimer.current);
-      if (preSpeechTimer.current) clearTimeout(preSpeechTimer.current);
-
-      noSpeechHapticTimer.current = setTimeout(() => {
-        if (active.current?.speechDetected) return;
-        void appHaptics.listening();
-        useVoiceStore.getState().setVoice({
-          message: "Still listening. 4 seconds remaining.",
-        });
-      }, VOICE_TIMING.noSpeechHapticReminder);
-
-      preSpeechTimer.current = setTimeout(() => {
-        if (active.current?.speechDetected) return;
-        try {
-          ExpoSpeechRecognitionModule.stop();
-        } catch { }
-        finish(
-          "I didn't hear anything. Listening is closed. Shake device when you're ready to speak again.",
-          "no-speech-timeout",
-        );
-      }, VOICE_TIMING.preSpeechTimeout);
 
       const options = buildSpeechRecognitionOptions({
         onDevice: onDeviceRecognition.current,
@@ -717,9 +685,6 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         }
         if (active.current?.id !== id) return;
 
-        await playListeningStartTone();
-        if (active.current?.id !== id) return;
-
         await beginRecognition(id);
       } catch {
         finish(
@@ -776,15 +741,16 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
       useVoiceStore.getState().setVoice({
         state: "listening",
-        message: "Speak naturally.",
+        message: "Speak now.",
         listeningStartedAt: startedAt,
         listeningDeadlineAt: deadlineAt,
         speechDetected: false,
       });
+      void playListeningStartTone();
       void appHaptics.listening();
 
       noSpeechHapticTimer.current = setTimeout(() => {
-        if (active.current?.speechDetected) return;
+        if (active.current?.speechDetected || active.current?.controller.signal.aborted) return;
         void appHaptics.listening();
         useVoiceStore.getState().setVoice({
           message: "Still listening. 4 seconds remaining.",
@@ -792,7 +758,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       }, VOICE_TIMING.noSpeechHapticReminder);
 
       preSpeechTimer.current = setTimeout(() => {
-        if (active.current?.speechDetected) return;
+        if (active.current?.speechDetected || active.current?.controller.signal.aborted) return;
         try {
           ExpoSpeechRecognitionModule.stop();
         } catch { }
@@ -815,7 +781,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     }
 
     const session = active.current;
-    if (session && !session.finalHandled) {
+    if (session && !session.finalHandled && !session.controller.signal.aborted) {
       const full = [...finalSegments.current, currentPartial.current]
         .map((s) => s.trim())
         .filter(Boolean)
@@ -985,10 +951,13 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
   useSpeechRecognitionEvent("error", (event) => {
     if (event.error === "aborted" || !active.current) return;
+    try {
+      ExpoSpeechRecognitionModule.stop();
+    } catch {}
     const errorCode = event.error;
     let message =
       "I could not hear that. Shake device and try the voice command again.";
-    if (errorCode === "service-not-allowed") {
+    if (errorCode === "service-not-allowed" || errorCode === "not-allowed") {
       finishWithoutResume(
         "Microphone access is off. Open Settings to enable microphone.",
         "permission-denied",

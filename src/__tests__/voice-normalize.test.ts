@@ -1,5 +1,8 @@
-import { normalizeVoiceText } from "@/services/voice/normalize";
-import { editDistance, scoreVoiceCandidate } from "@/services/voice/score";
+import {
+  editDistance,
+  normalizeVoiceText,
+  scoreVoiceCandidate,
+} from "@/services/voice/normalize";
 describe("voice normalization", () => {
   it("normalizes accents, contractions, number words, and ASR aliases", () => {
     expect(normalizeVoiceText("WHAT'S HÉAR doing in fifteen minutes?")).toBe(

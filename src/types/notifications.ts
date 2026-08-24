@@ -21,3 +21,9 @@ export type NotificationPayloadData = {
   type?: string;
   [key: string]: unknown;
 };
+
+export interface CreatorRelease {
+  creator: Entity;
+  story: ContentItem;
+}
+

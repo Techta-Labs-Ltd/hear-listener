@@ -124,6 +124,18 @@ const baseStories: ContentItem[] = [
       "Results, voices and the stories behind this weekend’s action.",
     topicIds: ["sport"],
   },
+  {
+    id: "tyndale-edition",
+    title: "Tyndale Talking Magazine",
+    creator: "Tyndale Talking Magazine",
+    publication: "Tyndale Talking Magazine",
+    duration: "25 min",
+    category: "New",
+    color: "#4C3D8F",
+    description:
+      "The latest audio edition and community news from Tyndale Talking Magazine.",
+    topicIds: ["local", "culture"],
+  },
 ];
 
 export const stories: ContentItem[] = baseStories.map((item) => ({
@@ -147,6 +159,12 @@ export const entities: Entity[] = [
     name: "Hear Daily",
     kind: "publication",
     description: "Local daily briefs",
+  },
+  {
+    id: "tyndale-talking-magazine",
+    name: "Tyndale Talking Magazine",
+    kind: "publication",
+    description: "Community audio magazine",
   },
   {
     id: "lagos-radio",

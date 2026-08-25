@@ -51,6 +51,13 @@ describe("onboarding validation", () => {
       expect(result.speechText).toContain("Play my local news");
     });
 
+    it("rejects a different local content request that mentions a place", () => {
+      expect(validateVoiceTestCommand("play news from herne bay").valid).toBe(false);
+      expect(validateVoiceTestCommand("play local news from herne bay").valid).toBe(false);
+      expect(validateVoiceTestCommand("play my local news from herne bay").valid).toBe(false);
+      expect(validateVoiceTestCommand("play news").valid).toBe(false);
+    });
+
     it("rejects other different commands", () => {
       const result = validateVoiceTestCommand("what is the weather");
       expect(result.valid).toBe(false);

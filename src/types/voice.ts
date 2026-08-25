@@ -1,4 +1,4 @@
-import type { ContentItem, Entity, LibrarySection, Topic } from "./content";
+import type { LibrarySection } from "./content";
 import type { Preferences } from "./preferences";
 import type { PlaybackSnapshot, SpeedMultiplier } from "./playback";
 import type { ScreenVoicePhase } from "./interaction";
@@ -164,11 +164,13 @@ export type PlayMode =
   | "trending"
   | "saved"
   | "downloads"
-  | "story";
+  | "story"
+  | "entity";
 export type VoiceRisk = "safe" | "state-change" | "privacy" | "destructive";
 export type VoiceExecutorKey =
   | "navigate"
   | "close"
+  | "cancel"
   | "openLibrarySection"
   | "openTopic"
   | "setLocation"
@@ -227,6 +229,7 @@ export type VoiceCommand =
       target: "home" | "discover" | "library" | "settings" | "player";
     }
   | { type: "close" }
+  | { type: "cancel" }
   | { type: "openLibrarySection"; section: LibrarySection }
   | { type: "openTopic"; topicId: string }
   | { type: "setLocation"; locationId: string; name: string }
@@ -237,6 +240,9 @@ export type VoiceCommand =
       storyId?: string;
       topicId?: string;
       locationId?: string;
+      entityId?: string;
+      entityType?: "organization" | "publication" | "creator" | "category";
+      entityName?: string;
     }
   | { type: "pause" | "resume" | "next" | "previous" | "restart" }
   | { type: "repeat"; mode: "on" | "off" }
@@ -350,9 +356,6 @@ export type VoiceResolveContext = {
     title?: string;
   };
   preferences: Preferences;
-  stories: ContentItem[];
-  topics: Topic[];
-  entities: Entity[];
 };
 export type VoiceResolveRequest = {
   sessionId: string;
@@ -378,6 +381,7 @@ export type ScreenVoiceContext = {
         instanceId?: string;
       };
   voiceEnabled?: boolean;
+  recognitionExpectation?: "natural-command" | "entity-search" | "short-response";
   resolverContext?: Record<string, unknown>;
   localCommands?: string[];
 };
@@ -406,30 +410,6 @@ export type VoiceContextValue = {
   close: () => void;
   choose: (choice: VoiceChoice) => Promise<void>;
 };
-export type VoiceCandidateKind =
-  "action" | "story" | "topic" | "entity" | "location";
-export type VoiceCandidate = {
-  id: number;
-  canonical: string;
-  normalized: string;
-  kind: VoiceCandidateKind;
-  targetId: string | null;
-  weight: number;
-  executorKey?: VoiceExecutorKey | null;
-  risk?: VoiceRisk;
-  confirmation?: number;
-  score?: number;
-  source?: VoiceEvidence["source"];
-};
-export type VoiceActionDefinition = {
-  id: string;
-  executorKey: VoiceExecutorKey;
-  label: string;
-  risk: VoiceRisk;
-  confirmation: boolean;
-  slotSchema: string;
-};
-
 export type PanelPhase = "initializing" | "listening" | "working";
 
 export type ListeningCountdownProps = {
@@ -479,6 +459,8 @@ export type LocalRoutingResult =
   | { kind: "ambiguity"; prompt: string; choices: VoiceChoice[] }
   | { kind: "remote"; transcript: string }
   | { kind: "cancelled" }
+  | { kind: "selected" }
+  | { kind: "feedback"; prompt: string }
   | { kind: "unrecognised"; reason: string };
 
 export interface ExternalResolverOptions {
@@ -486,5 +468,59 @@ export interface ExternalResolverOptions {
   endpoint?: string;
   timeoutMs?: number;
 }
+
+export type DoubleMetaphoneCodes = {
+  primary: string;
+  secondary: string;
+};
+
+export type TranscriptPreparationResult = {
+  original: string;
+  sanitized: string;
+  removedFillerCount: number;
+};
+
+export type ProfanityDictionaryEntry = {
+  canonical: string;
+  variants: string[];
+  severity: "mild" | "strong";
+};
+
+export type ProfanityFilterMode = "remove" | "mask";
+
+export type ProfanityFilterResult = {
+  original: string;
+  sanitized: string;
+  removedCount: number;
+  matchedTerms: string[];
+};
+
+export interface ProfanityFilter {
+  sanitize(text: string, mode?: ProfanityFilterMode): ProfanityFilterResult;
+}
+
+export type PendingRouterContext = {
+  playback?: {
+    current?: { id: string; title?: string } | null;
+    playing?: boolean;
+  };
+  state?: string;
+};
+
+export type BiasTermSource =
+  | "active-entity"
+  | "ambiguity-candidate"
+  | "current-publication"
+  | "current-organization"
+  | "current-creator"
+  | "visible-result"
+  | "recently-played"
+  | "recently-searched"
+  | "popular";
+
+export type BiasTermInput = {
+  term: string;
+  source: BiasTermSource;
+};
 
 

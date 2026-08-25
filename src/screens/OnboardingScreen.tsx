@@ -97,11 +97,6 @@ export function OnboardingScreen() {
           screenReaderEnabled={setup.screenReaderEnabled}
           signingIn={setup.account.status === "signingIn"}
           error={setup.account.error}
-          voiceState={setup.voiceState}
-          voiceMessage={setup.voiceMessage}
-          transcript={setup.transcript}
-          deadlineAt={setup.deadlineAt}
-          speechDetected={setup.speechDetected}
           onSignIn={(provider) => void setup.signIn(provider)}
           onSkip={setup.skipAccount}
         />

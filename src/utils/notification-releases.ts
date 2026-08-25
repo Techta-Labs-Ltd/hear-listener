@@ -1,7 +1,5 @@
 import { entities, stories } from "@/data/catalogue";
-import type { CreatorRelease, ContentItem, Entity } from "@/types";
-
-export type { CreatorRelease };
+import type { CreatorRelease } from "@/types";
 
 export function findReleasesForFollowedCreators(
   followingIds: string[],

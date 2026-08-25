@@ -15,14 +15,5 @@ export function useRegisterScreenVoice(screen: ScreenVoiceContext): void {
   const { registerScreen } = useVoice();
   useEffect(() => {
     return registerScreen?.(screen);
-  }, [
-    registerScreen,
-    screen.id,
-    screen.pathname,
-    screen.title,
-    screen.orientation,
-    screen.readout,
-    screen.voiceEnabled,
-    screen.screenState,
-  ]);
+  }, [registerScreen, screen]);
 }

@@ -1,8 +1,6 @@
-import { Image } from "react-native";
 import { appAssets } from "@/constants/assets";
 import type { HearLogoProps } from "@/types";
-
-export type { HearLogoProps };
+import { Image } from "react-native";
 
 export function HearLogo({
   size = 40,

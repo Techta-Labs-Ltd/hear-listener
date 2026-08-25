@@ -22,10 +22,9 @@ export function SearchScreen() {
   const playback = usePlayback();
   const voice = useVoice();
   const [query] = useState(params.q ?? "technology podcasts");
-  const [searching, setSearching] = useState(false);
+  const [searching, setSearching] = useState(true);
 
   useEffect(() => {
-    setSearching(true);
     const timer = setTimeout(() => setSearching(false), 200);
     return () => clearTimeout(timer);
   }, [query]);

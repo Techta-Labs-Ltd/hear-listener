@@ -50,17 +50,16 @@ export function AppScreen({
     voiceEnabled: true,
   });
 
-  screenContextRef.current = {
-    id: screenId,
-    pathname,
-    title: screenTitle,
-    orientation: screenOrientation,
-    readout: screenReadout,
-    commands: voiceCommands,
-    voiceEnabled: true,
-  };
-
   useEffect(() => {
+    screenContextRef.current = {
+      id: screenId,
+      pathname,
+      title: screenTitle,
+      orientation: screenOrientation,
+      readout: screenReadout,
+      commands: voiceCommands,
+      voiceEnabled: true,
+    };
     if (isFocusedRef.current && registerScreen) {
       cleanupRef.current?.();
       cleanupRef.current = registerScreen(screenContextRef.current);
@@ -72,6 +71,7 @@ export function AppScreen({
     screenTitle,
     screenOrientation,
     screenReadout,
+    voiceCommands,
   ]);
 
   useFocusEffect(

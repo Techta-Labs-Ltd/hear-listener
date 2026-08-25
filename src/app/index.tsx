@@ -4,11 +4,11 @@ import { View } from "@/tw";
 import { Redirect } from "expo-router";
 
 export default function Index() {
-  const { ready, preferences } = usePreferences();
+  const { ready } = usePreferences();
   if (!ready) return <View className="flex-1 bg-canvas" />;
   return (
     <Redirect
-      href={preferences.setupComplete ? routes.home : routes.onboarding}
+      href={routes.onboarding}
     />
   );
 }

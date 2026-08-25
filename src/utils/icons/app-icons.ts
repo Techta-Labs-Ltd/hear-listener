@@ -1,4 +1,3 @@
-import type { AppIcon } from "@/types";
 
 export const icons = {
   settings: "gearshape",
@@ -43,5 +42,3 @@ export const icons = {
   plus: "plus",
   queue: "list.bullet",
 } as const;
-
-export type { AppIcon };

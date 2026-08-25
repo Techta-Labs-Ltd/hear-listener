@@ -4,10 +4,13 @@ import type { ScreenVoiceCapability, VoiceScreenId } from "@/types";
 
 export function useScreenVoiceCapability(capability: ScreenVoiceCapability) {
   const { registerScreen } = useVoice();
-  const instanceIdRef = useRef(capability.instanceId || `screen_${Date.now()}`);
+  const instanceIdRef = useRef<string | undefined>(capability.instanceId || undefined);
 
   useEffect(() => {
     if (!registerScreen) return;
+    if (!instanceIdRef.current) {
+      instanceIdRef.current = `screen_${Date.now()}`;
+    }
     const cleanup = registerScreen({
       id: (capability.screenId as VoiceScreenId) ?? "unknown",
       pathname: capability.routeKey,
@@ -15,6 +18,7 @@ export function useScreenVoiceCapability(capability: ScreenVoiceCapability) {
       commands: capability.localCommands,
       orientation: capability.title,
       readout: capability.readout,
+      recognitionExpectation: capability.recognitionExpectation,
       screenState: {
         phase: capability.phase,
         stateVersion: capability.stateVersion,
@@ -32,6 +36,10 @@ export function useScreenVoiceCapability(capability: ScreenVoiceCapability) {
     capability.phase,
     capability.stateVersion,
     capability.voiceEnabled,
+    capability.localCommands,
+    capability.readout,
+    capability.recognitionExpectation,
+    capability.resolverContext,
     registerScreen,
   ]);
 }

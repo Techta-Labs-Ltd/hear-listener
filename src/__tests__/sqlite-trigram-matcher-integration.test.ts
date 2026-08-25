@@ -1,190 +1,141 @@
 import {
-  editDistance,
-  normalizeVoiceText,
-  phoneticKey,
-  scoreVoiceCandidate,
-  voiceTrigrams,
+  decideResolution,
+  rankEntityCandidates,
+} from "@/services/voice/matching/candidate-ranker";
+import {
+  phoneticCodeScore,
+  rarityWeightedCoverage,
+} from "@/services/voice/matching/phonetic";
+import {
+  doubleMetaphoneCodes,
+  phoneticCodeSimilarity,
 } from "@/services/voice/normalize";
-import { SQLiteVoiceResolver } from "@/services/voice/resolver";
-import { initialPreferences } from "@/stores/preferences-store";
-import { stories, topics, entities } from "@/data/catalogue";
-import type { VoiceCandidate, VoiceTermRepository } from "@/types";
+import { defaultResolverConfig } from "@/services/voice/matching/resolver-config";
+import type { EntityCandidate } from "@/types";
 
-describe("SQLite Trigram, Phonetic & ASR Matcher Integration", () => {
-  describe("1. Trigram & Phonetic Extraction", () => {
-    it("generates 3-character sliding trigrams from normalized speech", () => {
-      const grams = voiceTrigrams("play local news");
-      expect(grams.some((g) => g.includes("pla"))).toBe(true);
-      expect(grams.some((g) => g.includes("lay"))).toBe(true);
-      expect(grams.some((g) => g.includes("loc"))).toBe(true);
-      expect(grams.some((g) => g.includes("new"))).toBe(true);
+function candidate(
+  type: EntityCandidate["entityType"],
+  id: string,
+  name: string,
+  scores: Partial<EntityCandidate["scores"]>,
+): EntityCandidate {
+  return {
+    entityId: id,
+    entityType: type,
+    canonicalName: name,
+    matchedAlias: name,
+    matchMethod: "combined",
+    popularity: 0.9,
+    scores: {
+      exact: 0,
+      fts: 0,
+      trigram: 0,
+      phonetic: 0,
+      context: 0,
+      popularity: 0,
+      final: 0,
+      ...scores,
+    },
+  };
+}
+
+describe("SQLite trigram, phonetic and ASR matcher pipeline", () => {
+  it("generates matching phonetic keys for UK homophones and misrecognitions", () => {
+    const codes = doubleMetaphoneCodes("tyndale talking magazine");
+    expect(codes.primary).toBe(
+      doubleMetaphoneCodes("tindale talking magazine").primary,
+    );
+    expect(phoneticCodeSimilarity(codes.primary, codes.primary)).toBe(1);
+  });
+
+  it("scores phonetic code similarity above zero for near matches", () => {
+    const query = doubleMetaphoneCodes("tinder");
+    const candidate = doubleMetaphoneCodes("tyndale");
+    const score = phoneticCodeScore(
+      query,
+      candidate.primary,
+      candidate.secondary,
+    );
+    expect(score).toBeGreaterThan(0);
+    expect(score).toBeLessThanOrEqual(1);
+  });
+
+  it("weights distinctive tokens over generic suffix agreement", () => {
+    const rarity = { talking: 0.2, magazine: 0.2, tyndale: 0.9 };
+    const genericCoverage = rarityWeightedCoverage(
+      ["tyndale", "magazine"],
+      "talking magazine",
+      rarity,
+    );
+    const distinctiveCoverage = rarityWeightedCoverage(
+      ["tyndale", "magazine"],
+      "tyndale talking magazine",
+      rarity,
+    );
+    expect(genericCoverage).toBeGreaterThan(0);
+    expect(distinctiveCoverage).toBeGreaterThan(genericCoverage);
+  });
+
+  it("ranks whole-phrase evidence above a generic suffix overlap", () => {
+    const tyndale = candidate("publication", "tyndale-talking-magazine", "Tyndale Talking Magazine", {
+      trigram: 0.9,
+      phonetic: 0.85,
+      fts: 0.8,
+    });
+    const generic = candidate("publication", "some-talking-magazine", "Some Talking Magazine", {
+      trigram: 0.5,
+      phonetic: 0.4,
+      fts: 0.45,
+    });
+    const ranked = rankEntityCandidates([generic, tyndale], {
+      config: defaultResolverConfig,
+      queryTokens: ["tinder", "talking", "magazine"],
+      rarity: { tinder: 0.9, talking: 0.2, magazine: 0.2 },
+    });
+    expect(ranked[0].entityId).toBe("tyndale-talking-magazine");
+    expect(ranked[0].confidence).toBeGreaterThan(ranked[1].confidence);
+  });
+
+  it("resolves a strong candidate and holds close candidates as ambiguity", () => {
+    const strong = candidate("publication", "a", "A", {
+      exact: 1,
+      fts: 1,
+      trigram: 1,
+      phonetic: 1,
+    });
+    const ranked = rankEntityCandidates([strong], {
+      config: defaultResolverConfig,
+      queryTokens: ["a"],
+    });
+    expect(decideResolution(ranked, defaultResolverConfig)).toMatchObject({
+      kind: "resolved",
     });
 
-    it("handles short terms cleanly without breaking trigram generator", () => {
-      expect(voiceTrigrams("go")).toEqual(["  g", " go", "go ", "o  "]);
-      expect(voiceTrigrams("")).toEqual([]);
+    const close = [
+      candidate("publication", "a", "A", { exact: 1, fts: 0.85, trigram: 0.9, phonetic: 0.9 }),
+      candidate("publication", "b", "B", { exact: 1, fts: 0.85, trigram: 0.9, phonetic: 0.9 }),
+    ];
+    const closeRanked = rankEntityCandidates(close, {
+      config: defaultResolverConfig,
+      queryTokens: ["x"],
     });
-
-    it("generates matching phonetic keys for UK homophones and misrecognitions", () => {
-      expect(phoneticKey("colour")).toBe(phoneticKey("color"));
-      expect(phoneticKey("centre")).toBe(phoneticKey("center"));
-      expect(phoneticKey("theater")).toBe(phoneticKey("theatre"));
-      expect(phoneticKey("tindale talking magazine")).toBe(
-        phoneticKey("tyndale talking magazine"),
-      );
-    });
-
-    it("normalizes colloquial speech, ASR punctuation and numbers", () => {
-      expect(normalizeVoiceText("Pause, please.")).toBe("pause please");
-      expect(normalizeVoiceText("What's on?")).toBe("what is on");
-      expect(normalizeVoiceText("twenty five minutes")).toBe("20 5 minutes");
-      expect(normalizeVoiceText("play ***** magazine")).toBe("play magazine");
+    expect(decideResolution(closeRanked, defaultResolverConfig)).toMatchObject({
+      kind: "ambiguous",
     });
   });
 
-  describe("2. Fuzzy Scoring & Candidate Ranking", () => {
-    it("ranks exact matches higher than fuzzy partial matches", () => {
-      const exactScore = scoreVoiceCandidate("open library", "open library");
-      const fuzzyScore = scoreVoiceCandidate("open libary", "open library");
-      expect(exactScore).toBe(1);
-      expect(fuzzyScore).toBeGreaterThan(0.7);
+  it("rejects weak evidence as unresolved instead of guessing", () => {
+    const weak = candidate("publication", "w", "Weak", {
+      fts: 0.3,
+      trigram: 0.25,
+      phonetic: 0.2,
     });
-
-    it("computes Levenshtein distance accurately for misheard phrases", () => {
-      expect(editDistance("settings", "setings")).toBe(1);
-      expect(editDistance("library", "libary")).toBe(1);
-      expect(editDistance("discover", "disco")).toBe(3);
+    const ranked = rankEntityCandidates([weak], {
+      config: defaultResolverConfig,
+      queryTokens: ["something"],
     });
-  });
-
-  describe("3. SQLite Resolver with Trigrams & Multi-Hypothesis N-best ASR", () => {
-    it("correctly matches ASR hypothesis against SQLite trigram and FTS candidates", async () => {
-      const mockCandidates: VoiceCandidate[] = [
-        {
-          id: 101,
-          canonical: "Play local news",
-          normalized: "play local news",
-          kind: "action",
-          targetId: "play:local",
-          weight: 10,
-          executorKey: "play",
-          risk: "safe",
-          confirmation: 0,
-          source: "trigram",
-        },
-      ];
-
-      const mockRepo: VoiceTermRepository = {
-        initialize: jest.fn().mockResolvedValue(undefined),
-        learnAlias: jest.fn().mockResolvedValue(undefined),
-        search: jest.fn().mockResolvedValue(mockCandidates),
-        getVersion: jest.fn().mockResolvedValue(5),
-      };
-
-      const resolver = new SQLiteVoiceResolver(mockRepo);
-      const result = await resolver.resolve({
-        sessionId: "sess_test_1",
-        hypotheses: [
-          { transcript: "play local", confidence: 0.75, rank: 0 },
-          { transcript: "play local news", confidence: 0.95, rank: 1 },
-        ],
-        context: {
-          stories,
-          topics,
-          entities,
-          preferences: initialPreferences,
-        },
-      });
-
-      expect(mockRepo.search).toHaveBeenCalled();
-      expect(result.kind).toBe("invocation");
-      if (result.kind === "invocation") {
-        expect(result.invocation.command).toMatchObject({
-          type: "play",
-        });
-      }
-    });
-
-    it("routes unrecognised semantic queries to remote resolver", async () => {
-      const mockRepo: VoiceTermRepository = {
-        initialize: jest.fn().mockResolvedValue(undefined),
-        learnAlias: jest.fn().mockResolvedValue(undefined),
-        search: jest.fn().mockResolvedValue([]),
-        getVersion: jest.fn().mockResolvedValue(5),
-      };
-
-      const resolver = new SQLiteVoiceResolver(mockRepo);
-      const result = await resolver.resolve({
-        sessionId: "sess_test_2",
-        hypotheses: [{ transcript: "find audio about space exploration in oxford", confidence: 0.9, rank: 0 }],
-        context: {
-          stories,
-          topics,
-          entities,
-          preferences: initialPreferences,
-        },
-      });
-
-      expect(result.kind).toBe("unrecognized");
-    });
-
-    it("directly matches 'tyndale talking magazine' to play tyndale edition", async () => {
-      const mockRepo: VoiceTermRepository = {
-        initialize: jest.fn().mockResolvedValue(undefined),
-        learnAlias: jest.fn().mockResolvedValue(undefined),
-        search: jest.fn().mockResolvedValue([]),
-        getVersion: jest.fn().mockResolvedValue(5),
-      };
-
-      const resolver = new SQLiteVoiceResolver(mockRepo);
-      const result = await resolver.resolve({
-        sessionId: "sess_test_3",
-        hypotheses: [{ transcript: "tyndale talking magazine", confidence: 0.95, rank: 0 }],
-        context: {
-          stories,
-          topics,
-          entities,
-          preferences: initialPreferences,
-        },
-      });
-
-      expect(result.kind).toBe("invocation");
-      if (result.kind === "invocation") {
-        expect(result.invocation.command).toMatchObject({
-          type: "play",
-          storyId: "tyndale-edition",
-        });
-      }
-    });
-
-    it("resolves location commands like 'play news in Bristol'", async () => {
-      const mockRepo: VoiceTermRepository = {
-        initialize: jest.fn().mockResolvedValue(undefined),
-        learnAlias: jest.fn().mockResolvedValue(undefined),
-        search: jest.fn().mockResolvedValue([]),
-        getVersion: jest.fn().mockResolvedValue(5),
-      };
-
-      const resolver = new SQLiteVoiceResolver(mockRepo);
-      const result = await resolver.resolve({
-        sessionId: "sess_test_4",
-        hypotheses: [{ transcript: "play news in Bristol", confidence: 0.95, rank: 0 }],
-        context: {
-          stories,
-          topics,
-          entities,
-          preferences: initialPreferences,
-        },
-      });
-
-      expect(result.kind).toBe("invocation");
-      if (result.kind === "invocation") {
-        expect(result.invocation.command).toMatchObject({
-          type: "setLocation",
-          locationId: "bristol",
-        });
-      }
+    expect(decideResolution(ranked, defaultResolverConfig)).toMatchObject({
+      kind: "unresolved",
     });
   });
 });
-

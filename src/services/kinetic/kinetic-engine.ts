@@ -19,12 +19,12 @@ export class KineticGestureEngine {
   private gyroBuffer: Vector3D[] = [];
   private accelBuffer: Vector3D[] = [];
   private gravity: Vector3D = { x: 0, y: 0, z: 1.0 };
-  private shakeEvents: Array<{
+  private shakeEvents: {
     time: number;
     sign: number;
     axis: string;
     magnitude: number;
-  }> = [];
+  }[] = [];
 
   constructor(
     config: Partial<KineticConfig> = {},

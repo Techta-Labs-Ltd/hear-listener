@@ -3,6 +3,7 @@ import type { ContentItem, Entity, Topic } from "./content";
 import type { Preferences } from "./preferences";
 import type { SpeedMultiplier } from "./playback";
 import type { PlayMode, VoiceInvocation } from "./voice";
+import type { RecognitionPurpose } from "./voice-speech";
 
 export type VoiceNavigationServices = {
   replace: (href: Href) => void;
@@ -69,6 +70,9 @@ export type PlayCommandInput = {
   storyId?: string;
   topicId?: string;
   locationId?: string;
+  entityId?: string;
+  entityType?: "organization" | "publication" | "creator" | "category";
+  entityName?: string;
 };
 
 export type VoiceDiagnostic = {
@@ -79,6 +83,8 @@ export type VoiceDiagnostic = {
   actionId?: string;
   databaseVersion?: number;
   errorCode?: string;
+  recognitionPurpose?: RecognitionPurpose;
+  speechLocale?: string;
 };
 
 export interface VoiceDiagnostics {

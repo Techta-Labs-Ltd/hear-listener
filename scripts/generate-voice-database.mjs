@@ -1,413 +1,17 @@
 import { DatabaseSync } from "node:sqlite";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
 const output = resolve(root, "assets/database/hear-voice-seed.db");
 const dataDirectory = resolve(root, "scripts/voice-data");
-const intentSource = resolve(dataDirectory, "intents.json");
+const catalogueSource = resolve(dataDirectory, "catalogue.json");
 const locationSource = resolve(dataDirectory, "uk-locations.csv");
 
-function extractSources() {
-  mkdirSync(dataDirectory, { recursive: true });
-  const database = new DatabaseSync(output, { readOnly: true });
-  const intents = database
-    .prepare(
-      "SELECT canonical AS phrase, target_id AS action, weight FROM voice_terms WHERE kind = 'command' ORDER BY target_id, canonical",
-    )
-    .all();
-  const locations = database
-    .prepare(
-      "SELECT canonical AS name, normalized, target_id AS id, weight FROM voice_terms WHERE kind = 'location' ORDER BY id, normalized",
-    )
-    .all();
-  database.close();
-  writeFileSync(intentSource, `${JSON.stringify(intents, null, 2)}\n`);
-  writeFileSync(
-    locationSource,
-    [
-      "id,name,normalized,weight",
-      ...locations.map((item) =>
-        [item.id, item.name, item.normalized, item.weight]
-          .map(csvCell)
-          .join(","),
-      ),
-    ].join("\n"),
-  );
-  console.log(
-    `Extracted ${intents.length} intent phrases and ${locations.length} location terms.`,
-  );
+function loadCatalogue() {
+  return JSON.parse(readFileSync(catalogueSource, "utf8"));
 }
 
-function buildDatabase() {
-  const intents = JSON.parse(readFileSync(intentSource, "utf8"));
-  const locations = parseCsv(readFileSync(locationSource, "utf8"));
-  rmSync(output, { force: true });
-  const database = new DatabaseSync(output);
-  database.exec(`
-    PRAGMA journal_mode = WAL;
-    CREATE TABLE voice_terms (id INTEGER PRIMARY KEY AUTOINCREMENT, canonical TEXT NOT NULL, normalized TEXT NOT NULL, kind TEXT NOT NULL, target_id TEXT, weight REAL NOT NULL DEFAULT 1, phonetic TEXT NOT NULL DEFAULT '', UNIQUE(normalized, kind, target_id));
-    CREATE INDEX voice_terms_lookup ON voice_terms(kind, normalized, weight DESC);
-    CREATE INDEX voice_terms_phonetic ON voice_terms(phonetic, kind);
-    CREATE VIRTUAL TABLE voice_terms_fts USING fts5(canonical, normalized, kind UNINDEXED, target_id UNINDEXED, weight UNINDEXED, tokenize='unicode61 remove_diacritics 2');
-    CREATE TABLE voice_actions (id TEXT PRIMARY KEY, executor_key TEXT NOT NULL, label TEXT NOT NULL, risk TEXT NOT NULL DEFAULT 'safe', confirmation INTEGER NOT NULL DEFAULT 0, slot_schema TEXT NOT NULL DEFAULT '{}', feedback TEXT NOT NULL DEFAULT '');
-    CREATE TABLE intent_patterns (id INTEGER PRIMARY KEY, action_id TEXT NOT NULL REFERENCES voice_actions(id), phrase TEXT NOT NULL, normalized TEXT NOT NULL, weight REAL NOT NULL DEFAULT 1, UNIQUE(action_id, normalized));
-    CREATE TABLE asr_substitutions (heard TEXT NOT NULL, canonical TEXT NOT NULL, locale TEXT NOT NULL DEFAULT 'en-GB', weight REAL NOT NULL DEFAULT 1, PRIMARY KEY(heard, canonical, locale));
-    CREATE TABLE term_trigrams (term_id INTEGER NOT NULL REFERENCES voice_terms(id) ON DELETE CASCADE, trigram TEXT NOT NULL, PRIMARY KEY(term_id, trigram));
-    CREATE INDEX term_trigrams_lookup ON term_trigrams(trigram, term_id);
-    CREATE TABLE locations (id TEXT PRIMARY KEY, name TEXT NOT NULL, normalized TEXT NOT NULL, admin_area TEXT, latitude REAL, longitude REAL, population INTEGER, rank REAL NOT NULL DEFAULT 1, timezone TEXT);
-    CREATE INDEX locations_name ON locations(normalized);
-    CREATE TABLE learned_aliases (alias TEXT PRIMARY KEY, canonical TEXT NOT NULL, kind TEXT NOT NULL, target_id TEXT, confirmations INTEGER NOT NULL DEFAULT 1, weight REAL NOT NULL DEFAULT 1, updated_at INTEGER NOT NULL, expires_at INTEGER NOT NULL DEFAULT 0);
-    CREATE TABLE voice_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
-    CREATE TABLE action_usage (action_id TEXT PRIMARY KEY, executions INTEGER NOT NULL DEFAULT 0, last_used_at INTEGER NOT NULL DEFAULT 0);
-    INSERT INTO voice_metadata VALUES ('vocabulary_version', '2');
-    INSERT INTO voice_metadata VALUES ('dataset_attribution', 'SimpleMaps UK Cities Basic, CC BY 4.0, https://simplemaps.com/data/uk-cities');
-    PRAGMA user_version = 6;
-  `);
-  const insert = database.prepare(
-    "INSERT OR IGNORE INTO voice_terms (canonical, normalized, kind, target_id, weight, phonetic) VALUES (?, ?, ?, ?, ?, ?)",
-  );
-  const insertAction = database.prepare(
-    "INSERT OR REPLACE INTO voice_actions(id,executor_key,label,risk,confirmation,slot_schema,feedback) VALUES(?,?,?,?,?,?,?)",
-  );
-  const insertPattern = database.prepare(
-    "INSERT OR IGNORE INTO intent_patterns(action_id,phrase,normalized,weight) VALUES(?,?,?,?)",
-  );
-  const insertLocation = database.prepare(
-    "INSERT OR REPLACE INTO locations(id,name,normalized,admin_area,latitude,longitude,population,rank,timezone) VALUES(?,?,?,?,?,?,?,?,?)",
-  );
-  database.exec("BEGIN");
-  for (const action of ACTIONS) {
-    insertAction.run(
-      action.id,
-      action.key,
-      action.label,
-      action.risk ?? "safe",
-      action.confirm ? 1 : 0,
-      JSON.stringify(action.slots ?? {}),
-      action.feedback ?? "",
-    );
-    insertPattern.run(action.id, action.label, normalize(action.label), 2);
-    insert.run(
-      action.label,
-      normalize(action.label),
-      "action",
-      action.id,
-      2,
-      phonetic(normalize(action.label)),
-    );
-  }
-  for (const item of [...DEFAULT_PATTERNS, ...intents]) {
-    const action =
-      ACTIONS.find((entry) => entry.id === item.action) ??
-      actionFromLegacyId(item.action);
-    if (!ACTIONS.some((entry) => entry.id === action.id))
-      insertAction.run(
-        action.id,
-        action.key,
-        action.label,
-        action.risk,
-        action.confirm ? 1 : 0,
-        "{}",
-        "",
-      );
-    insertPattern.run(
-      action.id,
-      item.phrase,
-      normalize(item.phrase),
-      Number(item.weight ?? 1),
-    );
-    insert.run(
-      item.phrase,
-      normalize(item.phrase),
-      "action",
-      action.id,
-      Number(item.weight),
-      phonetic(normalize(item.phrase)),
-    );
-  }
-  for (const item of locations) {
-    insertLocation.run(
-      item.id,
-      item.name,
-      item.normalized || normalize(item.name),
-      item.admin_name || item.admin_area || null,
-      numberOrNull(item.lat || item.latitude),
-      numberOrNull(item.lng || item.longitude),
-      numberOrNull(item.population),
-      Number(item.ranking || item.weight || 1),
-      item.timezone || "Europe/London",
-    );
-    insert.run(
-      item.name,
-      item.normalized || normalize(item.name),
-      "location",
-      item.id,
-      Number(item.weight),
-      phonetic(item.normalized || normalize(item.name)),
-    );
-  }
-  const insertSubstitution = database.prepare(
-    "INSERT OR REPLACE INTO asr_substitutions(heard,canonical,locale,weight) VALUES(?,?,'en-GB',?)",
-  );
-  for (const [heard, canonical, weight] of ASR_SUBSTITUTIONS)
-    insertSubstitution.run(heard, canonical, weight);
-  database.exec(
-    "INSERT INTO voice_terms_fts (rowid, canonical, normalized, kind, target_id, weight) SELECT id, canonical, normalized, kind, target_id, weight FROM voice_terms;",
-  );
-  const insertGram = database.prepare(
-    "INSERT OR IGNORE INTO term_trigrams(term_id,trigram) VALUES(?,?)",
-  );
-  for (const row of database
-    .prepare("SELECT id,normalized FROM voice_terms")
-    .all())
-    for (const gram of trigrams(row.normalized)) insertGram.run(row.id, gram);
-  database.exec("COMMIT; VACUUM;");
-  const total = database
-    .prepare("SELECT COUNT(*) AS count FROM voice_terms")
-    .get().count;
-  database.close();
-  console.log(`Built ${output} with ${total} searchable terms.`);
-}
-
-const ACTIONS = [
-  ["navigate:home", "navigate", "Open Home"],
-  ["navigate:discover", "navigate", "Open Discover"],
-  ["navigate:library", "navigate", "Open Library"],
-  ["navigate:settings", "navigate", "Open Settings"],
-  ["navigate:player", "navigate", "Open player"],
-  ["close", "close", "Go back"],
-  ["openLibrarySection:saved", "openLibrarySection", "Open saved audio"],
-  [
-    "openLibrarySection:following",
-    "openLibrarySection",
-    "Open followed sources",
-  ],
-  ["openLibrarySection:downloads", "openLibrarySection", "Open downloads"],
-  ["openLibrarySection:history", "openLibrarySection", "Open history"],
-  ["openTopic", "openTopic", "Open topic"],
-  ["setLocation", "setLocation", "Change saved location", "privacy", true],
-  ["search", "search", "Search"],
-  ["play:current", "play", "Play"],
-  ["play:latest", "play", "Play latest"],
-  ["play:local", "play", "Play local news"],
-  ["play:recommended", "play", "Play recommendation"],
-  ["play:trending", "play", "Play trending"],
-  ["play:saved", "play", "Play saved audio"],
-  ["play:downloads", "play", "Play downloads"],
-  ["play:story", "play", "Play story"],
-  ["pause", "pause", "Pause"],
-  ["resume", "resume", "Resume"],
-  ["next", "next", "Next"],
-  ["previous", "previous", "Previous"],
-  ["restart", "restart", "Restart"],
-  ["repeat:on", "repeat", "Enable repeat"],
-  ["repeat:off", "repeat", "Disable repeat"],
-  ["seek:forward", "seek", "Skip forward"],
-  ["seek:backward", "seek", "Rewind"],
-  ["speedStep:up", "speedStep", "Speed up"],
-  ["speedStep:down", "speedStep", "Slow down"],
-  ["speed:0.75", "speed", "Set speed"],
-  ["speed:1", "speed", "Set speed"],
-  ["speed:1.25", "speed", "Set speed"],
-  ["speed:1.5", "speed", "Set speed"],
-  ["speed:2", "speed", "Set speed"],
-  ["saveCurrent", "saveCurrent", "Save current audio"],
-  ["removeSaved", "removeSaved", "Remove saved audio", "destructive", true],
-  ["downloadCurrent", "downloadCurrent", "Download current audio"],
-  ["removeDownload", "removeDownload", "Remove download", "destructive", true],
-  ["follow", "follow", "Follow source"],
-  ["unfollow", "unfollow", "Unfollow source", "destructive", true],
-  ["whatIsThis", "whatIsThis", "Describe current audio"],
-  ["whoMadeThis", "whoMadeThis", "Name the creator"],
-  ["sleepTimer", "sleepTimer", "Set sleep timer"],
-  ["cancelSleepTimer", "cancelSleepTimer", "Cancel sleep timer"],
-  ["addToQueue", "addToQueue", "Add to queue"],
-  ["openQueue", "openQueue", "Open queue"],
-  ["clearQueue", "clearQueue", "Clear queue", "destructive", true],
-  ["changeLocation", "changeLocation", "Open location settings"],
-  ["help", "help", "Voice help"],
-  ["openAppSettings", "openAppSettings", "Open app settings"],
-  ["openAudioSettings", "openAudioSettings", "Open audio settings"],
-  ["openBluetoothSettings", "openBluetoothSettings", "Open Bluetooth settings"],
-  ["openInternetSettings", "openInternetSettings", "Open internet settings"],
-  ["openWifiSettings", "openWifiSettings", "Open Wi-Fi settings"],
-  [
-    "openAccessibilitySettings",
-    "openAccessibilitySettings",
-    "Open accessibility settings",
-  ],
-  ["openLocationSettings", "openLocationSettings", "Open location services"],
-  [
-    "resetVoiceCorrections",
-    "resetVoiceCorrections",
-    "Reset learned voice corrections",
-    "destructive",
-    true,
-  ],
-  ["readScreen", "readScreen", "Read the screen"],
-  ["accountSignIn", "accountSignIn", "Sign in to Hear", "privacy", true],
-  ["accountSignOut", "accountSignOut", "Sign out of Hear", "privacy", true],
-  ["onboardingContinue", "onboardingContinue", "Continue setup"],
-  ["onboardingBack", "onboardingBack", "Go back a step"],
-  ["onboardingSkip", "onboardingSkip", "Skip this step"],
-  ["onboardingSetTown", "onboardingSetTown", "Set up town", "privacy", true],
-  ["onboardingRead", "onboardingRead", "Read this step"],
-].map(([id, key, label, risk = "safe", confirm = false]) => ({
-  id,
-  key,
-  label,
-  risk,
-  confirm,
-}));
-const DEFAULT_PATTERNS = [
-  ["open discover", "navigate:discover"],
-  ["open library", "navigate:library"],
-  ["open settings", "navigate:settings"],
-  ["open player", "navigate:player"],
-  ["wifi setting", "openWifiSettings"],
-  ["wifi settings", "openWifiSettings"],
-  ["privacy settings", "openAppSettings"],
-  ["accessibility settings", "openAccessibilitySettings"],
-  ["voice settings", "navigate:settings"],
-  ["continue with google", "accountSignIn"],
-  ["sign in with google", "accountSignIn"],
-  ["continue with apple", "accountSignIn"],
-  ["sign in with apple", "accountSignIn"],
-  ["sign out", "accountSignOut"],
-  ["bluetooth", "openBluetoothSettings"],
-  ["bluetooth settings", "openBluetoothSettings"],
-  ["blue tooth settings", "openBluetoothSettings"],
-  ["hearing device settings", "openBluetoothSettings"],
-  ["pair my hearing device", "openBluetoothSettings"],
-  ["wi fi settings", "openWifiSettings"],
-  ["wireless settings", "openWifiSettings"],
-  ["internet settings", "openInternetSettings"],
-  ["network settings", "openInternetSettings"],
-  ["audio output", "openAudioSettings"],
-  ["sound settings", "openAudioSettings"],
-  ["screen reader settings", "openAccessibilitySettings"],
-  ["location settings", "openLocationSettings"],
-  ["location services", "openLocationSettings"],
-  ["local area settings", "openLocationSettings"],
-  ["permission settings", "openAppSettings"],
-  ["reset learned corrections", "resetVoiceCorrections"],
-  ["forget voice corrections", "resetVoiceCorrections"],
-  ["open saved audio", "openLibrarySection:saved"],
-  ["open downloads", "openLibrarySection:downloads"],
-  ["open history", "openLibrarySection:history"],
-  ["open following", "openLibrarySection:following"],
-  ["save this", "saveCurrent"],
-  ["remove this from saved", "removeSaved"],
-  ["download this", "downloadCurrent"],
-  ["remove this download", "removeDownload"],
-  ["resume", "resume"],
-  ["previous", "previous"],
-  ["turn repeat off", "repeat:off"],
-  ["set a sleep timer for 20 minutes", "sleepTimer"],
-  ["cancel sleep timer", "cancelSleepTimer"],
-  ["add this to queue", "addToQueue"],
-  ["open queue", "openQueue"],
-  ["clear queue", "clearQueue"],
-  ["play tyndale talking magazine", "play:story"],
-  ["play tyndale magazine", "play:story"],
-  ["play tyndale", "play:story"],
-  ["play talking magazine", "play:story"],
-  ["tyndale talking magazine", "play:story"],
-  ["tyndale magazine", "play:story"],
-  ["talking magazine", "play:story"],
-].map(([phrase, action]) => ({ phrase, action, weight: 3 }));
-const ASR_SUBSTITUTIONS = [
-  ["paws", "pause", 5],
-  ["ports", "pause", 3],
-  ["yuck", "york", 6],
-  ["tindale", "tyndale", 6],
-  ["tindal", "tyndale", 6],
-  ["tyndall", "tyndale", 6],
-  ["tindell", "tyndale", 6],
-  ["tindall", "tyndale", 6],
-  ["magazin", "magazine", 5],
-  ["wifisetting", "wifi settings", 6],
-  ["wifisettings", "wifi settings", 6],
-  ["why fi settings", "wifi settings", 4],
-  ["wife eye settings", "wifi settings", 4],
-  ["blue tooth", "bluetooth", 5],
-  ["blutooth", "bluetooth", 6],
-  ["bluettoh", "bluetooth", 6],
-  ["bluetoth", "bluetooth", 6],
-  ["blutooh", "bluetooth", 5],
-  ["blootuth", "bluetooth", 5],
-  ["access ability", "accessibility", 5],
-  ["acessibility", "accessibility", 6],
-  ["locashun", "location", 6],
-  ["loction", "location", 6],
-  ["locaton", "location", 6],
-  ["lacation", "location", 6],
-  ["loacation", "location", 6],
-  ["ocation", "location", 4],
-  ["localation", "location", 5],
-  ["liberry", "library", 4],
-  ["here app", "hear app", 3],
-  ["re wind", "rewind", 3],
-  ["sport from yuck", "sport from york", 5],
-];
-function actionFromLegacyId(id) {
-  const key = id.split(":")[0];
-  return {
-    id,
-    key,
-    label: id.replaceAll(":", " "),
-    risk: "safe",
-    confirm: false,
-  };
-}
-function trigrams(value) {
-  const source = `  ${normalize(value).replaceAll(" ", "_")}  `;
-  return [
-    ...new Set(
-      Array.from({ length: Math.max(0, source.length - 2) }, (_, index) =>
-        source.slice(index, index + 3),
-      ),
-    ),
-  ];
-}
-function phonetic(value) {
-  return normalize(value)
-    .split(" ")
-    .map((token) => {
-      const first = token[0] ?? "";
-      const tail = token
-        .slice(1)
-        .replace(/[aeiouyhw]/g, "")
-        .replace(/[bfpv]/g, "1")
-        .replace(/[cgjkqsxz]/g, "2")
-        .replace(/[dt]/g, "3")
-        .replace(/l/g, "4")
-        .replace(/[mn]/g, "5")
-        .replace(/r/g, "6")
-        .replace(/(.)\1+/g, "$1");
-      return `${first}${tail}`.slice(0, 6);
-    })
-    .join("-");
-}
-function numberOrNull(value) {
-  const number = Number(value);
-  return Number.isFinite(number) && String(value).trim() ? number : null;
-}
-
-function normalize(value) {
-  return value
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9.\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-function csvCell(value) {
-  const text = String(value ?? "");
-  return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
-}
 function parseCsv(source) {
   const rows = [];
   let row = [],
@@ -434,11 +38,483 @@ function parseCsv(source) {
   if (field || row.length) rows.push([...row, field]);
   const [headers, ...values] = rows;
   return values.map((cells) =>
-    Object.fromEntries(
-      headers.map((header, index) => [header, cells[index] ?? ""]),
-    ),
+    Object.fromEntries(headers.map((header, index) => [header, cells[index] ?? ""])),
   );
 }
 
-if (process.argv.includes("--extract")) extractSources();
-else buildDatabase();
+function normalize(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function tokens(value) {
+  return normalize(value).split(" ").filter(Boolean);
+}
+
+function metaphone(word) {
+  let w = word.toUpperCase().replace(/[^A-Z]/g, "");
+  if (!w) return "";
+
+  if (
+    w.startsWith("KN") ||
+    w.startsWith("GN") ||
+    w.startsWith("PN") ||
+    w.startsWith("WR") ||
+    w.startsWith("PS")
+  ) {
+    w = w.slice(1);
+  } else if (w.startsWith("X")) {
+    w = "S" + w.slice(1);
+  } else if (w.startsWith("WH")) {
+    w = "W" + w.slice(2);
+  }
+
+  let result = "";
+  for (let i = 0; i < w.length; i++) {
+    const c = w[i];
+    const next = w[i + 1] ?? "";
+    const next2 = w[i + 2] ?? "";
+    const prev = w[i - 1] ?? "";
+
+    if (c === prev && c !== "C") continue;
+
+    if (c === "A" || c === "E" || c === "I" || c === "O" || c === "U" || c === "Y") {
+      if (i === 0) result += c;
+    } else if (c === "B") {
+      if (!(prev === "M" && i === w.length - 1)) result += "B";
+    } else if (c === "C") {
+      if (next === "I" && next2 === "A") {
+        result += "X";
+        i += 2;
+      } else if (next === "H") {
+        result += "X";
+        i++;
+      } else if (next === "E" || next === "I" || next === "Y") {
+        result += "S";
+      } else {
+        result += "K";
+      }
+    } else if (c === "D") {
+      if (next === "G" && (next2 === "E" || next2 === "I" || next2 === "Y")) {
+        result += "J";
+        i += 2;
+      } else {
+        result += "T";
+      }
+    } else if (c === "F") {
+      result += "F";
+    } else if (c === "G") {
+      if (next === "H" && i === w.length - 2) {
+        // silent GH at word end
+      } else if (next === "E" || next === "I" || next === "Y") {
+        result += "J";
+      } else {
+        result += "K";
+      }
+    } else if (c === "H") {
+      if ("AEIOUY".includes(next) && !"CSPTG".includes(prev)) {
+        result += "H";
+      }
+    } else if (c === "J") {
+      result += "J";
+    } else if (c === "K") {
+      if (prev !== "C") result += "K";
+    } else if (c === "L") {
+      result += "L";
+    } else if (c === "M") {
+      result += "M";
+    } else if (c === "N") {
+      result += "N";
+    } else if (c === "P") {
+      if (next === "H") {
+        result += "F";
+        i++;
+      } else {
+        result += "P";
+      }
+    } else if (c === "Q") {
+      result += "K";
+    } else if (c === "R") {
+      result += "R";
+    } else if (c === "S") {
+      if (next === "H" || (next === "I" && (next2 === "O" || next2 === "A"))) {
+        result += "X";
+        i += next === "H" ? 1 : 2;
+      } else {
+        result += "S";
+      }
+    } else if (c === "T") {
+      if (next === "I" && (next2 === "A" || next2 === "O")) {
+        result += "X";
+        i += 2;
+      } else if (next === "H") {
+        result += "0";
+        i++;
+      } else if (next === "C" && next2 === "H") {
+        result += "X";
+        i += 2;
+      } else {
+        result += "T";
+      }
+    } else if (c === "V") {
+      result += "F";
+    } else if (c === "W") {
+      if ("AEIOUY".includes(next)) result += "W";
+    } else if (c === "X") {
+      result += "KS";
+    } else if (c === "Z") {
+      result += "S";
+    }
+  }
+
+  return result.slice(0, 6);
+}
+
+function soundexKey(value) {
+  const token = value.toLowerCase();
+  const first = token[0] ?? "";
+  const tail = token
+    .slice(1)
+    .replace(/[aeiouyhw]/g, "")
+    .replace(/[bfpv]/g, "1")
+    .replace(/[cgjkqsxz]/g, "2")
+    .replace(/[dt]/g, "3")
+    .replace(/l/g, "4")
+    .replace(/[mn]/g, "5")
+    .replace(/r/g, "6")
+    .replace(/(.)\1+/g, "$1");
+  return `${first}${tail}`.slice(0, 6);
+}
+
+function phoneticCodes(value) {
+  return {
+    primary: tokens(value).map((token) => metaphone(token) || soundexKey(token)).join("-"),
+    secondary: tokens(value).map(soundexKey).join("-"),
+  };
+}
+
+function trigrams(value) {
+  const source = `  ${normalize(value).replaceAll(" ", "_")}  `;
+  return [
+    ...new Set(
+      Array.from({ length: Math.max(0, source.length - 2) }, (_, index) =>
+        source.slice(index, index + 3),
+      ),
+    ),
+  ];
+}
+
+function numberOrNull(value) {
+  const number = Number(value);
+  return Number.isFinite(number) && String(value).trim() ? number : null;
+}
+
+function aliasEntries(rawAliases) {
+  if (!rawAliases) return [];
+  return rawAliases.map((entry) =>
+    typeof entry === "string"
+      ? { alias: entry, source: "editorial" }
+      : entry,
+  );
+}
+
+function buildDatabase() {
+  const catalogue = loadCatalogue();
+  const locations = parseCsv(readFileSync(locationSource, "utf8"));
+  const locationAliasByNormalizedName = new Map(
+    (catalogue.locationAliases ?? []).map((entry) => [
+      normalize(entry.name),
+      entry,
+    ]),
+  );
+  mkdirSync(resolve(output, ".."), { recursive: true });
+  rmSync(output, { force: true });
+  const database = new DatabaseSync(output);
+  database.exec(`
+    PRAGMA journal_mode = WAL;
+    CREATE TABLE voice_entities (
+      entity_id TEXT NOT NULL,
+      entity_type TEXT NOT NULL,
+      canonical_name TEXT NOT NULL,
+      normalized_name TEXT NOT NULL,
+      primary_metaphone TEXT,
+      secondary_metaphone TEXT,
+      popularity REAL NOT NULL DEFAULT 0,
+      metadata_json TEXT,
+      revision TEXT NOT NULL DEFAULT '',
+      PRIMARY KEY (entity_type, entity_id)
+    );
+    CREATE INDEX idx_voice_entity_normalized ON voice_entities(normalized_name);
+    CREATE INDEX idx_voice_entity_primary_metaphone ON voice_entities(primary_metaphone);
+    CREATE INDEX idx_voice_entity_secondary_metaphone ON voice_entities(secondary_metaphone);
+
+    CREATE TABLE voice_aliases (
+      alias_id INTEGER PRIMARY KEY,
+      entity_id TEXT NOT NULL,
+      entity_type TEXT NOT NULL,
+      alias TEXT NOT NULL,
+      normalized_alias TEXT NOT NULL,
+      primary_metaphone TEXT,
+      secondary_metaphone TEXT,
+      alias_source TEXT,
+      weight REAL NOT NULL DEFAULT 1
+    );
+    CREATE INDEX idx_voice_alias_normalized ON voice_aliases(normalized_alias);
+    CREATE INDEX idx_voice_alias_primary_metaphone ON voice_aliases(primary_metaphone);
+    CREATE INDEX idx_voice_alias_secondary_metaphone ON voice_aliases(secondary_metaphone);
+    CREATE UNIQUE INDEX idx_voice_alias_entity_norm ON voice_aliases(entity_type, entity_id, normalized_alias);
+
+    CREATE VIRTUAL TABLE voice_entity_fts USING fts5(
+      entity_key UNINDEXED,
+      entity_type UNINDEXED,
+      search_text,
+      tokenize='unicode61 remove_diacritics 2'
+    );
+
+    CREATE TABLE voice_entity_trigrams (
+      entity_key TEXT NOT NULL,
+      trigram TEXT NOT NULL,
+      PRIMARY KEY (entity_key, trigram)
+    );
+    CREATE INDEX idx_voice_entity_trigram ON voice_entity_trigrams(trigram);
+
+    CREATE TABLE voice_token_rarity (
+      token TEXT PRIMARY KEY,
+      rarity REAL NOT NULL
+    );
+
+    CREATE TABLE locations (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      normalized TEXT NOT NULL,
+      admin_area TEXT,
+      latitude REAL,
+      longitude REAL,
+      population INTEGER,
+      rank REAL NOT NULL DEFAULT 1,
+      timezone TEXT
+    );
+    CREATE INDEX locations_name ON locations(normalized);
+
+    CREATE TABLE voice_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+    PRAGMA user_version = 7;
+  `);
+
+  const insertEntity = database.prepare(
+    "INSERT OR IGNORE INTO voice_entities (entity_id, entity_type, canonical_name, normalized_name, primary_metaphone, secondary_metaphone, popularity, metadata_json, revision) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+  );
+  const insertAlias = database.prepare(
+    "INSERT OR IGNORE INTO voice_aliases (entity_id, entity_type, alias, normalized_alias, primary_metaphone, secondary_metaphone, alias_source, weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+  );
+  const findAlias = database.prepare(
+    "SELECT alias_id AS aliasId FROM voice_aliases WHERE entity_type = ? AND entity_id = ? AND normalized_alias = ?",
+  );
+  const insertFts = database.prepare(
+    "INSERT INTO voice_entity_fts (rowid, entity_key, entity_type, search_text) VALUES (?, ?, ?, ?)",
+  );
+  const insertGram = database.prepare(
+    "INSERT OR IGNORE INTO voice_entity_trigrams (entity_key, trigram) VALUES (?, ?)",
+  );
+  const insertLocation = database.prepare(
+    "INSERT OR IGNORE INTO locations (id, name, normalized, admin_area, latitude, longitude, population, rank, timezone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+  );
+
+  const corpus = [];
+
+  function addEntity(type, id, name, popularity, metadata, aliases) {
+    const normalizedName = normalize(name);
+    const codes = phoneticCodes(normalizedName);
+    const entityKey = `${type}:${id}`;
+    corpus.push(normalizedName);
+    insertEntity.run(
+      id,
+      type,
+      name,
+      normalizedName,
+      codes.primary || null,
+      codes.secondary || null,
+      popularity ?? 0,
+      metadata ? JSON.stringify(metadata) : null,
+      catalogue.revision,
+    );
+    const allAliases = [{ alias: name, source: "canonical" }, ...aliasEntries(aliases)];
+    const seen = new Set();
+    for (const entry of allAliases) {
+      const normalizedAlias = normalize(entry.alias);
+      if (!normalizedAlias) continue;
+      const dedupeKey = `${entry.source}:${normalizedAlias}`;
+      if (seen.has(dedupeKey)) continue;
+      seen.add(dedupeKey);
+      const aliasCodes = phoneticCodes(normalizedAlias);
+      const result = insertAlias.run(
+        id,
+        type,
+        entry.alias,
+        normalizedAlias,
+        aliasCodes.primary || null,
+        aliasCodes.secondary || null,
+        entry.source ?? "editorial",
+        entry.source === "validated-asr" ? 1.5 : 1,
+      );
+      const aliasId =
+        result.changes > 0
+          ? result.lastInsertRowid
+          : findAlias.get(type, id, normalizedAlias)?.aliasId;
+      if (aliasId) {
+        corpus.push(normalizedAlias);
+        if (result.changes > 0) {
+          insertFts.run(aliasId, entityKey, type, normalizedAlias);
+        }
+        for (const gram of trigrams(normalizedAlias)) {
+          insertGram.run(entityKey, gram);
+        }
+      }
+    }
+  }
+
+  database.exec("BEGIN");
+  for (const category of catalogue.categories ?? []) {
+    addEntity("category", category.id, category.name, 1, null, category.aliases);
+  }
+  for (const publication of catalogue.publications ?? []) {
+    addEntity(
+      "publication",
+      publication.id,
+      publication.name,
+      0.9,
+      publication.storyIds ? { storyIds: publication.storyIds } : null,
+      publication.aliases,
+    );
+  }
+  for (const organization of catalogue.organizations ?? []) {
+    addEntity(
+      "organization",
+      organization.id,
+      organization.name,
+      0.9,
+      organization.storyIds ? { storyIds: organization.storyIds } : null,
+      organization.aliases,
+    );
+  }
+  for (const creator of catalogue.creators ?? []) {
+    addEntity(
+      "creator",
+      creator.id,
+      creator.name,
+      0.8,
+      creator.storyIds ? { storyIds: creator.storyIds } : null,
+      creator.aliases,
+    );
+  }
+  for (const tag of catalogue.tags ?? []) {
+    addEntity("tag", tag.id, tag.name, 0.8, null, tag.aliases);
+  }
+  for (const story of catalogue.stories ?? []) {
+    addEntity(
+      "story",
+      story.id,
+      story.title,
+      1,
+      null,
+      [
+        story.creator ? { alias: story.creator, source: "editorial" } : null,
+        story.publication ? { alias: story.publication, source: "editorial" } : null,
+      ].filter(Boolean),
+    );
+  }
+  for (const location of locations) {
+    const id = location.id;
+    const name = location.name;
+    if (!id || !name) continue;
+    const metadata = {
+      adminArea: location.admin_name || location.admin_area || null,
+      latitude: numberOrNull(location.lat || location.latitude),
+      longitude: numberOrNull(location.lng || location.longitude),
+      population: numberOrNull(location.population),
+    };
+    const popularity = Math.min(1, Number(location.ranking || location.weight || 1) / 10000);
+    addEntity("location", id, name, Math.max(0.05, popularity), metadata, []);
+    insertLocation.run(
+      id,
+      name,
+      location.normalized || normalize(name),
+      location.admin_name || location.admin_area || null,
+      numberOrNull(location.lat || location.latitude),
+      numberOrNull(location.lng || location.longitude),
+      numberOrNull(location.population),
+      Number(location.ranking || location.weight || 1),
+      location.timezone || "Europe/London",
+    );
+    const override = locationAliasByNormalizedName.get(normalize(name));
+    if (override) {
+      const normalizedAlias = normalize(override.alias);
+      const codes = phoneticCodes(normalizedAlias);
+      const result = insertAlias.run(
+        id,
+        "location",
+        override.alias,
+        normalizedAlias,
+        codes.primary || null,
+        codes.secondary || null,
+        override.source ?? "validated-asr",
+        1.5,
+      );
+      if (result.changes > 0) {
+        const aliasId = result.lastInsertRowid;
+        if (aliasId) {
+          insertFts.run(aliasId, `location:${id}`, "location", normalizedAlias);
+        }
+        for (const gram of trigrams(normalizedAlias)) {
+          insertGram.run(`location:${id}`, gram);
+        }
+      }
+    }
+  }
+
+  const documentFrequency = new Map();
+  const seenDocuments = new Set();
+  for (const text of corpus) {
+    const documentTokens = new Set(tokens(text));
+    const docKey = [...documentTokens].sort().join("|");
+    if (seenDocuments.has(docKey)) continue;
+    seenDocuments.add(docKey);
+    for (const token of documentTokens) {
+      documentFrequency.set(token, (documentFrequency.get(token) ?? 0) + 1);
+    }
+  }
+  const totalDocuments = Math.max(seenDocuments.size, 1);
+  const insertRarity = database.prepare(
+    "INSERT OR IGNORE INTO voice_token_rarity (token, rarity) VALUES (?, ?)",
+  );
+  for (const [token, frequency] of documentFrequency) {
+    const rarity =
+      Math.log(1 + totalDocuments / (1 + frequency)) / Math.log(1 + totalDocuments);
+    insertRarity.run(token, Math.max(0, Math.min(1, rarity)));
+  }
+
+  database
+    .prepare(
+      "INSERT OR REPLACE INTO voice_metadata (key, value) VALUES ('content_revision', ?)",
+    )
+    .run(catalogue.revision);
+  database
+    .prepare(
+      "INSERT OR REPLACE INTO voice_metadata (key, value) VALUES ('dataset_attribution', ?)",
+    )
+    .run("SimpleMaps UK Cities Basic, CC BY 4.0, https://simplemaps.com/data/uk-cities");
+
+  database.exec("COMMIT; VACUUM;");
+  const total = database.prepare("SELECT COUNT(*) AS count FROM voice_entities").get().count;
+  const aliasTotal = database.prepare("SELECT COUNT(*) AS count FROM voice_aliases").get().count;
+  database.close();
+  console.log(
+    `Built ${output} with ${total} entities and ${aliasTotal} aliases (revision ${catalogue.revision}).`,
+  );
+}
+
+buildDatabase();

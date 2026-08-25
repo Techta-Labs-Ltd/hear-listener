@@ -5,8 +5,6 @@ import type {
   VoiceTestValidationResult,
 } from "@/types";
 
-export type { AccountChoiceValidationResult, VoiceTestValidationResult };
-
 export function isOnboardingChapterValid(
   chapterId: OnboardingChapterId,
   state: OnboardingValidationState,
@@ -40,17 +38,9 @@ export function validateVoiceTestCommand(
     .replace(/\s+/g, " ")
     .trim();
 
-  const isMatch =
-    /^(play\s+)?(my\s+|the\s+|our\s+)?local\s+news$/.test(normalized) ||
-    normalized.includes("local news") ||
-    normalized.includes("play news") ||
-    normalized.includes("play local") ||
-    normalized.includes("play my news") ||
-    normalized === "play my local news" ||
-    normalized === "play local news" ||
-    normalized === "play the local news" ||
-    normalized === "play our local news" ||
-    normalized === "local news";
+  const isMatch = /^(play\s+)?(my\s+|the\s+|our\s+)?local\s+news$/i.test(
+    normalized,
+  );
 
   if (isMatch) {
     return {

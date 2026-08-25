@@ -5,7 +5,6 @@ import Animated, {
   withTiming,
   withRepeat,
   withSequence,
-  interpolate,
 } from "react-native-reanimated";
 import { View } from "@/tw";
 import { cn } from "@/utils/styles";

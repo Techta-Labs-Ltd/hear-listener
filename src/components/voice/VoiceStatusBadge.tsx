@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Animated } from "react-native";
 import { AppText } from "@/components/ui/AppText";
 import { View } from "@/tw";
@@ -6,7 +6,7 @@ import type { VoiceStatusBadgeProps } from "@/types";
 import { cn } from "@/utils/styles";
 
 export function VoiceStatusBadge({ label, className }: VoiceStatusBadgeProps) {
-  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const [pulseAnim] = useState(() => new Animated.Value(1));
 
   useEffect(() => {
     const isPulsing =

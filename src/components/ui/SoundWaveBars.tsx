@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import { Animated } from "react-native";
 import { soundWave } from "@/constants/theme";
 import { View } from "@/tw";
@@ -15,20 +15,21 @@ export function SoundWaveBars({
   const count = Math.max(2, Math.min(barCount, 5));
   const cfg = soundWave.sizes[size] ?? soundWave.sizes.sm;
 
-  const animsRef = useRef<Animated.Value[]>([]);
-  if (animsRef.current.length !== count) {
-    animsRef.current = Array.from(
-      { length: count },
-      (_, i) =>
-        new Animated.Value(
-          soundWave.initialHeights[i % soundWave.initialHeights.length],
-        ),
-    );
-  }
+  const anims = useMemo(
+    () =>
+      Array.from(
+        { length: count },
+        (_, i) =>
+          new Animated.Value(
+            soundWave.initialHeights[i % soundWave.initialHeights.length],
+          ),
+      ),
+    [count],
+  );
 
   useEffect(() => {
     if (!playing) {
-      animsRef.current.forEach((anim, i) => {
+      anims.forEach((anim, i) => {
         anim.setValue(
           soundWave.initialHeights[i % soundWave.initialHeights.length] * 0.5,
         );
@@ -36,7 +37,7 @@ export function SoundWaveBars({
       return;
     }
 
-    const animations = animsRef.current.map((anim, i) => {
+    const animations = anims.map((anim, i) => {
       const dur = soundWave.durations[i % soundWave.durations.length];
       return Animated.loop(
         Animated.sequence([
@@ -56,7 +57,7 @@ export function SoundWaveBars({
 
     animations.forEach((a) => a.start());
     return () => animations.forEach((a) => a.stop());
-  }, [playing, count]);
+  }, [playing, anims]);
 
   return (
     <View
@@ -69,7 +70,7 @@ export function SoundWaveBars({
         className,
       )}
     >
-      {animsRef.current.map((anim, i) => {
+      {anims.map((anim, i) => {
         const barColor = colors[i % colors.length] ?? soundWave.defaultColors[0];
         return (
           <Animated.View

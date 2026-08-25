@@ -1,565 +1,526 @@
 import type {
-  SpeedMultiplier,
-  VoiceCandidate,
+  EntityRelation,
+  EntityType,
+  ParsedUtterance,
+  RankedEntityCandidate,
+  ResolverConfig,
+  SemanticAction,
+  SemanticModifiers,
+  VoiceChoice,
   VoiceCommand,
-  VoiceExecutorKey,
+  VoiceEvidence,
   VoiceInvocation,
   VoiceResolution,
   VoiceResolveRequest,
   VoiceResolver,
-  VoiceTermRepository,
+  VoiceSlots,
+  VoiceEntityRepository,
 } from "@/types";
-import {
-  normalizeVoiceText,
-  scoreVoiceCandidate,
-  voiceTokens,
-} from "./normalize";
 import { voiceTermRepository } from "./repository";
-
-const HIGH_CONFIDENCE = 0.79;
-const MIN_MARGIN = 0.07;
-const MEDIUM_CONFIDENCE = 0.48;
-
-function matchDirectCommand(
-  transcript: string,
-  request: VoiceResolveRequest,
-): VoiceInvocation | undefined {
-  const norm = normalizeVoiceText(transcript);
-
-  if (
-    norm === "play local news" ||
-    norm === "play my local news" ||
-    norm === "play news" ||
-    norm === "local news"
-  ) {
-    return {
-      actionId: "play:local",
-      executorKey: "play",
-      command: { type: "play", mode: "local" },
-      slots: {},
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:play:local:{}`,
-    };
-  }
-  if (
-    norm === "play tyndale talking magazine" ||
-    norm === "play tyndale" ||
-    norm === "play tyndale magazine" ||
-    norm === "play talking magazine" ||
-    norm === "tyndale talking magazine" ||
-    norm === "tyndale magazine" ||
-    norm === "tyndale" ||
-    norm === "talking magazine"
-  ) {
-    return {
-      actionId: "play:story",
-      executorKey: "play",
-      command: { type: "play", mode: "story", storyId: "tyndale-edition" },
-      slots: { storyId: "tyndale-edition" },
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:play:tyndale-edition:{}`,
-    };
-  }
-  if (
-    norm.startsWith("play news in ") ||
-    norm.startsWith("news in ") ||
-    norm.startsWith("stories in ") ||
-    norm.startsWith("set location to ")
-  ) {
-    const loc = norm
-      .replace(/^(play news in|news in|stories in|set location to)\s+/, "")
-      .trim();
-    if (loc) {
-      return {
-        actionId: "setLocation",
-        executorKey: "setLocation",
-        command: { type: "setLocation", locationId: loc.toLowerCase(), name: loc },
-        slots: { location: loc },
-        confidence: 0.95,
-        evidence: [],
-        alternatives: [],
-        recognitionSessionId: request.sessionId,
-        databaseVersion: 5,
-        risk: "safe",
-        requiresConfirmation: false,
-        idempotencyKey: `${request.sessionId}:setLocation:${loc}`,
-      };
-    }
-  }
-  if (norm === "pause" || norm === "stop audio") {
-    return {
-      actionId: "pause",
-      executorKey: "pause",
-      command: { type: "pause" },
-      slots: {},
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:pause:{}`,
-    };
-  }
-  if (norm === "resume" || norm === "play" || norm === "unpause") {
-    return {
-      actionId: "resume",
-      executorKey: "resume",
-      command: { type: "resume" },
-      slots: {},
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:resume:{}`,
-    };
-  }
-  if (norm === "next" || norm === "next story" || norm === "skip story") {
-    return {
-      actionId: "next",
-      executorKey: "next",
-      command: { type: "next" },
-      slots: {},
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:next:{}`,
-    };
-  }
-  if (norm === "previous" || norm === "previous story") {
-    return {
-      actionId: "previous",
-      executorKey: "previous",
-      command: { type: "previous" },
-      slots: {},
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:previous:{}`,
-    };
-  }
-  if (norm === "open settings" || norm === "settings") {
-    return {
-      actionId: "navigate:settings",
-      executorKey: "navigate",
-      command: { type: "navigate", target: "settings" },
-      slots: {},
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:navigate:settings:{}`,
-    };
-  }
-  if (norm === "open library" || norm === "library") {
-    return {
-      actionId: "navigate:library",
-      executorKey: "navigate",
-      command: { type: "navigate", target: "library" },
-      slots: {},
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:navigate:library:{}`,
-    };
-  }
-  if (norm === "open discover" || norm === "discover") {
-    return {
-      actionId: "navigate:discover",
-      executorKey: "navigate",
-      command: { type: "navigate", target: "discover" },
-      slots: {},
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:navigate:discover:{}`,
-    };
-  }
-  if (norm === "home" || norm === "go home") {
-    return {
-      actionId: "navigate:home",
-      executorKey: "navigate",
-      command: { type: "navigate", target: "home" },
-      slots: {},
-      confidence: 0.98,
-      evidence: [],
-      alternatives: [],
-      recognitionSessionId: request.sessionId,
-      databaseVersion: 5,
-      risk: "safe",
-      requiresConfirmation: false,
-      idempotencyKey: `${request.sessionId}:navigate:home:{}`,
-    };
-  }
-  return undefined;
-}
+import { defaultResolverConfig } from "./matching/resolver-config";
+import {
+  decideResolution,
+  rankEntityCandidates,
+} from "./matching/candidate-ranker";
+import { parseUtterance } from "./matching/semantic-parser";
+import { makeInvocation } from "./matching/invocation";
 
 export class SQLiteVoiceResolver implements VoiceResolver {
   constructor(
-    private readonly repository: VoiceTermRepository = voiceTermRepository,
+    private readonly repository: VoiceEntityRepository = voiceTermRepository,
+    private readonly config: ResolverConfig = defaultResolverConfig,
   ) {}
+
   async resolve(request: VoiceResolveRequest): Promise<VoiceResolution> {
     if (request.signal?.aborted) return { kind: "cancelled", confidence: 0 };
 
-    const version = this.repository.getVersion
-      ? await this.repository.getVersion()
-      : 0;
-    const collected: (VoiceCandidate & {
-      score: number;
-      hypothesis: string;
-    })[] = [];
-    for (const hypothesis of request.hypotheses.slice(0, 5)) {
-      const normalized = normalizeVoiceText(hypothesis.transcript);
-      const candidates = await this.repository.search(
-        normalized,
-        16,
-        request.signal,
-      );
+    const hypotheses = request.hypotheses?.length
+      ? request.hypotheses
+      : [{ transcript: "", confidence: 0.8, rank: 0 }];
+
+    let lastUnrecognized: VoiceResolution | undefined;
+    for (const hypothesis of hypotheses.slice(0, 5)) {
       if (request.signal?.aborted) return { kind: "cancelled", confidence: 0 };
-      for (const candidate of candidates) {
-        const textScore = candidateScore(normalized, candidate);
-        const asrConfidence =
-          hypothesis.confidence < 0 ? 0.8 : hypothesis.confidence;
-        collected.push({
-          ...candidate,
-          hypothesis: normalized,
-          score: Math.min(
-            0.99,
-            textScore * 0.86 +
-              asrConfidence * 0.1 +
-              Math.max(0, 0.04 - hypothesis.rank * 0.01),
-          ),
+      const result = await this.resolveTranscript(
+        hypothesis.transcript,
+        request,
+      );
+      if (result.kind === "invocation" || result.kind === "choices") {
+        return result;
+      }
+      if (result.kind === "unrecognized") lastUnrecognized = result;
+    }
+    return (
+      lastUnrecognized ?? {
+        kind: "unrecognized",
+        confidence: 0,
+        reason: "no-match",
+      }
+    );
+  }
+
+  private async resolveTranscript(
+    transcript: string,
+    request: VoiceResolveRequest,
+  ): Promise<VoiceResolution> {
+    const parsed = parseUtterance(transcript);
+    if (!hasSemanticContent(parsed)) {
+      return { kind: "unrecognized", confidence: 0, reason: "no-command" };
+    }
+    if (!(await this.repository.isReady())) {
+      return {
+        kind: "unrecognized",
+        confidence: 0,
+        reason: "index-unavailable",
+      };
+    }
+
+    const claimed: RankedEntityCandidate[] = [];
+    let locationCandidate: RankedEntityCandidate | undefined;
+
+    if (parsed.relations.length) {
+      for (const relation of parsed.relations) {
+        const spanResult = await this.resolveSpan(
+          relation.span.text,
+          relation.expectedTypes,
+          relation.relation,
+          parsed,
+          request,
+        );
+        if (spanResult.kind === "choices") return spanResult.result;
+        if (spanResult.kind === "resolved") {
+          if (spanResult.candidate.entityType === "location") {
+            locationCandidate = spanResult.candidate;
+          } else {
+            claimed.push(spanResult.candidate);
+          }
+        }
+      }
+    } else {
+      for (const window of parsed.contentWindows) {
+        const spanResult = await this.resolveSpan(
+          window.text,
+          undefined,
+          undefined,
+          parsed,
+          request,
+        );
+        if (spanResult.kind === "choices") return spanResult.result;
+        if (spanResult.kind === "resolved") {
+          if (spanResult.candidate.entityType === "location") {
+            locationCandidate = spanResult.candidate;
+          } else {
+            claimed.push(spanResult.candidate);
+          }
+          break;
+        }
+      }
+    }
+
+    if (!claimed.length && !locationCandidate) {
+      return (
+        this.modifierOnlyInvocation(parsed, request) ?? {
+          kind: "unrecognized",
+          confidence: 0,
+          reason: "no-candidate",
+        }
+      );
+    }
+
+    const primary =
+      claimed.sort((left, right) => right.confidence - left.confidence)[0] ??
+      locationCandidate;
+    if (!primary) {
+      return { kind: "unrecognized", confidence: 0, reason: "no-candidate" };
+    }
+
+    const invocation = this.buildInvocation(
+      parsed.action,
+      parsed.modifiers,
+      primary,
+      locationCandidate,
+      request,
+    );
+    if (!invocation) {
+      return {
+        kind: "unrecognized",
+        confidence: primary.confidence,
+        reason: "weak-confidence",
+      };
+    }
+    return { kind: "invocation", invocation };
+  }
+
+  private async resolveSpan(
+    text: string,
+    expectedTypes: EntityType[] | undefined,
+    relation: EntityRelation | undefined,
+    parsed: ParsedUtterance,
+    request: VoiceResolveRequest,
+  ): Promise<
+    | { kind: "resolved"; candidate: RankedEntityCandidate }
+    | { kind: "choices"; result: VoiceResolution }
+    | { kind: "none" }
+  > {
+    const tokens = text.split(" ").filter(Boolean);
+    const rarity = await this.repository
+      .getTokenRarity(tokens)
+      .catch(() => ({}));
+    const candidates = await this.repository.searchEntities({
+      text,
+      normalizedText: text,
+      expectedTypes,
+      limit: this.config.limits.fts,
+      context: {
+        relation,
+        screenId: request.context.screenId,
+      },
+    });
+    if (!candidates.length) return { kind: "none" };
+    const ranked = rankEntityCandidates(candidates, {
+      config: this.config,
+      expectedTypes,
+      relation,
+      rarity,
+      queryTokens: tokens,
+    });
+    const decision = decideResolution(ranked, this.config);
+    if (decision.kind === "resolved") {
+      return { kind: "resolved", candidate: decision.candidate };
+    }
+    if (decision.kind === "ambiguous") {
+      return {
+        kind: "choices",
+        result: this.buildChoices(
+          decision.candidates,
+          parsed.action,
+          parsed.modifiers,
+          request,
+        ),
+      };
+    }
+    return { kind: "none" };
+  }
+
+  private buildChoices(
+    candidates: RankedEntityCandidate[],
+    action: SemanticAction,
+    modifiers: SemanticModifiers,
+    request: VoiceResolveRequest,
+  ): VoiceResolution {
+    const choices: VoiceChoice[] = [];
+    for (const candidate of candidates) {
+      const invocation = this.buildInvocation(
+        action,
+        modifiers,
+        candidate,
+        candidate.entityType === "location" ? candidate : undefined,
+        request,
+      );
+      if (!invocation) continue;
+      choices.push({
+        id: invocation.idempotencyKey,
+        label: candidate.canonicalName,
+        detail: `${Math.round(candidate.confidence * 100)}% match`,
+        invocation,
+        command: invocation.command,
+        alias: request.hypotheses[0]?.transcript,
+      });
+    }
+    if (!choices.length) {
+      return { kind: "unrecognized", confidence: 0, reason: "no-candidate" };
+    }
+    return {
+      kind: "choices",
+      prompt: "I found a few possible matches. Which one did you mean?",
+      choices,
+      confidence: candidates[0].confidence,
+      recognitionSessionId: request.sessionId,
+    };
+  }
+
+  private modifierOnlyInvocation(
+    parsed: ParsedUtterance,
+    request: VoiceResolveRequest,
+  ): VoiceResolution | undefined {
+    if (
+      parsed.action === "none" ||
+      parsed.action === "follow" ||
+      parsed.action === "unfollow"
+    ) {
+      return undefined;
+    }
+    const mode = modeForModifiers(parsed.modifiers);
+    if (!mode) return undefined;
+    const invocation = makeInvocation({
+      sessionId: request.sessionId,
+      actionId: `play:${mode}`,
+      executorKey: "play",
+      command: { type: "play", mode },
+      slots: {},
+      confidence: 0.9,
+      evidence: [],
+      risk: "safe",
+      requiresConfirmation: false,
+    });
+    return { kind: "invocation", invocation };
+  }
+
+  private buildInvocation(
+    action: SemanticAction,
+    modifiers: SemanticModifiers,
+    primary: RankedEntityCandidate,
+    locationCandidate: RankedEntityCandidate | undefined,
+    request: VoiceResolveRequest,
+  ): VoiceInvocation | undefined {
+    const candidate = primary;
+    const metadata = candidate.metadata ?? {};
+    const storyIds = Array.isArray(metadata.storyIds)
+      ? (metadata.storyIds as string[])
+      : [];
+    const type = candidate.entityType;
+    const evidence: VoiceEvidence[] = [
+      {
+        source: evidenceSource(candidate.matchMethod),
+        score: candidate.confidence,
+        matchedText: candidate.matchedAlias ?? candidate.canonicalName,
+      },
+    ];
+
+    if (type === "story") {
+      return makeInvocation({
+        sessionId: request.sessionId,
+        actionId: "play:story",
+        executorKey: "play",
+        command: { type: "play", mode: "story", storyId: candidate.entityId },
+        slots: { storyId: candidate.entityId },
+        confidence: candidate.confidence,
+        evidence,
+        risk: "safe",
+        requiresConfirmation: false,
+      });
+    }
+
+    if (type === "location") {
+      const onboarding =
+        request.context.currentPath === "/onboarding" ||
+        request.context.screenId === "onboarding";
+      if (onboarding) {
+        return makeInvocation({
+          sessionId: request.sessionId,
+          actionId: "onboardingSetTown",
+          executorKey: "onboardingSetTown",
+          command: {
+            type: "onboardingSetTown",
+            locationId: candidate.entityId,
+            name: candidate.canonicalName,
+          },
+          slots: {
+            locationId: candidate.entityId,
+            locationName: candidate.canonicalName,
+          },
+          confidence: candidate.confidence,
+          evidence,
+          risk: "privacy",
+          requiresConfirmation: true,
         });
       }
-    }
-    const ranked = bestPerTarget(collected).sort(
-      (left, right) => right.score - left.score,
-    );
-    const onOnboarding = request.context.currentPath === "/onboarding";
-    const actions = ranked
-      .map((item) => {
-        const onboardingAction =
-          item.kind === "action" &&
-          (item.targetId ?? "").startsWith("onboarding");
-        if (onboardingAction)
-          return {
-            ...item,
-            score: Math.min(
-              0.99,
-              item.score * (onOnboarding ? 1.18 : 0.82),
-            ),
-          };
-        return item;
-      })
-      .filter((item) => item.kind === "action")
-      .sort((left, right) => right.score - left.score);
-    const action = actions[0] ?? inferEntityAction(ranked);
-    if (!action || action.score < MEDIUM_CONFIDENCE) {
-      for (const h of request.hypotheses) {
-        const direct = matchDirectCommand(h.transcript, request);
-        if (direct) {
-          return { kind: "invocation", invocation: direct };
-        }
+      if (action === "play" || action === "find") {
+        return makeInvocation({
+          sessionId: request.sessionId,
+          actionId: "play:local",
+          executorKey: "play",
+          command: {
+            type: "play",
+            mode: "local",
+            locationId: candidate.entityId,
+          },
+          slots: {
+            locationId: candidate.entityId,
+            locationName: candidate.canonicalName,
+          },
+          confidence: candidate.confidence,
+          evidence,
+          risk: "safe",
+          requiresConfirmation: false,
+        });
       }
-      return {
-        kind: "unrecognized",
-        confidence: action?.score ?? 0,
-        reason: "No registered action matched",
-      };
+      return makeInvocation({
+        sessionId: request.sessionId,
+        actionId: "setLocation",
+        executorKey: "setLocation",
+        command: {
+          type: "setLocation",
+          locationId: candidate.entityId,
+          name: candidate.canonicalName,
+        },
+        slots: {
+          locationId: candidate.entityId,
+          locationName: candidate.canonicalName,
+        },
+        confidence: candidate.confidence,
+        evidence,
+        risk: "privacy",
+        requiresConfirmation: true,
+      });
     }
-    const invocation = createInvocation(action, ranked, request, version);
-    if (!invocation) {
-      for (const h of request.hypotheses) {
-        const direct = matchDirectCommand(h.transcript, request);
-        if (direct) {
-          return { kind: "invocation", invocation: direct };
-        }
-      }
-      return {
-        kind: "unrecognized",
-        confidence: action.score,
-        reason: "The matched action had invalid or incomplete slots",
-      };
+
+    if (type === "category" || type === "tag") {
+      const openTopic = action === "find";
+      const command: VoiceCommand = openTopic
+        ? { type: "openTopic", topicId: candidate.entityId }
+        : { type: "play", mode: "latest", topicId: candidate.entityId };
+      return makeInvocation({
+        sessionId: request.sessionId,
+        actionId: openTopic ? "openTopic" : "play:latest",
+        executorKey: openTopic ? "openTopic" : "play",
+        command,
+        slots: { topicId: candidate.entityId },
+        confidence: candidate.confidence,
+        evidence,
+        risk: "safe",
+        requiresConfirmation: false,
+      });
     }
-    const next = actions.find((item) => item.targetId !== action.targetId);
-    const ambiguous =
-      action.score < HIGH_CONFIDENCE ||
-      (!!next && action.score - next.score < MIN_MARGIN);
-    if (!ambiguous && !invocation.requiresConfirmation)
-      return { kind: "invocation", invocation };
-    const choices = [
-      action,
-      ...actions.filter((item) => item.targetId !== action.targetId),
-    ]
-      .slice(0, 3)
-      .map((candidate) => createInvocation(candidate, ranked, request, version))
-      .filter((item): item is VoiceInvocation => !!item)
-      .map((item) => ({
-        id: item.idempotencyKey,
-        label: labelFor(item),
-        detail: `${Math.round(item.confidence * 100)}% match`,
-        invocation: item,
-        command: item.command,
-        alias: request.hypotheses[0]?.transcript,
-      }));
-    return choices.length
-      ? {
-          kind: "choices",
-          prompt: invocation.requiresConfirmation
-            ? `Confirm ${labelFor(invocation)}.`
-            : "I found a few possible matches. Which one did you mean?",
-          choices,
-          confidence: action.score,
-        }
-      : { kind: "unrecognized", confidence: action.score };
+
+    if (action === "follow" || action === "unfollow") {
+      return makeInvocation({
+        sessionId: request.sessionId,
+        actionId: action,
+        executorKey: action,
+        command: { type: action, entityId: candidate.entityId },
+        slots: {
+          entityId: candidate.entityId,
+          entityType: type,
+          entityName: candidate.canonicalName,
+        },
+        confidence: candidate.confidence,
+        evidence,
+        risk: action === "unfollow" ? "destructive" : "safe",
+        requiresConfirmation: action === "unfollow",
+      });
+    }
+
+    const slots: VoiceSlots = {
+      entityId: candidate.entityId,
+      entityType: type,
+      entityName: candidate.canonicalName,
+    };
+    if (locationCandidate) {
+      slots.locationId = locationCandidate.entityId;
+      slots.locationName = locationCandidate.canonicalName;
+    }
+
+    if (modifiers.latest) {
+      return makeInvocation({
+        sessionId: request.sessionId,
+        actionId: "play:latest",
+        executorKey: "play",
+        command: {
+          type: "play",
+          mode: "latest",
+          entityId: candidate.entityId,
+          entityType: playEntityType(type),
+          entityName: candidate.canonicalName,
+          locationId: locationCandidate?.entityId,
+        },
+        slots,
+        confidence: candidate.confidence,
+        evidence,
+        risk: "safe",
+        requiresConfirmation: false,
+      });
+    }
+
+    if (storyIds.length) {
+      return makeInvocation({
+        sessionId: request.sessionId,
+        actionId: "play:story",
+        executorKey: "play",
+        command: {
+          type: "play",
+          mode: "story",
+          storyId: storyIds[0],
+          entityId: candidate.entityId,
+          entityType: playEntityType(type),
+          entityName: candidate.canonicalName,
+        },
+        slots: { ...slots, storyId: storyIds[0] },
+        confidence: candidate.confidence,
+        evidence,
+        risk: "safe",
+        requiresConfirmation: false,
+      });
+    }
+
+    return makeInvocation({
+      sessionId: request.sessionId,
+      actionId: "play:entity",
+      executorKey: "play",
+      command: {
+        type: "play",
+        mode: "entity",
+        entityId: candidate.entityId,
+        entityType: playEntityType(type),
+        entityName: candidate.canonicalName,
+      },
+      slots,
+      confidence: candidate.confidence,
+      evidence,
+      risk: "safe",
+      requiresConfirmation: false,
+    });
   }
 }
 
-function candidateScore(query: string, candidate: VoiceCandidate) {
-  if (query === candidate.normalized) return 1;
-  const base = scoreVoiceCandidate(
-    query,
-    candidate.normalized,
-    candidate.weight,
-  );
-  const coverage =
-    voiceTokens(candidate.normalized).filter((token) =>
-      voiceTokens(query).includes(token),
-    ).length / Math.max(voiceTokens(candidate.normalized).length, 1);
-  const sourceBoost =
-    candidate.source === "exact"
-      ? 0.18
-      : candidate.source === "fts"
-        ? 0.08
-        : candidate.source === "phonetic"
-          ? 0.05
-          : 0;
-  return Math.min(0.99, base * 0.72 + coverage * 0.2 + sourceBoost);
-}
-function bestPerTarget<T extends VoiceCandidate & { score: number }>(
-  items: T[],
-) {
-  const map = new Map<string, T>();
-  for (const item of items) {
-    const key = `${item.kind}:${item.targetId ?? item.id}`;
-    if (!map.get(key) || map.get(key)!.score < item.score) map.set(key, item);
+function playEntityType(
+  type: EntityType,
+): Extract<VoiceCommand, { type: "play" }>["entityType"] {
+  switch (type) {
+    case "organization":
+    case "publication":
+    case "creator":
+    case "category":
+      return type;
+    default:
+      return "publication";
   }
-  return [...map.values()];
 }
-function inferEntityAction(
-  ranked: (VoiceCandidate & { score: number; hypothesis: string })[],
-) {
-  const entity = ranked.find((item) =>
-    ["story", "topic", "entity", "location"].includes(item.kind),
+
+function modeForModifiers(modifiers: SemanticModifiers) {
+  if (modifiers.latest) return "latest" as const;
+  if (modifiers.local) return "local" as const;
+  if (modifiers.recommended) return "recommended" as const;
+  if (modifiers.trending) return "trending" as const;
+  if (modifiers.saved) return "saved" as const;
+  if (modifiers.downloads) return "downloads" as const;
+  return undefined;
+}
+
+function hasSemanticContent(parsed: ParsedUtterance): boolean {
+  return (
+    parsed.action !== "none" ||
+    parsed.contentWindows.length > 0 ||
+    parsed.relations.length > 0 ||
+    parsed.residual.length > 0
   );
-  if (!entity) return undefined;
-  return {
-    ...entity,
-    kind: "action" as const,
-    targetId:
-      entity.kind === "story"
-        ? "play:story"
-        : entity.kind === "topic"
-          ? "openTopic"
-          : entity.kind === "entity"
-            ? "follow"
-            : "setLocation",
-    executorKey: (entity.kind === "story"
-      ? "play"
-      : entity.kind === "topic"
-        ? "openTopic"
-        : entity.kind === "entity"
-          ? "follow"
-          : "setLocation") as VoiceExecutorKey,
-    score: entity.score * 0.88,
-  };
 }
-function createInvocation(
-  action: VoiceCandidate & { score: number; hypothesis: string },
-  ranked: (VoiceCandidate & { score: number; hypothesis: string })[],
-  request: VoiceResolveRequest,
-  version: number,
-): VoiceInvocation | undefined {
-  const actionId = action.targetId ?? "";
-  const executorKey = (action.executorKey ??
-    actionId.split(":")[0]) as VoiceExecutorKey;
-  const topic = ranked.find(
-    (item) => item.kind === "topic" && item.score >= 0.4,
-  );
-  const location = ranked.find(
-    (item) => item.kind === "location" && item.score >= 0.4,
-  );
-  const story = ranked.find(
-    (item) => item.kind === "story" && item.score >= 0.45,
-  );
-  const entity = ranked.find(
-    (item) => item.kind === "entity" && item.score >= 0.45,
-  );
-  const command = commandFor(
-    actionId,
-    executorKey,
-    { topic, location, story, entity },
-    action.hypothesis,
-  );
-  if (!command) return undefined;
-  const risk =
-    action.risk ??
-    (executorKey === "setLocation"
-      ? "privacy"
-      : ["clearQueue", "removeSaved", "removeDownload", "unfollow"].includes(
-            executorKey,
-          )
-        ? "destructive"
-        : "safe");
-  const slots: Record<string, string | number | boolean | undefined> = {
-    topicId: topic?.targetId ?? undefined,
-    locationId: location?.targetId ?? undefined,
-    locationName: location?.canonical,
-    storyId: story?.targetId ?? undefined,
-    entityId: entity?.targetId ?? undefined,
-  };
-  const idempotencyKey = `${request.sessionId}:${actionId}:${JSON.stringify(slots)}`;
-  return {
-    actionId,
-    executorKey,
-    command,
-    slots,
-    confidence: action.score,
-    evidence: [
-      {
-        source: action.source ?? "fts",
-        termId: action.id,
-        score: action.score,
-        matchedText: action.normalized,
-      },
-    ],
-    alternatives: [],
-    recognitionSessionId: request.sessionId,
-    databaseVersion: version,
-    risk,
-    requiresConfirmation:
-      action.confirmation === 1 || risk === "destructive" || risk === "privacy",
-    idempotencyKey,
-  };
+
+function evidenceSource(
+  method: RankedEntityCandidate["matchMethod"],
+): VoiceEvidence["source"] {
+  switch (method) {
+    case "exact":
+      return "exact";
+    case "fts":
+      return "fts";
+    case "trigram":
+      return "trigram";
+    case "phonetic":
+      return "phonetic";
+    default:
+      return "generic";
+  }
 }
-function commandFor(
-  actionId: string,
-  key: VoiceExecutorKey,
-  slots: {
-    topic?: VoiceCandidate;
-    location?: VoiceCandidate;
-    story?: VoiceCandidate;
-    entity?: VoiceCandidate;
-  },
-  query: string,
-): VoiceCommand | undefined {
-  const value = actionId.split(":")[1];
-  if (key === "navigate")
-    return {
-      type: "navigate",
-      target: (value ?? "home") as Extract<
-        VoiceCommand,
-        { type: "navigate" }
-      >["target"],
-    };
-  if (key === "play")
-    return {
-      type: "play",
-      mode: (value ?? (slots.story ? "story" : "latest")) as Extract<
-        VoiceCommand,
-        { type: "play" }
-      >["mode"],
-      storyId: slots.story?.targetId ?? undefined,
-      topicId: slots.topic?.targetId ?? undefined,
-      locationId: slots.location?.targetId ?? undefined,
-    };
-  if (key === "openTopic" && slots.topic?.targetId)
-    return { type: "openTopic", topicId: slots.topic.targetId };
-  if (key === "setLocation" && slots.location?.targetId)
-    return {
-      type: "setLocation",
-      locationId: slots.location.targetId,
-      name: slots.location.canonical,
-    };
-  if (key === "onboardingSetTown" && slots.location?.targetId)
-    return {
-      type: "onboardingSetTown",
-      locationId: slots.location.targetId,
-      name: slots.location.canonical,
-    };
-  if ((key === "follow" || key === "unfollow") && slots.entity?.targetId)
-    return { type: key, entityId: slots.entity.targetId };
-  if (key === "seek")
-    return {
-      type: "seek",
-      direction: value === "backward" ? "backward" : "forward",
-      seconds: numberFrom(query, 15),
-    };
-  if (key === "sleepTimer")
-    return { type: "sleepTimer", minutes: numberFrom(query, 20) };
-  if (key === "speed")
-    return { type: "speed", multiplier: validSpeed(Number(value)) };
-  if (key === "speedStep")
-    return { type: "speedStep", direction: value === "down" ? "down" : "up" };
-  if (key === "repeat")
-    return { type: "repeat", mode: value === "off" ? "off" : "on" };
-  if (key === "openLibrarySection")
-    return {
-      type: "openLibrarySection",
-      section: (value ?? "saved") as Extract<
-        VoiceCommand,
-        { type: "openLibrarySection" }
-      >["section"],
-    };
-  if (key === "search") return { type: "search", query };
-  return { type: key } as VoiceCommand;
-}
-function numberFrom(value: string, fallback: number) {
-  return Number(value.match(/\b(\d{1,3})\b/)?.[1] ?? fallback);
-}
-function validSpeed(value: number): SpeedMultiplier {
-  return ([0.75, 1, 1.25, 1.5, 2] as SpeedMultiplier[]).includes(
-    value as SpeedMultiplier,
-  )
-    ? (value as SpeedMultiplier)
-    : 1;
-}
-function labelFor(item: VoiceInvocation) {
-  return item.actionId.replaceAll(":", " ");
-}
+
 export const voiceResolver: VoiceResolver = new SQLiteVoiceResolver();

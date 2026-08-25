@@ -1,7 +1,7 @@
-import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
 import type { ContentItem, Entity } from "@/types";
 import { findReleasesForFollowedCreators } from "@/utils/notification-releases";
+import * as Notifications from "expo-notifications";
+import { Platform } from "react-native";
 
 const NEW_RELEASES_CHANNEL_ID = "new-releases-v2";
 let channelConfigured = false;
@@ -22,7 +22,7 @@ function hasNotificationPermission(
   return (
     settings.granted ||
     settings.ios?.status ===
-      Notifications.IosAuthorizationStatus.PROVISIONAL ||
+    Notifications.IosAuthorizationStatus.PROVISIONAL ||
     settings.ios?.status === Notifications.IosAuthorizationStatus.AUTHORIZED
   );
 }
@@ -40,7 +40,7 @@ export async function setupNotificationChannelAsync(): Promise<void> {
       lightColor: "#7B3068",
     });
     channelConfigured = true;
-  } catch {}
+  } catch { }
 }
 
 export async function requestNotificationPermissionsSafely(): Promise<boolean> {
@@ -117,5 +117,4 @@ export function setupNotificationResponseListener(
 }
 
 export { findReleasesForFollowedCreators };
-export type { CreatorRelease } from "@/types";
 

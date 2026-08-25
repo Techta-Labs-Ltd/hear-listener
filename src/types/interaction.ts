@@ -1,26 +1,4 @@
-import type { VoiceChoice, VoiceInvocation, VoiceInvocationSource } from "./voice";
-
-export type InteractionEvent =
-  | {
-      type: "VOICE_INVOKE";
-      source: VoiceInvocationSource;
-    }
-  | {
-      type: "SELECT_PREVIOUS";
-      source: "tilt-left" | "swipe-left" | "button";
-    }
-  | {
-      type: "SELECT_NEXT";
-      source: "tilt-right" | "swipe-right" | "button";
-    }
-  | {
-      type: "CONFIRM_SELECTION";
-      source: "voice" | "accessibilityAction" | "button";
-    }
-  | {
-      type: "CANCEL";
-      source: string;
-    };
+import type { VoiceChoice, VoiceInvocation } from "./voice";
 
 export type InteractionReceipt = {
   requestId: string;
@@ -62,6 +40,7 @@ export type ScreenVoiceCapability = {
   readout: () => string;
   localCommands: string[];
   remoteCapabilities: string[];
+  recognitionExpectation?: "natural-command" | "entity-search" | "short-response";
   resolverContext?: Record<string, unknown>;
   activeEntity?: {
     kind: "track" | "publication" | "topic" | "story";
@@ -71,32 +50,6 @@ export type ScreenVoiceCapability = {
   voiceEnabled: boolean;
   disabledReason?: string;
 };
-
-export type VoiceSessionPhase =
-  | { kind: "idle" }
-  | { kind: "permission-check"; sessionId: string }
-  | { kind: "preparing"; sessionId: string; screenSnapshotId?: string }
-  | { kind: "opening-microphone"; sessionId: string }
-  | {
-      kind: "listening";
-      sessionId: string;
-      openedAt: number;
-      preSpeechDeadlineAt: number;
-      speechDetected: boolean;
-    }
-  | { kind: "finalizing-transcript"; sessionId: string }
-  | { kind: "routing"; sessionId: string; route: "local" | "remote" }
-  | {
-      kind: "ambiguity";
-      sessionId: string;
-      interactionId: string;
-      selectedIndex: number;
-    }
-  | { kind: "confirming"; sessionId: string; interactionId: string }
-  | { kind: "executing"; sessionId: string; requestId: string }
-  | { kind: "speaking-result"; sessionId: string; requestId?: string }
-  | { kind: "error"; sessionId?: string; code: string; retryable: boolean }
-  | { kind: "cancelled"; sessionId?: string };
 
 export type PendingAmbiguity = {
   interactionId: string;
@@ -108,6 +61,10 @@ export type PendingAmbiguity = {
     invocation?: VoiceInvocation;
     confidence?: number;
     choice?: VoiceChoice;
+    entityId?: string;
+    entityType?: "organization" | "publication" | "creator" | "category" | "tag" | "location" | "story";
+    canonicalName?: string;
+    score?: number;
   }[];
   selectedIndex: number;
   createdAt: number;

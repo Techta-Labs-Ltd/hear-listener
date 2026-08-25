@@ -1,11 +1,10 @@
 import { GlobalVoiceDock } from "@/components/voice/GlobalVoiceDock";
 import { VoiceGestureLayer } from "@/components/voice/VoiceGestureLayer";
-import { PLAYBACK_EXECUTORS, VOICE_TIMING } from "@/constants/voice";
+import { PLAYBACK_EXECUTORS, VOICE_LANGUAGE, VOICE_TIMING } from "@/constants/voice";
 import { entities, stories, topics } from "@/data/catalogue";
 import { playListeningStartTone } from "@/lib/audio/one-shots";
 import { appHaptics } from "@/lib/haptics";
 import { routes, topicRoute } from "@/navigation/routes";
-import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { speechCoordinator, voiceAnnounce } from "@/services/voice/speech-coordinator";
 import {
   confidenceBand,
@@ -15,12 +14,41 @@ import {
 import { voiceEvents } from "@/services/voice/events";
 import { voiceExecutor } from "@/services/voice/executor";
 import { voiceTermRepository } from "@/services/voice/repository";
-import { voiceResolver } from "@/services/voice/resolver";
+import { localCommandRouter } from "@/services/voice/local-command-router";
 import { externalVoiceResolver } from "@/services/voice/external-resolver";
 import { ukSpeech } from "@/services/voice/speech";
-import { usePlaybackStore, usePreferencesStore, useVoiceStore } from "@/stores";
+import { ambiguityController } from "@/services/voice/ambiguity-controller";
+import { feedbackVoiceController } from "@/services/voice/feedback-controller";
+import { hasMeaningfulSpeech } from "@/services/voice/normalize";
+import {
+  detectPlatformSpeechCapabilities,
+  ensureVoicePermissions,
+} from "@/services/voice/speech-recognition-bootstrap";
+import {
+  buildRecognitionOptions,
+  resolveRecognitionPurpose,
+} from "@/services/voice/recognition-profile";
+import {
+  prepareAsrHypotheses,
+  sanitizedHypotheses,
+} from "@/services/voice/asr-hypotheses";
+import { WholeWordProfanityFilter } from "@/services/voice/profanity-filter";
+import {
+  modelStateNeedsRecheck,
+  speechModelManager,
+} from "@/services/voice/speech-model-manager";
+import {
+  usePlaybackStore,
+  usePreferencesStore,
+  useSpeechCapabilityStore,
+  useVoiceStore,
+} from "@/stores";
 import type {
   ActiveVoiceSession,
+  EntityType,
+  PlatformSpeechCapabilities,
+  RecognitionPurpose,
+  ScreenVoiceCapability,
   ScreenVoiceContext,
   VoiceChoice,
   VoiceContextValue,
@@ -29,13 +57,7 @@ import type {
   VoiceInvocationSource,
 } from "@/types";
 import { voiceCopy as copy } from "@/utils/copy/voice";
-import {
-  buildSpeechRecognitionOptions,
-  generateVoiceSessionId,
-  isSpeechRecognitionSupported,
-  requestMicrophonePermissionSafely,
-  supportsOnDeviceSpeechRecognition,
-} from "@/utils/voice";
+import { generateVoiceSessionId } from "@/utils/voice";
 import { useRouter } from "expo-router";
 import {
   ExpoSpeechRecognitionModule,
@@ -52,16 +74,21 @@ import {
 import { AppState } from "react-native";
 
 import { safeBack } from "@/utils/navigation";
-import { VoiceContext, useRegisterScreenVoice, useVoice } from "./voice-context";
+import { VoiceContext } from "./voice-context";
 
-export { VoiceContext, useRegisterScreenVoice, useVoice };
-
-async function getContextualTermsSafely(): Promise<string[]> {
+async function getRecognitionBiasTermsSafely(
+  screen?: ScreenVoiceContext | null,
+): Promise<string[]> {
   try {
+    const playback = usePlaybackStore.getState();
     return (
-      (await voiceTermRepository.getContextualTerms?.(
-        VOICE_TIMING.contextualTermsLimit,
-      )) ?? []
+      (await voiceTermRepository.getRecognitionBiasTerms?.({
+        screenId: screen?.id ?? "unknown",
+        activeEntityIds: playback.current
+          ? [`story:${playback.current.id}`]
+          : [],
+        limit: 40,
+      })) ?? []
     );
   } catch {
     return [];
@@ -93,13 +120,15 @@ function overlapAwareAppend(existing: string, incoming: string): boolean {
 export function VoiceProvider({ children }: PropsWithChildren) {
   const voice = useVoiceStore();
   const router = useRouter();
-  const accessibility = useAppAccessibility();
 
   const [activeScreen, setActiveScreen] = useState<ScreenVoiceContext | null>(
     null,
   );
   const activeScreenRef = useRef<ScreenVoiceContext | null>(null);
-  activeScreenRef.current = activeScreen;
+
+  useEffect(() => {
+    activeScreenRef.current = activeScreen;
+  }, [activeScreen]);
 
   const registerScreen = useCallback((screen: ScreenVoiceContext) => {
     activeScreenRef.current = screen;
@@ -151,7 +180,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   const asrStopWaitTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
-  const onDeviceRecognition = useRef(false);
+  const capabilitiesRef = useRef<PlatformSpeechCapabilities | null>(null);
+  const contextualStringsRef = useRef<string[]>([]);
+  const recognitionPurposeRef = useRef<RecognitionPurpose>("command");
 
   const finalSegments = useRef<string[]>([]);
   const currentPartial = useRef<string>("");
@@ -335,17 +366,17 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       if (alias) {
         const target =
           invocation.slots.storyId ??
-          invocation.slots.locationId ??
+          invocation.slots.entityId ??
           invocation.slots.topicId ??
-          invocation.slots.entityId;
-        const kind = invocation.slots.storyId
+          invocation.slots.locationId;
+        const kind: EntityType | undefined = invocation.slots.storyId
           ? "story"
-          : invocation.slots.locationId
-            ? "location"
+          : invocation.slots.entityId
+            ? ((invocation.slots.entityType as EntityType) ?? "publication")
             : invocation.slots.topicId
-              ? "topic"
-              : invocation.slots.entityId
-                ? "entity"
+              ? "category"
+              : invocation.slots.locationId
+                ? "location"
                 : undefined;
         if (kind && target) {
           await voiceTermRepository.learnAlias(
@@ -402,11 +433,26 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       } catch { }
       microphoneClosed.current = false;
 
+      const prepared = prepareAsrHypotheses(
+        hypotheses,
+        contextualStringsRef.current,
+      );
+      const cleanHypotheses = sanitizedHypotheses(prepared);
+      const primaryTranscript = cleanHypotheses[0]?.transcript?.trim() ?? "";
+
+      if (!hasMeaningfulSpeech(primaryTranscript)) {
+        finish(
+          "I didn't hear anything. Listening is closed. Shake device when you're ready to speak again.",
+          "no-speech",
+        );
+        return;
+      }
+
       if (session.source === "onboardingPractice") {
         await waitForMicrophoneClose();
         speechCoordinator.exitQuietMode();
         active.current = undefined;
-        const transcript = hypotheses[0]?.transcript?.trim() ?? "";
+        const transcript = primaryTranscript;
         useVoiceStore.getState().setVoice({
           state: "idle",
           transcript,
@@ -416,7 +462,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
       useVoiceStore.getState().setVoice({
         state: "resolving",
-        transcript: hypotheses[0]?.transcript ?? "",
+        transcript: primaryTranscript,
         message: "Finding the best match.",
       });
 
@@ -429,7 +475,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
       useVoiceStore.getState().setVoice({
         state: "resolving",
-        transcript: hypotheses[0]?.transcript ?? "",
+        transcript: cleanHypotheses[0]?.transcript ?? "",
         message: "Finding the best match.",
       });
 
@@ -451,73 +497,81 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           activeScreenRef.current?.pathname ??
           activeScreenRef.current?.title;
         const playback = usePlaybackStore.getState();
-        const screenId =
-          session.screenSnapshot?.id ??
-          activeScreenRef.current?.id ??
-          "unknown";
-        const result = await voiceResolver.resolve({
-          sessionId: id,
-          hypotheses,
-          signal: session.controller.signal,
-          context: {
-            screenId,
-            currentPath: snapshotPath,
-            pathname: snapshotPath ?? "",
-            screenState: session.screenSnapshot?.screenState,
-            activeContent: playback.current
-              ? {
-                id: playback.current.id,
-                type: "story" as const,
-                title: playback.current.title,
-              }
-              : undefined,
-            playback: {
-              playing: playback.playing,
-              contentId: playback.current?.id,
-              title: playback.current?.title,
-            },
-            preferences,
-            stories,
-            topics,
-            entities,
-          },
-        });
+        const snapshot = session.screenSnapshot ?? activeScreenRef.current;
+        const capability: ScreenVoiceCapability = {
+          screenId: snapshot?.id ?? "unknown",
+          routeKey: snapshotPath ?? "/",
+          instanceId: "inst",
+          stateVersion: 1,
+          phase: "ready",
+          title: snapshot?.title ?? "screen",
+          readout: () => "",
+          localCommands: snapshot?.commands ?? [],
+          remoteCapabilities: [],
+          recognitionExpectation: snapshot?.recognitionExpectation,
+          voiceEnabled: true,
+        };
+        const routeResult = await localCommandRouter.route(
+          id,
+          cleanHypotheses,
+          capability,
+          { preferences, playback, currentPath: snapshotPath ?? "/" },
+          session.controller.signal,
+        );
         clearTimeout(timeout);
         if (active.current?.id !== id || session.controller.signal.aborted)
           return;
 
-        if (result.kind === "invocation") {
+        if (routeResult.kind === "execute") {
           await voiceDiagnostics.record({
             timestamp: Date.now(),
             outcome: "success",
             latencyBand: latencyBand(Date.now() - started),
-            confidenceBand: confidenceBand(result.invocation.confidence),
-            actionId: result.invocation.actionId,
+            confidenceBand: confidenceBand(routeResult.invocation.confidence),
+            actionId: routeResult.invocation.actionId,
             databaseVersion:
-              typeof result.invocation.databaseVersion === "number"
-                ? result.invocation.databaseVersion
+              typeof routeResult.invocation.databaseVersion === "number"
+                ? routeResult.invocation.databaseVersion
                 : 1,
+            recognitionPurpose: recognitionPurposeRef.current,
+            speechLocale: VOICE_LANGUAGE,
           });
-          await execute(result.invocation);
-        } else if (result.kind === "choices") {
+          await execute(routeResult.invocation);
+        } else if (routeResult.kind === "ambiguity") {
+          active.current = undefined;
           useVoiceStore.getState().setVoice({
             state: "clarifying",
-            prompt: result.prompt,
-            message: result.prompt,
-            choices: result.choices,
+            prompt: routeResult.prompt,
+            message: routeResult.prompt,
+            choices: routeResult.choices,
           });
           void appHaptics.clarification();
           await voiceDiagnostics.record({
             timestamp: Date.now(),
             outcome: "clarification",
             latencyBand: latencyBand(Date.now() - started),
-            confidenceBand: confidenceBand(result.confidence),
+            confidenceBand: "medium",
           });
-          void voiceAnnounce(result.prompt);
-        } else if (result.kind !== "cancelled") {
+          void voiceAnnounce(routeResult.prompt);
+        } else if (routeResult.kind === "feedback") {
+          active.current = undefined;
+          useVoiceStore.getState().setVoice({
+            state: "clarifying",
+            prompt: routeResult.prompt,
+            message: routeResult.prompt,
+            choices: [],
+          });
+          void voiceAnnounce(routeResult.prompt);
+        } else if (routeResult.kind === "selected") {
+          active.current = undefined;
+          useVoiceStore.getState().setVoice({ state: "clarifying" });
+        } else if (routeResult.kind === "cancelled") {
+          active.current = undefined;
+          useVoiceStore.getState().resetVoice();
+        } else if (routeResult.kind === "remote") {
           useVoiceStore.getState().setVoice({ externalResolving: true });
           const externalResult = await externalVoiceResolver.resolve({
-            transcript: hypotheses[0]?.transcript ?? "",
+            transcript: cleanHypotheses[0]?.transcript ?? "",
             screenContext: {
               pathname: snapshotPath ?? "",
               playback: {
@@ -541,9 +595,14 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           } else {
             finish(
               "I could not match that command. Shake device to try again.",
-              result.reason ?? "unrecognised",
+              "unrecognised",
             );
           }
+        } else {
+          finish(
+            "I could not match that command. Shake device to try again.",
+            routeResult.reason ?? "unrecognised",
+          );
         }
       } catch (error) {
         clearTimeout(timeout);
@@ -579,19 +638,33 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
   const beginRecognition = useCallback(
     async (id: string) => {
-      const contextualStrings = await getContextualTermsSafely();
+      const session = active.current;
+      const purpose = resolveRecognitionPurpose({
+        expectation: session?.screenSnapshot?.recognitionExpectation,
+        clarifying: useVoiceStore.getState().state === "clarifying",
+        pendingAmbiguity: Boolean(ambiguityController.getPending()),
+        pendingFeedback: Boolean(feedbackVoiceController.getTarget()),
+      });
+      recognitionPurposeRef.current = purpose;
+      const contextualStrings = await getRecognitionBiasTermsSafely(
+        session?.screenSnapshot ?? activeScreenRef.current,
+      );
       if (active.current?.id !== id) return;
 
       finalSegments.current = [];
       currentPartial.current = "";
       lastSpeechActivityAt.current = 0;
+      contextualStringsRef.current = contextualStrings;
 
       speechCoordinator.enterQuietMode();
 
-      const options = buildSpeechRecognitionOptions({
-        onDevice: onDeviceRecognition.current,
+      const capabilities =
+        capabilitiesRef.current ?? detectPlatformSpeechCapabilities();
+      const options = buildRecognitionOptions(
+        purpose,
         contextualStrings,
-      });
+        capabilities,
+      );
 
       try {
         await ExpoSpeechRecognitionModule.start(options);
@@ -608,7 +681,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       resetActivityWatchdog(id);
 
     },
-    [finish, finishWithoutResume, resetActivityWatchdog],
+    [finishWithoutResume, resetActivityWatchdog],
   );
 
   const announceListeningPrompt = useCallback(async () => {
@@ -643,17 +716,17 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         screenSnapshot: screenSnapshot ? { ...screenSnapshot } : null,
       };
 
-      const supported = await isSpeechRecognitionSupported();
+      const capabilities = detectPlatformSpeechCapabilities();
+      capabilitiesRef.current = capabilities;
+      useSpeechCapabilityStore.getState().setCapabilities(capabilities);
       if (active.current?.id !== id) return;
-      if (!supported) {
+      if (!capabilities.recognitionAvailable) {
         finish(
           "Voice isn't supported on this device. You can still browse and listen by touch.",
           "service-not-allowed",
         );
         return;
       }
-
-      onDeviceRecognition.current = supportsOnDeviceSpeechRecognition();
 
       useVoiceStore.getState().setVoice({
         state: "preparing",
@@ -664,17 +737,33 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       });
 
       try {
-        const { granted, undetermined } =
-          await requestMicrophonePermissionSafely();
-        if (undetermined) {
+        const microphoneState =
+          await ExpoSpeechRecognitionModule.getMicrophonePermissionsAsync();
+        const willPrompt =
+          microphoneState &&
+          !microphoneState.granted &&
+          microphoneState.canAskAgain !== false;
+        if (willPrompt) {
           speechCoordinator.exitQuietMode();
           await voiceAnnounce(copy.permissionExplain);
         }
         if (active.current?.id !== id) return;
-        if (!granted) {
+
+        const permission = await ensureVoicePermissions(capabilities, false);
+        useSpeechCapabilityStore
+          .getState()
+          .setPermissionState(permission.permissionState);
+        if (active.current?.id !== id) return;
+        if (!permission.ok) {
+          const message =
+            permission.failureReason === "microphone-denied"
+              ? "Microphone access is off. Open Settings to enable microphone."
+              : permission.failureReason === "speech-restricted"
+                ? "Speech recognition is restricted on this device. You can still browse and listen by touch."
+                : "Speech recognition is off. Open Settings to enable it.";
           finishWithoutResume(
-            "Microphone access is off. Open Settings to enable microphone.",
-            "permission-denied",
+            message,
+            permission.failureReason ?? "permission-denied",
           );
           return;
         }
@@ -707,7 +796,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       ExpoSpeechRecognitionModule.stop();
     } catch { }
     const transcript = useVoiceStore.getState().transcript.trim();
-    if (transcript) {
+    if (hasMeaningfulSpeech(transcript)) {
       void resolve(session.id, [{ transcript, confidence: 0.8, rank: 0 }]);
       return;
     }
@@ -786,7 +875,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         .map((s) => s.trim())
         .filter(Boolean)
         .join(" ");
-      if (full) {
+      if (hasMeaningfulSpeech(full)) {
         if (postSpeechSilenceTimer.current)
           clearTimeout(postSpeechSilenceTimer.current);
         void resolve(session.id, [{ transcript: full, confidence: 0.85, rank: 0 }]);
@@ -801,73 +890,82 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
   useSpeechRecognitionEvent("speechstart", () => {
     const session = active.current;
-    if (!session) return;
-    session.speechDetected = true;
-    resetActivityWatchdog(session.id);
-    if (preSpeechTimer.current) clearTimeout(preSpeechTimer.current);
-    if (noSpeechHapticTimer.current) clearTimeout(noSpeechHapticTimer.current);
-    preSpeechTimer.current = undefined;
-    noSpeechHapticTimer.current = undefined;
+    if (!session || session.controller.signal.aborted) return;
     lastSpeechActivityAt.current = Date.now();
 
-    useVoiceStore.getState().setVoice({
-      state: "listening",
-      speechDetected: true,
-      message: "Listening…",
-    });
+    const full = [...finalSegments.current, currentPartial.current]
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .join(" ");
 
-    if (postSpeechSilenceTimer.current)
-      clearTimeout(postSpeechSilenceTimer.current);
-    postSpeechSilenceTimer.current = setTimeout(() => {
-      const full = [...finalSegments.current, currentPartial.current]
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .join(" ");
-      if (full && active.current?.id === session.id) {
-        void resolve(session.id, [{ transcript: full, confidence: 0.9, rank: 0 }]);
-      }
-    }, VOICE_TIMING.postSpeechSilence);
+    if (hasMeaningfulSpeech(full)) {
+      session.speechDetected = true;
+      resetActivityWatchdog(session.id);
+      if (preSpeechTimer.current) clearTimeout(preSpeechTimer.current);
+      if (noSpeechHapticTimer.current) clearTimeout(noSpeechHapticTimer.current);
+      preSpeechTimer.current = undefined;
+      noSpeechHapticTimer.current = undefined;
+
+      useVoiceStore.getState().setVoice({
+        state: "listening",
+        speechDetected: true,
+        message: "Listening…",
+      });
+
+      if (postSpeechSilenceTimer.current)
+        clearTimeout(postSpeechSilenceTimer.current);
+      postSpeechSilenceTimer.current = setTimeout(() => {
+        const fullNow = [...finalSegments.current, currentPartial.current]
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .join(" ");
+        if (hasMeaningfulSpeech(fullNow) && active.current?.id === session.id) {
+          void resolve(session.id, [{ transcript: fullNow, confidence: 0.9, rank: 0 }]);
+        }
+      }, VOICE_TIMING.postSpeechSilence);
+    }
   });
 
   useSpeechRecognitionEvent("speechend", () => {
     const session = active.current;
-    if (!session || session.finalHandled) return;
+    if (!session || session.finalHandled || session.controller.signal.aborted) return;
     lastSpeechActivityAt.current = Date.now();
 
-    useVoiceStore.getState().setVoice({
-      state: "listening",
-      speechDetected: true,
-      message: "Listening…",
-    });
+    const full = [...finalSegments.current, currentPartial.current]
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .join(" ");
 
-    if (postSpeechSilenceTimer.current)
-      clearTimeout(postSpeechSilenceTimer.current);
-    postSpeechSilenceTimer.current = setTimeout(() => {
-      const full = [...finalSegments.current, currentPartial.current]
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .join(" ");
-      if (full && active.current?.id === session.id) {
-        void resolve(session.id, [{ transcript: full, confidence: 0.9, rank: 0 }]);
-      }
-    }, VOICE_TIMING.postSpeechSilence);
-  });
-
-  useSpeechRecognitionEvent("result", (event) => {
-    const session = active.current;
-    if (!session || session.controller.signal.aborted) return;
-
-    if (session.speechDetected) {
-      resetActivityWatchdog(session.id);
-    }
-
-    if (!session.speechDetected) {
+    if (hasMeaningfulSpeech(full)) {
       session.speechDetected = true;
       if (preSpeechTimer.current) clearTimeout(preSpeechTimer.current);
       if (noSpeechHapticTimer.current) clearTimeout(noSpeechHapticTimer.current);
       preSpeechTimer.current = undefined;
       noSpeechHapticTimer.current = undefined;
+
+      useVoiceStore.getState().setVoice({
+        state: "listening",
+        speechDetected: true,
+        message: "Listening…",
+      });
+
+      if (postSpeechSilenceTimer.current)
+        clearTimeout(postSpeechSilenceTimer.current);
+      postSpeechSilenceTimer.current = setTimeout(() => {
+        const fullNow = [...finalSegments.current, currentPartial.current]
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .join(" ");
+        if (hasMeaningfulSpeech(fullNow) && active.current?.id === session.id) {
+          void resolve(session.id, [{ transcript: fullNow, confidence: 0.9, rank: 0 }]);
+        }
+      }, VOICE_TIMING.postSpeechSilence);
     }
+  });
+
+  useSpeechRecognitionEvent("result", (event) => {
+    const session = active.current;
+    if (!session || session.controller.signal.aborted) return;
 
     lastSpeechActivityAt.current = Date.now();
 
@@ -899,54 +997,71 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         .filter(Boolean)
         .join(" ");
 
-      useVoiceStore.getState().setVoice({
-        transcript: fullTranscript,
-        speechDetected: true,
-        message: "Listening…",
-      });
+      if (hasMeaningfulSpeech(fullTranscript)) {
+        if (!session.speechDetected) {
+          session.speechDetected = true;
+          if (preSpeechTimer.current) clearTimeout(preSpeechTimer.current);
+          if (noSpeechHapticTimer.current) clearTimeout(noSpeechHapticTimer.current);
+          preSpeechTimer.current = undefined;
+          noSpeechHapticTimer.current = undefined;
+        }
+        resetActivityWatchdog(session.id);
 
-      if (
-        event.isFinal ||
-        fullTranscript.length >= VOICE_TIMING.maxTranscriptCharacters
-      ) {
+        const displayTranscript = new WholeWordProfanityFilter(
+          contextualStringsRef.current,
+        )
+          .sanitize(fullTranscript, "remove")
+          .sanitized;
+
+        useVoiceStore.getState().setVoice({
+          transcript: displayTranscript,
+          speechDetected: true,
+          message: "Listening…",
+        });
+
+        if (
+          event.isFinal ||
+          fullTranscript.length >= VOICE_TIMING.maxTranscriptCharacters
+        ) {
+          if (postSpeechSilenceTimer.current)
+            clearTimeout(postSpeechSilenceTimer.current);
+          const resolvedHypotheses = hypotheses.map((h, i) =>
+            i === 0 ? { ...h, transcript: fullTranscript } : h,
+          );
+          if (resolvedHypotheses.length === 0) {
+            resolvedHypotheses.push({
+              transcript: fullTranscript,
+              confidence: 0.85,
+              rank: 0,
+            });
+          }
+          void resolve(session.id, resolvedHypotheses);
+          return;
+        }
+
         if (postSpeechSilenceTimer.current)
           clearTimeout(postSpeechSilenceTimer.current);
-        const resolvedHypotheses = hypotheses.map((h, i) =>
-          i === 0 ? { ...h, transcript: fullTranscript } : h,
-        );
-        if (resolvedHypotheses.length === 0) {
-          resolvedHypotheses.push({
-            transcript: fullTranscript,
-            confidence: 0.85,
-            rank: 0,
-          });
-        }
-        void resolve(session.id, resolvedHypotheses);
-        return;
+        postSpeechSilenceTimer.current = setTimeout(() => {
+          const fullNow = [...finalSegments.current, currentPartial.current]
+            .map((s) => s.trim())
+            .filter(Boolean)
+            .join(" ");
+          if (hasMeaningfulSpeech(fullNow) && active.current?.id === session.id) {
+            const resolvedHypotheses = hypotheses.map((h, i) =>
+              i === 0 ? { ...h, transcript: fullNow } : h,
+            );
+            if (resolvedHypotheses.length === 0) {
+              resolvedHypotheses.push({
+                transcript: fullNow,
+                confidence: 0.85,
+                rank: 0,
+              });
+            }
+            void resolve(session.id, resolvedHypotheses);
+          }
+        }, VOICE_TIMING.postSpeechSilence);
       }
     }
-
-    if (postSpeechSilenceTimer.current)
-      clearTimeout(postSpeechSilenceTimer.current);
-    postSpeechSilenceTimer.current = setTimeout(() => {
-      const full = [...finalSegments.current, currentPartial.current]
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .join(" ");
-      if (full && active.current?.id === session.id) {
-        const resolvedHypotheses = hypotheses.map((h, i) =>
-          i === 0 ? { ...h, transcript: full } : h,
-        );
-        if (resolvedHypotheses.length === 0) {
-          resolvedHypotheses.push({
-            transcript: full,
-            confidence: 0.85,
-            rank: 0,
-          });
-        }
-        void resolve(session.id, resolvedHypotheses);
-      }
-    }, VOICE_TIMING.postSpeechSilence);
   });
 
   useSpeechRecognitionEvent("error", (event) => {
@@ -975,9 +1090,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     void voiceTermRepository
       .initialize()
-      .then(() => voiceTermRepository.healthCheck?.())
+      .then(() => voiceTermRepository.healthCheck())
       .then((health) => {
-        if (health && !health.healthy) {
+        if (health && !health.ready) {
           useVoiceStore.getState().setVoice({
             state: "error",
             message: "The voice database needs to be restored.",
@@ -990,6 +1105,22 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     const sub = AppState.addEventListener("change", (state) => {
       if (state !== "active" && active.current) endSession();
+      if (state !== "active") return;
+      const capabilityState = useSpeechCapabilityStore.getState();
+      const capabilities = capabilityState.capabilities;
+      if (
+        capabilities?.platform === "android" &&
+        modelStateNeedsRecheck(capabilityState.modelState)
+      ) {
+        void speechModelManager
+          .checkEnGbModel(capabilities)
+          .then((modelState) => {
+            useSpeechCapabilityStore.getState().setModelState(modelState);
+          })
+          .catch(() => {
+            useSpeechCapabilityStore.getState().setModelState("error");
+          });
+      }
     });
     return () => sub.remove();
   }, [endSession]);

@@ -1,40 +1,6 @@
-import { Platform } from "react-native";
-import { ExpoSpeechRecognitionModule } from "expo-speech-recognition";
-import {
-  VOICE_LANGUAGE,
-  VOICE_MAX_ALTERNATIVES,
-  VOICE_TIMING,
-} from "@/constants/voice";
-
-export async function isSpeechRecognitionSupported(): Promise<boolean> {
-  try {
-    if (Platform.OS === "web") {
-      return (
-        (typeof window !== "undefined" &&
-          ("SpeechRecognition" in window ||
-            "webkitSpeechRecognition" in window)) ||
-        Boolean(ExpoSpeechRecognitionModule?.isRecognitionAvailable?.())
-      );
-    }
-    const avail = ExpoSpeechRecognitionModule?.isRecognitionAvailable?.();
-    return avail !== false;
-  } catch {
-    return true;
-  }
-}
-
-export function supportsOnDeviceSpeechRecognition(): boolean {
-  try {
-    if (Platform.OS === "web") return false;
-    return Boolean(ExpoSpeechRecognitionModule?.supportsOnDeviceRecognition?.());
-  } catch {
-    return false;
-  }
-}
-
 import type { MicrophonePermissionStatus } from "@/types";
-
-export type { MicrophonePermissionStatus };
+import { ExpoSpeechRecognitionModule } from "expo-speech-recognition";
+import { Platform } from "react-native";
 
 export async function checkMicrophonePermissionStatus(): Promise<MicrophonePermissionStatus> {
   if (Platform.OS === "web") {
@@ -50,7 +16,7 @@ export async function checkMicrophonePermissionStatus(): Promise<MicrophonePermi
           return { granted: false, status: "blocked", canAskAgain: false };
         }
         return { granted: false, status: "undetermined", canAskAgain: true };
-      } catch {}
+      } catch { }
     }
     return { granted: false, status: "undetermined", canAskAgain: true };
   }
@@ -133,33 +99,4 @@ export async function requestMicrophonePermissionSafely(): Promise<{
   } catch {
     return { granted: false, status: "denied" };
   }
-}
-
-export function buildSpeechRecognitionOptions(params: {
-  onDevice: boolean;
-  contextualStrings: string[];
-}) {
-  const isIos = Platform.OS === "ios";
-
-  return {
-    lang: VOICE_LANGUAGE,
-    interimResults: true,
-    continuous: isIos,
-    maxAlternatives: VOICE_MAX_ALTERNATIVES,
-    contextualStrings: params.contextualStrings,
-    requiresOnDeviceRecognition: false,
-    addsPunctuation: false,
-    iosTaskHint: "dictation" as const,
-    iosVoiceProcessingEnabled: true,
-    iosCategory: isIos
-      ? {
-          category: "playAndRecord" as const,
-          categoryOptions: ["defaultToSpeaker", "allowBluetooth"] as (
-            | "defaultToSpeaker"
-            | "allowBluetooth"
-          )[],
-          mode: "voiceChat" as const,
-        }
-      : undefined,
-  };
 }

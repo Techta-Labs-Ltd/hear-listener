@@ -5,7 +5,6 @@ import {
   GoogleSignInButton,
 } from "@/components/onboarding/ProviderButtons";
 import { AppText } from "@/components/ui/AppText";
-import { ListeningPanel } from "@/components/voice/ListeningPanel";
 import { Pressable, ScrollView, View } from "@/tw";
 import type { AccountStepProps } from "@/types";
 import { Platform } from "react-native";
@@ -15,23 +14,11 @@ export function AccountStep({
   screenReaderEnabled,
   signingIn,
   error,
-  voiceState,
-  voiceMessage,
-  transcript,
-  deadlineAt,
-  speechDetected,
   onSignIn,
   onSkip,
 }: AccountStepProps) {
   const insets = useSafeAreaInsets();
   const isIos = Platform.OS === "ios";
-  const isVoiceActive =
-    voiceState === "listening" ||
-    voiceState === "resolving" ||
-    voiceState === "executing" ||
-    voiceState === "preparing" ||
-    voiceState === "error" ||
-    voiceState === "clarifying";
 
   return (
     <View className="flex-1 bg-canvas justify-between">
@@ -96,35 +83,18 @@ export function AccountStep({
         </View>
       </ScrollView>
 
-      {isVoiceActive ? (
-        <View className="flex-1 justify-end">
-          <ListeningPanel
-            state={voiceState ?? "listening"}
-            message={voiceMessage}
-            transcript={transcript}
-            prompt={
-              isIos
-                ? "Say “Apple” or “Not now.”"
-                : "Say “Google” or “Not now.”"
-            }
-            deadlineAt={deadlineAt}
-            speechDetected={speechDetected}
-          />
-        </View>
-      ) : (
-        <View className="px-6 pb-6">
-          <InstructionFooter
-            title={
-              screenReaderEnabled
-                ? "Select an option above to continue"
-                : isIos
-                  ? "Choose Apple or select Not now"
-                  : "Choose Google or select Not now"
-            }
-            subtitle="Shake device to speak. You can also sign in anytime in Settings."
-          />
-        </View>
-      )}
+      <View className="px-6 pb-6">
+        <InstructionFooter
+          title={
+            screenReaderEnabled
+              ? "Select an option above to continue"
+              : isIos
+                ? "Choose Apple or select Not now"
+                : "Choose Google or select Not now"
+          }
+          subtitle="Shake device to speak. You can also sign in anytime in Settings."
+        />
+      </View>
     </View>
   );
 }

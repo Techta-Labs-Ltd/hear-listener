@@ -20,7 +20,6 @@ import {
   SCREEN_IDLE_TIMEOUT_2,
 } from "@/constants/screen-hints";
 import { appHaptics } from "@/lib/haptics";
-import { playListeningStartTone } from "@/lib/audio/one-shots";
 import {
   checkMicrophonePermissionStatus,
   requestMicrophonePermissionSafely,
@@ -174,18 +173,29 @@ export function useOnboardingSetup() {
     [clearIdleTimers, voice],
   );
 
-  const startAccountVoiceSelection = useCallback(async () => {
-    clearIdleTimers();
-    isAccountListening.current = true;
-    void speechCoordinator.cancel();
-    speechCoordinator.exitQuietMode();
+  const startAccountVoiceSelection = useCallback(
+    async (introSpeech?: string) => {
+      clearIdleTimers();
+      isAccountListening.current = true;
+      if (introSpeech) {
+        speechCoordinator.exitQuietMode();
+        await speechCoordinator.speakBeforeListening({
+          text: introSpeech,
+          force: true,
+        });
+      } else {
+        void speechCoordinator.cancel();
+        speechCoordinator.exitQuietMode();
+      }
 
-    void appHaptics.listening();
-    void voice.startVoiceSession({
-      source: "onboardingPractice",
-      announceLocation: false,
-    });
-  }, [clearIdleTimers, voice]);
+      void appHaptics.listening();
+      void voice.startVoiceSession({
+        source: "onboardingPractice",
+        announceLocation: false,
+      });
+    },
+    [clearIdleTimers, voice],
+  );
 
   const advanceWelcome = useCallback(async () => {
     clearIdleTimers();
@@ -243,7 +253,11 @@ export function useOnboardingSetup() {
       accessibility.announce(msg, "onboarding:voiceTestError", true);
     } else if (phase === "account") {
       if (!isTransitioning.current) {
-        void startAccountVoiceSelection();
+        const accountIntro =
+          Platform.OS === "ios"
+            ? ONBOARDING_SPEECH.accountIos
+            : ONBOARDING_SPEECH.accountAndroid;
+        void startAccountVoiceSelection(accountIntro);
       }
       isTransitioning.current = false;
     }
@@ -425,7 +439,11 @@ export function useOnboardingSetup() {
                 force: true,
               });
               setPhase("account");
-              await startAccountVoiceSelection();
+              const accountIntro =
+                Platform.OS === "ios"
+                  ? ONBOARDING_SPEECH.accountIos
+                  : ONBOARDING_SPEECH.accountAndroid;
+              await startAccountVoiceSelection(accountIntro);
             })();
             return;
           }

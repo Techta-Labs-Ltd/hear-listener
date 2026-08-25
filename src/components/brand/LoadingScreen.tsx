@@ -19,7 +19,6 @@ export function LoadingScreen() {
 
   useEffect(() => {
     let index = 0;
-    setDisplayedText("");
     const interval = setInterval(() => {
       index += 1;
       setDisplayedText(FULL_TEXT.slice(0, index));

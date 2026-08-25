@@ -7,7 +7,7 @@ export const VOICE_TIMING = {
   gentleReminder: 4000,
   postSpeechSilence: 1200,
   maxTranscriptCharacters: 800,
-  recognitionActivityWatchdog: 60000,
+  recognitionActivityWatchdog: 45000,
   maxRecognitionDuration: 60000,
   resolutionTimeout: 15000,
   contextualTermsLimit: 80,

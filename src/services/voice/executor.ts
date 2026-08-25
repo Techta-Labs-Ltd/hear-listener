@@ -1,4 +1,5 @@
 import type {
+  ContentItem,
   PlayCommandInput,
   PlayMode,
   VoiceCommand,
@@ -43,10 +44,13 @@ function findStoryToPlay(command: PlayCommandInput, services: VoiceServices) {
     case "current":
       return undefined;
     case "latest": {
-      const matchingStories = command.topicId
-        ? stories.filter((story) => story.topicIds?.includes(command.topicId!))
+      const scoped = command.entityName
+        ? stories.filter((story) => matchesEntity(story, command.entityName))
         : stories;
-      return matchingStories.at(-1) ?? stories.at(-1);
+      const matchingStories = command.topicId
+        ? scoped.filter((story) => story.topicIds?.includes(command.topicId!))
+        : scoped;
+      return matchingStories.at(-1) ?? scoped.at(-1) ?? stories.at(-1);
     }
     case "local":
       return (
@@ -70,7 +74,20 @@ function findStoryToPlay(command: PlayCommandInput, services: VoiceServices) {
       );
     case "story":
       return stories.find((story) => story.id === command.storyId);
+    case "entity":
+      return command.entityName
+        ? stories.find((story) => matchesEntity(story, command.entityName))
+        : undefined;
   }
+}
+
+function matchesEntity(story: ContentItem, entityName: string | undefined) {
+  if (!entityName) return false;
+  const name = entityName.toLowerCase();
+  return (
+    story.creator.toLowerCase() === name ||
+    story.publication.toLowerCase() === name
+  );
 }
 
 function emptyMessageFor(mode: PlayMode) {
@@ -93,6 +110,7 @@ function successMessageFor(command: PlayCommandInput, title: string) {
     saved: "Playing your saved audio",
     downloads: "Playing your downloads",
     story: `Playing ${title}`,
+    entity: `Playing ${title}`,
   };
 
   if (command.mode !== "latest") {
@@ -116,6 +134,8 @@ export function runCommand(
     case "close":
       s.navigate.back();
       return null;
+    case "cancel":
+      return "";
     case "openLibrarySection": {
       s.navigate.push(librarySectionRoute(command.section));
       return `Opening ${command.section}`;
@@ -388,6 +408,7 @@ function navigate(
 const EXECUTOR_KEYS = new Set<VoiceExecutorKey>([
   "navigate",
   "close",
+  "cancel",
   "openLibrarySection",
   "openTopic",
   "setLocation",

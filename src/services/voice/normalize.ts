@@ -1,3 +1,5 @@
+import type { DoubleMetaphoneCodes } from "@/types";
+
 const NUMBER_WORDS: Record<string, string> = {
   zero: "0",
   one: "1",
@@ -38,6 +40,31 @@ const SAFE_ASR: Record<string, string> = {
   here: "hear",
   hair: "hear",
   paws: "pause",
+  ports: "pause",
+  blutooth: "bluetooth",
+  bluettoh: "bluetooth",
+  bluetoth: "bluetooth",
+  blutooh: "bluetooth",
+  blootuth: "bluetooth",
+  acessibility: "accessibility",
+  locashun: "location",
+  loction: "location",
+  locaton: "location",
+  lacation: "location",
+  loacation: "location",
+  ocation: "location",
+  localation: "location",
+  liberty: "library",
+  magazin: "magazine",
+};
+
+const PHRASE_VARIANTS: Record<string, string> = {
+  "why fi settings": "wifi settings",
+  "wife eye settings": "wifi settings",
+  "blue tooth": "bluetooth",
+  "access ability": "accessibility",
+  "re wind": "rewind",
+  "here app": "hear app",
 };
 
 const JOINED_WORDS: Record<string, string> = {
@@ -63,6 +90,9 @@ export function normalizeVoiceText(value: string): string {
     .replace(/[^a-z0-9\s]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+  for (const [from, to] of Object.entries(PHRASE_VARIANTS)) {
+    text = text.replaceAll(from, to);
+  }
   return text
     .split(" ")
     .filter(Boolean)
@@ -79,17 +109,17 @@ export function voiceTokens(value: string): string[] {
   return normalizeVoiceText(value).split(" ").filter(Boolean);
 }
 
-export function stemWord(word: string): string {
-  if (word.length <= 3) return word;
-  const s = word.toLowerCase();
-  if (s.endsWith("ies") && s.length > 4) return s.slice(0, -3) + "y";
-  if (s.endsWith("ing") && s.length > 4) return s.slice(0, -3);
-  if (s.endsWith("ed") && s.length > 3) return s.slice(0, -2);
-  if (s.endsWith("es") && s.length > 3) return s.slice(0, -2);
-  if (s.endsWith("s") && !s.endsWith("ss") && s.length > 2) return s.slice(0, -1);
-  if (s.endsWith("tion") && s.length > 5) return s.slice(0, -4);
-  if (s.endsWith("ly") && s.length > 3) return s.slice(0, -2);
-  return s;
+const VALID_SINGLE_LETTER_WORDS = new Set(["a", "i", "o"]);
+
+export function hasMeaningfulSpeech(value: string | null | undefined): boolean {
+  if (!value) return false;
+  const tokens = voiceTokens(value);
+  if (tokens.length === 0) return false;
+  return tokens.some((token) => {
+    if (token.length >= 2) return true;
+    if (/^\d+$/.test(token)) return true;
+    return VALID_SINGLE_LETTER_WORDS.has(token);
+  });
 }
 
 export function metaphone(word: string): string {
@@ -233,6 +263,20 @@ export function phoneticKey(value: string): string {
     .join("-");
 }
 
+export function doubleMetaphoneCodes(value: string): DoubleMetaphoneCodes {
+  return {
+    primary: phoneticKey(value),
+    secondary: voiceTokens(value).map(soundexKey).join("-"),
+  };
+}
+
+export function phoneticCodeSimilarity(left: string, right: string): number {
+  if (!left || !right) return 0;
+  if (left === right) return 1;
+  const maxLength = Math.max(left.length, right.length);
+  return Math.max(0, 1 - damerauLevenshteinDistance(left, right) / maxLength);
+}
+
 export function voiceTrigrams(value: string): string[] {
   const text = normalizeVoiceText(value).replaceAll(" ", "_");
   if (!text) return [];
@@ -242,10 +286,6 @@ export function voiceTrigrams(value: string): string[] {
     grams.add(padded.slice(index, index + 3));
   }
   return [...grams];
-}
-
-export function editDistance(left: string, right: string): number {
-  return damerauLevenshteinDistance(left, right);
 }
 
 export function damerauLevenshteinDistance(left: string, right: string): number {
@@ -284,150 +324,3 @@ export function damerauLevenshteinDistance(left: string, right: string): number 
   return d[lenL][lenR];
 }
 
-export function longestCommonSubsequenceLength(
-  left: string,
-  right: string,
-): number {
-  const m = left.length;
-  const n = right.length;
-  if (m === 0 || n === 0) return 0;
-
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    new Array(n + 1).fill(0),
-  );
-
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (left[i - 1] === right[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
-  }
-
-  return dp[m][n];
-}
-
-export function jaroWinklerSimilarity(s1: string, s2: string): number {
-  if (s1 === s2) return 1;
-  const l1 = s1.length;
-  const l2 = s2.length;
-  if (l1 === 0 || l2 === 0) return 0;
-
-  const matchDistance = Math.floor(Math.max(l1, l2) / 2) - 1;
-  const s1Matches = new Array(l1).fill(false);
-  const s2Matches = new Array(l2).fill(false);
-
-  let matches = 0;
-  for (let i = 0; i < l1; i++) {
-    const start = Math.max(0, i - matchDistance);
-    const end = Math.min(i + matchDistance + 1, l2);
-    for (let j = start; j < end; j++) {
-      if (!s2Matches[j] && s1[i] === s2[j]) {
-        s1Matches[i] = true;
-        s2Matches[j] = true;
-        matches++;
-        break;
-      }
-    }
-  }
-
-  if (matches === 0) return 0;
-
-  let transpositions = 0;
-  let k = 0;
-  for (let i = 0; i < l1; i++) {
-    if (!s1Matches[i]) continue;
-    while (!s2Matches[k]) k++;
-    if (s1[i] !== s2[k]) transpositions++;
-    k++;
-  }
-
-  const jaro =
-    (matches / l1 + matches / l2 + (matches - transpositions / 2) / matches) / 3;
-
-  // Prefix bonus up to 4 characters
-  let prefix = 0;
-  for (let i = 0; i < Math.min(4, l1, l2); i++) {
-    if (s1[i] === s2[i]) prefix++;
-    else break;
-  }
-
-  return jaro + prefix * 0.1 * (1 - jaro);
-}
-
-export function sequenceDistance(left: string, right: string): number {
-  return damerauLevenshteinDistance(left, right);
-}
-
-export function sequenceSimilarity(left: string, right: string): number {
-  const normLeft = normalizeVoiceText(left);
-  const normRight = normalizeVoiceText(right);
-  if (normLeft === normRight) return 1;
-  if (!normLeft || !normRight) return 0;
-
-  const jaro = jaroWinklerSimilarity(normLeft, normRight);
-  const maxLen = Math.max(normLeft.length, normRight.length);
-  const damerau = 1 - damerauLevenshteinDistance(normLeft, normRight) / maxLen;
-  const lcs =
-    (2 * longestCommonSubsequenceLength(normLeft, normRight)) /
-    (normLeft.length + normRight.length);
-
-  return Math.max(0, Math.min(1, jaro * 0.45 + damerau * 0.35 + lcs * 0.2));
-}
-
-export function scoreVoiceCandidate(
-  query: string,
-  candidate: string,
-  weight = 1,
-): number {
-  const queryTokens = voiceTokens(query);
-  const candidateTokens = voiceTokens(candidate);
-  if (!queryTokens.length || !candidateTokens.length) return 0;
-  const normalizedQuery = queryTokens.join(" ");
-  const normalizedCandidate = candidateTokens.join(" ");
-  if (normalizedQuery === normalizedCandidate) return 1;
-
-  const matches = queryTokens.filter((token) =>
-    candidateTokens.some(
-      (item) =>
-        item === token ||
-        stemWord(item) === stemWord(token) ||
-        item.startsWith(token) ||
-        token.startsWith(item) ||
-        metaphone(item) === metaphone(token) ||
-        (token.length >= 4 &&
-          damerauLevenshteinDistance(token, item) <=
-            Math.max(1, Math.floor(token.length * 0.28))),
-    ),
-  ).length;
-
-  const overlap =
-    matches / Math.max(queryTokens.length, candidateTokens.length);
-  const seqSim = sequenceSimilarity(normalizedQuery, normalizedCandidate);
-  const phrase =
-    normalizedCandidate.includes(normalizedQuery) ||
-    normalizedQuery.includes(normalizedCandidate)
-      ? 0.15
-      : 0;
-  const queryGrams = voiceTrigrams(normalizedQuery);
-  const candidateGrams = new Set(voiceTrigrams(normalizedCandidate));
-  const trigram =
-    queryGrams.filter((gram) => candidateGrams.has(gram)).length /
-    Math.max(queryGrams.length, candidateGrams.size, 1);
-  const phonetic =
-    phoneticKey(normalizedQuery) === phoneticKey(normalizedCandidate)
-      ? 0.14
-      : 0;
-
-  return Math.min(
-    0.99,
-    overlap * 0.38 +
-      seqSim * 0.24 +
-      trigram * 0.18 +
-      phrase +
-      phonetic +
-      Math.min(weight, 10) * 0.005,
-  );
-}

@@ -18,6 +18,10 @@ export class FeedbackVoiceController {
     this.pendingRating = rating;
   }
 
+  public getRating(): number | undefined {
+    return this.pendingRating;
+  }
+
   public getDedupeKey(userId = "anonymous"): string {
     if (!this.activeTarget) return "";
     const targetId =

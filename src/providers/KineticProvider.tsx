@@ -19,12 +19,11 @@ import type {
 import { usePreferencesStore } from "@/stores/preferences-store";
 import { useKineticStore } from "@/stores/kinetic-store";
 import { useVoiceStore } from "@/stores/voice-store";
-import { useSpeechStore } from "@/stores/speech-store";
 import { ukSpeech } from "@/services/voice/speech";
 import { triggerVoice } from "@/services/voice/events";
 import { DEFAULT_KINETIC_CONFIG } from "@/constants/kinetic";
 
-import { interactionController } from "@/services/voice/interaction-controller";
+import { ambiguityController } from "@/services/voice/ambiguity-controller";
 
 export const KineticContext = createContext<KineticContextValue | null>(null);
 
@@ -55,20 +54,14 @@ export function KineticProvider({ children }: PropsWithChildren) {
       if (gesture === "NEXT") {
         await triggerKineticFeedback("NEXT", "Next");
         if (voiceState.state === "clarifying") {
-          await interactionController.handle({
-            type: "SELECT_NEXT",
-            source: "tilt-right",
-          });
+          ambiguityController.next();
         } else if (listener?.onNext) {
           void listener.onNext();
         }
       } else if (gesture === "PREVIOUS") {
         await triggerKineticFeedback("PREVIOUS", "Previous");
         if (voiceState.state === "clarifying") {
-          await interactionController.handle({
-            type: "SELECT_PREVIOUS",
-            source: "tilt-left",
-          });
+          ambiguityController.previous();
         } else if (listener?.onPrevious) {
           void listener.onPrevious();
         }
@@ -99,18 +92,20 @@ export function KineticProvider({ children }: PropsWithChildren) {
     [],
   );
 
-  if (!engineRef.current) {
+  if (engineRef.current == null) {
     engineRef.current = new KineticGestureEngine(
       DEFAULT_KINETIC_CONFIG,
       handleGesture,
       (state) => useKineticStore.getState().setEngineState(state),
     );
-  } else {
-    engineRef.current.setOnGesture(handleGesture);
-    engineRef.current.setOnStateChange((state) =>
+  }
+
+  useEffect(() => {
+    engineRef.current?.setOnGesture(handleGesture);
+    engineRef.current?.setOnStateChange((state) =>
       useKineticStore.getState().setEngineState(state),
     );
-  }
+  }, [handleGesture]);
 
   useEffect(() => {
     if (Platform.OS === "web") return;

@@ -1,7 +1,4 @@
-import {
-  KineticGestureEngine,
-  DEFAULT_KINETIC_CONFIG,
-} from "../services/kinetic/kinetic-engine";
+import { KineticGestureEngine } from "../services/kinetic/kinetic-engine";
 import type { KineticGestureType } from "@/types";
 
 describe("KineticGestureEngine", () => {

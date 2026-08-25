@@ -10,7 +10,6 @@ import type {
   ViewStyle,
 } from "react-native";
 import type { ContentItem, Entity, Topic } from "./content";
-import type { AppIcon } from "./icons";
 
 export type HearLogoProps = {
   size?: number;

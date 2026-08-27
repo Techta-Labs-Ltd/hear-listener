@@ -61,3 +61,13 @@ export type PreparedAsrHypothesis = {
   confidence?: number;
   rank: number;
 };
+
+export type SpeechCapabilityStore = {
+  capabilities: PlatformSpeechCapabilities | null;
+  permissionState: VoicePermissionState | null;
+  modelState: AndroidSpeechModelState;
+  setCapabilities: (capabilities: PlatformSpeechCapabilities) => void;
+  setPermissionState: (state: VoicePermissionState) => void;
+  setModelState: (state: AndroidSpeechModelState) => void;
+  reset: () => void;
+};

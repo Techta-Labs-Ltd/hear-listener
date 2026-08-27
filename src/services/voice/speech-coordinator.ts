@@ -28,7 +28,20 @@ const priorityRank: Record<SpeechPriority, number> = {
 class SpeechCoordinator {
   private active?: { key: string; priority: SpeechPriority };
   private quietMode = false;
+  private screenReaderEnabled = false;
   lastCompletion: "DONE" | "INTERRUPTED" | "ERROR" | "TIMEOUT" = "DONE";
+
+  setScreenReaderEnabled(enabled: boolean): void {
+    this.screenReaderEnabled = enabled;
+    if (enabled) {
+      void ukSpeech.stop();
+      this.active = undefined;
+    }
+  }
+
+  isScreenReaderEnabled(): boolean {
+    return this.screenReaderEnabled;
+  }
 
   enterQuietMode(): void {
     this.quietMode = true;
@@ -50,6 +63,12 @@ class SpeechCoordinator {
     if (!request.text.trim()) return;
     if (this.isQuiet()) return;
     const priority = request.priority ?? "screen";
+
+    // If native screen reader is enabled, suppress routine UI narration
+    if (this.screenReaderEnabled && priority !== "instruction") {
+      return;
+    }
+
     if (
       this.active &&
       priorityRank[this.active.priority] > priorityRank[priority]
@@ -60,7 +79,9 @@ class SpeechCoordinator {
     const key = request.key;
     this.active = { key, priority };
     try {
-      this.lastCompletion = await ukSpeech.speak(request.text, { interrupt: true });
+      this.lastCompletion = await ukSpeech.speak(request.text, {
+        interrupt: priority === "instruction" || request.force === true,
+      });
     } finally {
       if (this.active?.key === key) this.active = undefined;
     }
@@ -104,6 +125,9 @@ export function voiceAnnounce(
   key = `voice:${message}`,
   priority: SpeechPriority = "session",
 ): Promise<void> {
+  if (speechCoordinator.isQuiet() || speechCoordinator.isScreenReaderEnabled()) {
+    return Promise.resolve();
+  }
   speechCoordinator.reset(key);
   return speechCoordinator.announce({ key, text: message, priority });
 }

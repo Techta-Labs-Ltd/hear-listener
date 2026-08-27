@@ -8,14 +8,14 @@ import { cn } from "@/utils/styles";
 export function VoiceStatusBadge({ label, className }: VoiceStatusBadgeProps) {
   const [pulseAnim] = useState(() => new Animated.Value(1));
 
-  useEffect(() => {
-    const isPulsing =
-      label.includes("LISTENING") ||
-      label.includes("SPEAKING") ||
-      label.includes("PREPARING") ||
-      label.includes("PROCESSING") ||
-      label.includes("ONE MOMENT");
+  const isPulsing =
+    label.includes("LISTENING") ||
+    label.includes("SPEAKING") ||
+    label.includes("PREPARING") ||
+    label.includes("PROCESSING") ||
+    label.includes("ONE MOMENT");
 
+  useEffect(() => {
     if (isPulsing) {
       const loop = Animated.loop(
         Animated.sequence([
@@ -36,11 +36,12 @@ export function VoiceStatusBadge({ label, className }: VoiceStatusBadgeProps) {
     } else {
       pulseAnim.setValue(1);
     }
-  }, [label, pulseAnim]);
+  }, [isPulsing, pulseAnim]);
 
   return (
     <View
-      accessible
+      accessible={!isPulsing}
+      importantForAccessibility={isPulsing ? "no" : "auto"}
       accessibilityRole="text"
       accessibilityLabel={label}
       className={cn("flex-row items-center gap-2.5", className)}

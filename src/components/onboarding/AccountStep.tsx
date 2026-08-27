@@ -48,7 +48,7 @@ export function AccountStep({
           </AppText>
           {error ? (
             <AppText
-              accessibilityLiveRegion="polite"
+              accessibilityRole="alert"
               tone="danger"
               className="mt-4"
             >

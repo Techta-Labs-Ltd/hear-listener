@@ -72,7 +72,7 @@ export function LoadingScreen() {
       accessible
       accessibilityLabel={FULL_TEXT}
       accessibilityRole="progressbar"
-      accessibilityLiveRegion="polite"
+      accessibilityState={{ busy: true }}
       className="flex-1 items-center justify-center gap-7 bg-canvas px-6"
     >
       <Animated.View

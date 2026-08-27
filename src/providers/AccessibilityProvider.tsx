@@ -9,6 +9,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { speechCoordinator } from "@/services/voice/speech-coordinator";
+import { accessibilitySpeechPolicy } from "@/services/accessibility/accessibility-speech-policy";
 import { usePreferencesStore } from "@/stores";
 import type { AccessibilityContextValue } from "@/types";
 
@@ -31,11 +32,19 @@ export function AccessibilityProvider({ children }: PropsWithChildren) {
   );
 
   useEffect(() => {
-    void AccessibilityInfo.isScreenReaderEnabled().then(setScreenReaderEnabled);
+    void AccessibilityInfo.isScreenReaderEnabled().then((enabled) => {
+      setScreenReaderEnabled(Boolean(enabled));
+      speechCoordinator.setScreenReaderEnabled(Boolean(enabled));
+      accessibilitySpeechPolicy.setScreenReaderEnabled(Boolean(enabled));
+    });
     void AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotionEnabled);
     const screenReader = AccessibilityInfo.addEventListener(
       "screenReaderChanged",
-      setScreenReaderEnabled,
+      (enabled) => {
+        setScreenReaderEnabled(Boolean(enabled));
+        speechCoordinator.setScreenReaderEnabled(Boolean(enabled));
+        accessibilitySpeechPolicy.setScreenReaderEnabled(Boolean(enabled));
+      },
     );
     const reduceMotion = AccessibilityInfo.addEventListener(
       "reduceMotionChanged",
@@ -47,12 +56,19 @@ export function AccessibilityProvider({ children }: PropsWithChildren) {
     };
   }, []);
 
+  useEffect(() => {
+    accessibilitySpeechPolicy.setSpokenNavigationEnabled(spokenNavigationEnabled);
+  }, [spokenNavigationEnabled]);
+
   const stopSpeaking = useCallback(() => {
     void speechCoordinator.cancel();
   }, []);
 
   const announce = useCallback(
-    (message: string, key = `accessibility:${message}`, force = true) => {
+    (message: string, key = `accessibility:${message}`, force = false) => {
+      if (screenReaderEnabled || !spokenNavigationEnabled) {
+        return;
+      }
       void speechCoordinator.announce({
         key,
         text: message,
@@ -60,7 +76,7 @@ export function AccessibilityProvider({ children }: PropsWithChildren) {
         force,
       });
     },
-    [],
+    [screenReaderEnabled, spokenNavigationEnabled],
   );
 
   const value = useMemo<AccessibilityContextValue>(

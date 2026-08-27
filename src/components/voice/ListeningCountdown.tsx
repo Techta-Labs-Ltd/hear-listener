@@ -23,15 +23,9 @@ export function ListeningCountdown({
 
   return (
     <View
-      accessible
-      accessibilityRole="progressbar"
-      accessibilityLabel={`${remainingSeconds} seconds remaining`}
-      accessibilityValue={{
-        min: 0,
-        max: 8,
-        now: remainingSeconds,
-        text: `${remainingSeconds} seconds remaining`,
-      }}
+      accessible={false}
+      importantForAccessibility="no-hide-descendants"
+      accessibilityElementsHidden
       className="items-center justify-center"
       style={{ width: size, height: size }}
     >

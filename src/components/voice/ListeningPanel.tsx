@@ -113,23 +113,26 @@ export function ListeningPanel({
         </View>
 
         <AppText
-          accessibilityLiveRegion="polite"
+          importantForAccessibility={isListening ? "no" : "auto"}
           className="mt-4 sm:mt-[28px] font-display text-[32px] sm:text-[38px] leading-[36px] sm:leading-[44px] text-white"
         >
           {transcript && (phase === "working" || speechDetected || isError)
             ? `“${transcript}”`
             : copy.title}
         </AppText>
-        <AppText className="mt-2 sm:mt-[12px] text-[15px] sm:text-[16px] leading-[20px] sm:leading-[21px] text-voice-muted">
+        <AppText
+          importantForAccessibility={isListening ? "no" : "auto"}
+          className="mt-2 sm:mt-[12px] text-[15px] sm:text-[16px] leading-[20px] sm:leading-[21px] text-voice-muted"
+        >
           {message || prompt || copy.sub}
         </AppText>
 
         {phase === "listening" && !isError && !speechDetected ? (
           <>
             <View
-              accessible
-              accessibilityRole="progressbar"
-              accessibilityLabel="Listening time before the session closes"
+              accessible={false}
+              importantForAccessibility="no-hide-descendants"
+              accessibilityElementsHidden
               style={{
                 marginTop: 20,
                 height: 6,

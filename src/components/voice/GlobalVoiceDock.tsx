@@ -59,6 +59,7 @@ export function GlobalVoiceDock() {
 
   const cancel =
     listening || voice.state === "preparing" ? voice.cancel : voice.close;
+  const stop = voice.stop;
 
   useEffect(() => {
     if (!isVoiceOpen || Platform.OS !== "android") return;
@@ -172,8 +173,8 @@ export function GlobalVoiceDock() {
                 accessibilityLabel={
                   listening ? "Stop listening" : "Cancel voice session"
                 }
-                accessibilityHint="Closes voice control."
-                onPress={cancel}
+                accessibilityHint="Stops voice listening and closes the voice panel."
+                onPress={listening ? stop : cancel}
                 hitSlop={8}
                 className="min-h-10 items-center justify-center rounded-xl px-3 active:bg-white/10"
               >
@@ -190,13 +191,17 @@ export function GlobalVoiceDock() {
               <>
                 <AppText
                   accessibilityRole="header"
+                  importantForAccessibility="no"
                   className="font-display text-[28px] sm:text-[32px] leading-[34px] sm:leading-[38px] text-white"
                 >
                   {voice.transcript
                     ? `“${voice.transcript}”`
                     : "Speak naturally."}
                 </AppText>
-                <AppText className="mt-0.5 text-sm sm:text-[15px] leading-5 text-voice-muted">
+                <AppText
+                  importantForAccessibility="no"
+                  className="mt-0.5 text-sm sm:text-[15px] leading-5 text-voice-muted"
+                >
                   {voice.transcript
                     ? "Finding your news…"
                     : "I’ll show what I heard, then find your news."}
@@ -206,9 +211,9 @@ export function GlobalVoiceDock() {
                 {!voice.speechDetected && (
                   <>
                     <View
-                      accessible
-                      accessibilityRole="progressbar"
-                      accessibilityLabel="Listening time before the session closes"
+                      accessible={false}
+                      importantForAccessibility="no-hide-descendants"
+                      accessibilityElementsHidden
                       className="mt-4 sm:mt-5 h-1 w-full overflow-hidden rounded-full bg-voice-track"
                     >
                       <View
@@ -218,7 +223,12 @@ export function GlobalVoiceDock() {
                         style={{ width: `${fillPercent}%` }}
                       />
                     </View>
-                    <View className="mt-2.5 gap-1">
+                    <View
+                      accessible={false}
+                      importantForAccessibility="no-hide-descendants"
+                      accessibilityElementsHidden
+                      className="mt-2.5 gap-1"
+                    >
                       <AppText className="text-xs sm:text-sm leading-4 text-voice-muted">
                         No speech: a gentle reminder at 4 seconds.
                       </AppText>
@@ -229,7 +239,12 @@ export function GlobalVoiceDock() {
                   </>
                 )}
 
-                <View className="mt-4 border-t border-voice-track pt-3.5">
+                <View
+                  accessible={false}
+                  importantForAccessibility="no-hide-descendants"
+                  accessibilityElementsHidden
+                  className="mt-4 border-t border-voice-track pt-3.5"
+                >
                   <AppText className="font-body-bold text-[14px] sm:text-[15px] leading-5 text-white">
                     Say “cancel” to stop.
                   </AppText>
@@ -289,7 +304,6 @@ export function GlobalVoiceDock() {
               <>
                 <AppText
                   accessibilityRole="header"
-                  accessibilityLiveRegion="polite"
                   className="font-display text-[28px] sm:text-[32px] leading-[34px] sm:leading-[38px] text-white"
                 >
                   {voice.transcript ? `“${voice.transcript}”` : "I didn’t hear that."}

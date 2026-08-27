@@ -1,19 +1,5 @@
 import { create } from "zustand";
-import type {
-  AndroidSpeechModelState,
-  PlatformSpeechCapabilities,
-  VoicePermissionState,
-} from "@/types";
-
-type SpeechCapabilityStore = {
-  capabilities: PlatformSpeechCapabilities | null;
-  permissionState: VoicePermissionState | null;
-  modelState: AndroidSpeechModelState;
-  setCapabilities: (capabilities: PlatformSpeechCapabilities) => void;
-  setPermissionState: (state: VoicePermissionState) => void;
-  setModelState: (state: AndroidSpeechModelState) => void;
-  reset: () => void;
-};
+import type { SpeechCapabilityStore } from "@/types";
 
 export const useSpeechCapabilityStore = create<SpeechCapabilityStore>(
   (set) => ({

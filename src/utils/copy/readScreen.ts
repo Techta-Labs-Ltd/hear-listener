@@ -1,15 +1,7 @@
 import { stories, topics } from "@/data/catalogue";
-import type { OnboardingStepReadout, PlaybackSnapshot, Preferences } from "@/types";
+import type { ReadoutContext } from "@/types";
 import { parseLibrarySection } from "@/navigation/routes";
 import { formatClock } from "@/utils/text";
-
-type ReadoutContext = {
-  pathname: string;
-  playback: Pick<PlaybackSnapshot, "current" | "playing" | "progress" | "speed">;
-  preferences: Preferences;
-  onboardingStep?: OnboardingStepReadout;
-  screenReaderEnabled?: boolean;
-};
 
 const KINETIC_VOICE_HINT = "Tilt right for next, tilt left for previous, or shake to speak.";
 const SCREEN_READER_HINT =

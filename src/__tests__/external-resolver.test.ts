@@ -138,7 +138,11 @@ describe("real Hear resolver and search integration", () => {
     });
     expect(playback).toMatchObject({
       kind: "playback",
+      page: 0,
+      limit: 3,
       total: 1,
+      totalPages: 1,
+      remaining: 0,
       tracks: [{ contentId: "track-1", durationSeconds: 125 }],
     });
 
@@ -484,7 +488,11 @@ describe("Hear API contract transformations", () => {
     });
 
     expect(result).toEqual({
+      page: 0,
+      limit: 1,
       total: 2,
+      totalPages: 2,
+      remaining: 1,
       tracks: [
         expect.objectContaining({
           contentId: "track-1",

@@ -154,7 +154,11 @@ export type ExternalResolverResponse =
       kind: "playback";
       tracks: ExternalPlaybackTrack[];
       announcement?: string;
-      total?: number;
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      remaining: number;
     }
   | ExternalResolverErrorResponse;
 

@@ -75,7 +75,11 @@ describe("Hear catalogue service", () => {
       limit: 20,
     });
     expect(page).toMatchObject({
+      page: 0,
+      limit: 20,
       total: 1,
+      totalPages: 1,
+      remaining: 0,
       items: [
         {
           id: "0932f8c3-9cc5-486b-bdc3-63345003ff02",
@@ -110,6 +114,13 @@ describe("Hear catalogue service", () => {
     await expect(
       new HttpHearCatalogueService({ apiKey: "test-key" }).search(),
     ).rejects.toBeInstanceOf(HearCatalogueError);
+
+    globalThis.fetch = jest.fn().mockResolvedValue(
+      jsonResponse({ ...liveSearchFixture, page: 1, limit: 0 }),
+    );
+    await expect(
+      new HttpHearCatalogueService({ apiKey: "test-key" }).search({ page: 1 }),
+    ).rejects.toMatchObject({ code: "invalid-response" });
   });
 });
 

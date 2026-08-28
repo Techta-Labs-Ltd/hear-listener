@@ -37,7 +37,11 @@ export type ContentItem = {
 
 export type HearCataloguePage = {
   items: ContentItem[];
+  page: number;
+  limit: number;
   total: number;
+  totalPages: number;
+  remaining: number;
 };
 export type LibrarySection = "saved" | "following" | "downloads" | "history";
 
@@ -66,9 +70,19 @@ export type ContentState = {
   entities: Entity[];
   history: HistoryGroup[];
   loading: boolean;
+  loadingMore: boolean;
   refreshing: boolean;
+  initialLoadComplete: boolean;
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  remaining: number;
+  hasMore: boolean;
   error: string | null;
+  loadMoreError: string | null;
   fetchCatalogue: () => Promise<void>;
+  loadNextPage: () => Promise<void>;
   refresh: () => Promise<void>;
   clearHistory: () => void;
   recordHistory: (

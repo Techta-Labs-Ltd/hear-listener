@@ -7,6 +7,7 @@ import {
   useAccountStore,
 } from "@/stores";
 import { migratePreferences } from "@/stores/preferences-store";
+import { hearCatalogueService } from "@/services/content/hear-catalogue-service";
 import { onboardingVoiceBridge, useOnboardingVoiceStore } from "@/stores/onboarding-voice-store";
 describe("Zustand stores", () => {
   beforeEach(() => {
@@ -23,7 +24,24 @@ describe("Zustand stores", () => {
       completion: undefined,
       sleepTimerEndsAt: null,
     });
-    useContentStore.setState({ history: [] });
+    useContentStore.setState({
+      stories: [],
+      topics: [],
+      entities: [],
+      history: [],
+      loading: false,
+      loadingMore: false,
+      refreshing: false,
+      initialLoadComplete: false,
+      page: -1,
+      pageSize: 20,
+      total: 0,
+      totalPages: 0,
+      remaining: 0,
+      hasMore: false,
+      error: null,
+      loadMoreError: null,
+    });
     useVoiceStore.getState().resetVoice();
     useAccountStore.getState().clear();
     useOnboardingVoiceStore.setState({
@@ -97,6 +115,53 @@ describe("Zustand stores", () => {
       },
     ]);
   });
+  it("loads catalogue pages once, deduplicates tracks, and keeps server limits", async () => {
+    const first = remoteItem("first");
+    const second = remoteItem("second");
+    const search = jest
+      .spyOn(hearCatalogueService, "search")
+      .mockResolvedValueOnce({
+        items: [first],
+        page: 0,
+        limit: 1,
+        total: 2,
+        totalPages: 2,
+        remaining: 1,
+      })
+      .mockResolvedValueOnce({
+        items: [first, second],
+        page: 1,
+        limit: 1,
+        total: 2,
+        totalPages: 2,
+        remaining: 0,
+      });
+
+    await useContentStore.getState().fetchCatalogue();
+    const firstLoadMore = useContentStore.getState().loadNextPage();
+    const duplicateLoadMore = useContentStore.getState().loadNextPage();
+    await Promise.all([firstLoadMore, duplicateLoadMore]);
+
+    expect(search).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ page: 0, limit: 20 }),
+    );
+    expect(search).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ page: 1, limit: 20 }),
+    );
+    expect(search).toHaveBeenCalledTimes(2);
+    expect(useContentStore.getState()).toMatchObject({
+      stories: [{ id: "first" }, { id: "second" }],
+      page: 1,
+      pageSize: 1,
+      total: 2,
+      totalPages: 2,
+      remaining: 0,
+      hasMore: false,
+      loadingMore: false,
+    });
+  });
   it("resets voice sessions completely", () => {
     useVoiceStore
       .getState()
@@ -158,3 +223,17 @@ describe("Zustand stores", () => {
     });
   });
 });
+
+function remoteItem(id: string) {
+  return {
+    id,
+    title: `Story ${id}`,
+    creator: "Hear! creator",
+    publication: "Hear! Daily",
+    duration: "1:00",
+    category: "News",
+    color: "#5B3B82",
+    audioUrl: `https://cdn.hear.media/${id}.mp3`,
+    origin: "hear-search" as const,
+  };
+}

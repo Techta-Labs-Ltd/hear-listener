@@ -198,7 +198,10 @@ export class HttpExternalVoiceResolver implements ExternalVoiceResolver {
       "search",
     );
     if (!response.ok) return response.error;
-    const searchResult = parseHearSearchResponse(response.value, 3);
+    const searchResult = parseHearSearchResponse(
+      response.value,
+      interaction.searchRequest.limit,
+    );
     if (!searchResult) return malformedExternalResponse("search");
     if (searchResult.tracks.length === 0) {
       return {
@@ -209,7 +212,11 @@ export class HttpExternalVoiceResolver implements ExternalVoiceResolver {
     return {
       kind: "playback",
       tracks: searchResult.tracks,
+      page: searchResult.page,
+      limit: searchResult.limit,
       total: searchResult.total,
+      totalPages: searchResult.totalPages,
+      remaining: searchResult.remaining,
     };
   }
 

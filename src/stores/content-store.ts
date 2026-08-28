@@ -2,27 +2,33 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { safeAsyncStorage } from "@/lib/storage";
 import { searchHearCatalogue } from "@/services/content/hear-catalogue-service";
+import { EXTERNAL_VOICE_CONFIG } from "@/constants/external-voice";
 import type {
   ContentItem,
   ContentState,
   Entity,
+  HearCataloguePage,
   HistoryGroup,
   Topic,
 } from "@/types";
 
-let activeCatalogueRequest: Promise<ContentItem[]> | undefined;
+const activeCatalogueRequests = new Map<number, Promise<HearCataloguePage>>();
 
-async function loadLatestHearContent(): Promise<ContentItem[]> {
-  activeCatalogueRequest ??= searchHearCatalogue({
+function loadLatestHearContent(page: number): Promise<HearCataloguePage> {
+  const activeRequest = activeCatalogueRequests.get(page);
+  if (activeRequest) return activeRequest;
+
+  const request = searchHearCatalogue({
     sort: "latest",
-    page: 0,
-    limit: 20,
-  })
-    .then((page) => page.items)
-    .finally(() => {
-      activeCatalogueRequest = undefined;
-    });
-  return activeCatalogueRequest;
+    page,
+    limit: EXTERNAL_VOICE_CONFIG.cataloguePageSize,
+  }).finally(() => {
+    if (activeCatalogueRequests.get(page) === request) {
+      activeCatalogueRequests.delete(page);
+    }
+  });
+  activeCatalogueRequests.set(page, request);
+  return request;
 }
 
 export const useContentStore = create<ContentState>()(
@@ -33,23 +39,44 @@ export const useContentStore = create<ContentState>()(
       entities: [],
       history: [],
       loading: false,
+      loadingMore: false,
       refreshing: false,
+      initialLoadComplete: false,
+      page: -1,
+      pageSize: EXTERNAL_VOICE_CONFIG.cataloguePageSize,
+      total: 0,
+      totalPages: 0,
+      remaining: 0,
+      hasMore: false,
       error: null,
+      loadMoreError: null,
 
       fetchCatalogue: async () => {
-        if (get().loading || get().stories.length > 0) return;
-        set({ loading: true, error: null });
+        const state = get();
+        if (
+          state.loading ||
+          state.loadingMore ||
+          state.refreshing ||
+          state.stories.length > 0
+        ) {
+          return;
+        }
+        set({ loading: true, error: null, loadMoreError: null });
         try {
-          const stories = await loadLatestHearContent();
+          const page = await loadLatestHearContent(0);
+          const stories = uniqueContent(page.items);
           set({
             stories,
             topics: topicsFrom(stories),
             entities: entitiesFrom(stories),
             loading: false,
+            initialLoadComplete: true,
+            ...paginationState(page),
           });
         } catch (error) {
           set({
             loading: false,
+            initialLoadComplete: true,
             error:
               error instanceof Error
                 ? error.message
@@ -58,20 +85,61 @@ export const useContentStore = create<ContentState>()(
         }
       },
 
-      refresh: async () => {
-        if (get().refreshing) return;
-        set({ refreshing: true, error: null });
+      loadNextPage: async () => {
+        const state = get();
+        if (
+          state.loading ||
+          state.loadingMore ||
+          state.refreshing ||
+          !state.hasMore
+        ) {
+          return;
+        }
+        const requestedPage = state.page + 1;
+        set({ loadingMore: true, loadMoreError: null });
         try {
-          const stories = await loadLatestHearContent();
+          const page = await loadLatestHearContent(requestedPage);
+          set((current) => {
+            const stories = uniqueContent([...current.stories, ...page.items]);
+            return {
+              stories,
+              topics: topicsFrom(stories),
+              entities: entitiesFrom(stories),
+              loadingMore: false,
+              error: null,
+              ...paginationState(page),
+            };
+          });
+        } catch (error) {
+          set({
+            loadingMore: false,
+            loadMoreError:
+              error instanceof Error
+                ? error.message
+                : "More Hear! audio could not be loaded.",
+          });
+        }
+      },
+
+      refresh: async () => {
+        const state = get();
+        if (state.loading || state.loadingMore || state.refreshing) return;
+        set({ refreshing: true, error: null, loadMoreError: null });
+        try {
+          const page = await loadLatestHearContent(0);
+          const stories = uniqueContent(page.items);
           set({
             stories,
             topics: topicsFrom(stories),
             entities: entitiesFrom(stories),
             refreshing: false,
+            initialLoadComplete: true,
+            ...paginationState(page),
           });
         } catch (error) {
           set({
             refreshing: false,
+            initialLoadComplete: true,
             error:
               error instanceof Error
                 ? error.message
@@ -110,6 +178,23 @@ export const useContentStore = create<ContentState>()(
     },
   ),
 );
+
+function paginationState(page: HearCataloguePage) {
+  return {
+    page: page.page,
+    pageSize: page.limit,
+    total: page.total,
+    totalPages: page.totalPages,
+    remaining: page.remaining,
+    hasMore: page.remaining > 0 && page.page + 1 < page.totalPages,
+  };
+}
+
+function uniqueContent(items: ContentItem[]): ContentItem[] {
+  const unique = new Map<string, ContentItem>();
+  for (const item of items) unique.set(item.id, item);
+  return [...unique.values()];
+}
 
 function recordListeningHistory(
   history: HistoryGroup[],

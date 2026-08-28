@@ -1,11 +1,12 @@
 import { useRouter } from "expo-router";
 import { PromoCard } from "@/components/content/PromoCard";
+import { CataloguePaginationFooter } from "@/components/content/CataloguePaginationFooter";
 import { StoryRow } from "@/components/content/StoryRow";
 import { TopicChip } from "@/components/content/TopicChip";
 import { AppText } from "@/components/ui/AppText";
 import { routes, topicRoute } from "@/navigation/routes";
 import { useContent, usePlayback } from "@/stores";
-import { ScrollView } from "@/tw";
+import { ScrollView, View } from "@/tw";
 import type { ContentItem } from "@/types";
 import { discoverCopy } from "@/utils/copy/discover";
 
@@ -20,7 +21,15 @@ export function OnlineDiscoverContent({
 }) {
   const router = useRouter();
   const playback = usePlayback();
-  const { stories, topics } = useContent();
+  const {
+    stories,
+    topics,
+    loadingMore,
+    hasMore,
+    loadMoreError,
+    loadNextPage,
+  } = useContent();
+  const recentStories = stories.slice(4);
 
   return (
     <>
@@ -67,6 +76,28 @@ export function OnlineDiscoverContent({
         {discoverCopy.tonightTitle}
       </AppText>
       {tonight ? <StoryRow item={tonight} className="mt-[23px]" /> : null}
+      {recentStories.length > 0 ? (
+        <>
+          <AppText
+            accessibilityRole="header"
+            className="mt-[27px] font-display text-xl leading-6 text-ink"
+          >
+            {discoverCopy.recentlyTitle}
+          </AppText>
+          <View className="mt-[23px] gap-[13px]">
+            {recentStories.map((item) => (
+              <StoryRow key={item.id} item={item} showPlay />
+            ))}
+          </View>
+        </>
+      ) : null}
+      <CataloguePaginationFooter
+        loading={loadingMore}
+        hasMore={hasMore}
+        error={loadMoreError}
+        onLoadMore={loadNextPage}
+        className="mt-5"
+      />
     </>
   );
 }

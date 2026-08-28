@@ -214,6 +214,14 @@ export type SkeletonBlockProps = {
   className?: string;
 };
 
+export type CataloguePaginationFooterProps = {
+  loading: boolean;
+  hasMore: boolean;
+  error?: string | null;
+  onLoadMore: () => void | Promise<void>;
+  className?: string;
+};
+
 export type ShimmerProps = {
   className?: string;
   children?: ReactNode;

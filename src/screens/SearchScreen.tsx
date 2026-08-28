@@ -1,58 +1,42 @@
-import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { CataloguePaginationFooter } from "@/components/content/CataloguePaginationFooter";
 import { StoryRow } from "@/components/content/StoryRow";
 import { SearchSkeleton } from "@/components/content/SearchSkeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { SymbolView } from "@/components/ui/AppIcon";
 import { AppScreen } from "@/components/ui/AppScreen";
 import { AppText } from "@/components/ui/AppText";
 import { VoiceTip } from "@/components/voice/VoiceTip";
 import { colors } from "@/constants/theme";
 import { routes } from "@/navigation/routes";
+import { useHearCatalogueSearch } from "@/hooks/useHearCatalogueSearch";
+import { useLoadMoreOnScroll } from "@/hooks/useLoadMoreOnScroll";
 import { useVoice } from "@/hooks/useVoice";
-import { searchHearCatalogue } from "@/services/content/hear-catalogue-service";
 import { Pressable, ScrollView, View } from "@/tw";
 import { icons } from "@/utils/icons/app-icons";
 import { safeBack } from "@/utils/navigation";
-import type { ContentItem } from "@/types";
 
 export function SearchScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ q?: string }>();
   const voice = useVoice();
-  const [query] = useState(params.q?.trim() ?? "");
-  const [searching, setSearching] = useState(true);
-  const [results, setResults] = useState<ContentItem[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    void searchHearCatalogue({
-      query,
-      sort: query ? undefined : "latest",
-      limit: 20,
-      signal: controller.signal,
-    })
-      .then((page) => {
-        if (!controller.signal.aborted) setResults(page.items);
-      })
-      .catch((requestError: unknown) => {
-        if (controller.signal.aborted) return;
-        setResults([]);
-        setError(
-          requestError instanceof Error
-            ? requestError.message
-            : "Hear! search is unavailable.",
-        );
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setSearching(false);
-      });
-    return () => controller.abort();
-  }, [query]);
-
-  const resultsSummary = `${results.length} ${
-    results.length === 1 ? "audio result" : "audio results"
-  }`;
+  const query = params.q?.trim() ?? "";
+  const search = useHearCatalogueSearch({
+    query,
+    sort: query ? undefined : "latest",
+  });
+  const onScroll = useLoadMoreOnScroll({
+    hasMore: search.hasMore,
+    loading: search.loadingMore,
+    onLoadMore: search.loadNextPage,
+  });
+  const resultsSummary = search.loading
+    ? "Loading audio results"
+    : search.items.length > search.total
+      ? `${search.items.length} playable tracks loaded`
+    : search.total === search.items.length
+      ? `${search.total} ${search.total === 1 ? "audio result" : "audio results"}`
+      : `Showing ${search.items.length} of ${search.total} audio results`;
 
   return (
     <AppScreen
@@ -68,6 +52,8 @@ export function SearchScreen() {
       <ScrollView
         contentContainerClassName="px-4 sm:px-5 pb-12 pt-2"
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={200}
       >
         <View className="mt-2 flex-row items-center gap-2">
           <Pressable
@@ -100,28 +86,42 @@ export function SearchScreen() {
         >
           Results
         </AppText>
-        <AppText tone="muted" className="mt-2 sm:mt-[11px] text-xs sm:text-[13px] leading-[15px]">
+        <AppText
+          accessibilityLiveRegion="polite"
+          tone="muted"
+          className="mt-2 sm:mt-[11px] text-xs sm:text-[13px] leading-[15px]"
+        >
           {resultsSummary}
         </AppText>
-        {searching ? (
+        {search.loading ? (
           <SearchSkeleton />
+        ) : search.error ? (
+          <EmptyState
+            icon={icons.search}
+            title="Search could not load"
+            description={search.error}
+            actionLabel="Try search again"
+            onAction={search.retry}
+          />
         ) : (
           <>
             <View className="mt-5 sm:mt-[24px] gap-3 sm:gap-[14px]">
-              {results.map((item) => (
+              {search.items.map((item) => (
                 <StoryRow key={item.id} item={item} thumbSize="md" showPlay />
               ))}
             </View>
-            {error ? (
-              <AppText tone="muted" className="mt-8 text-center">
-                {error}
-              </AppText>
-            ) : null}
-            {!error && results.length === 0 ? (
+            {search.items.length === 0 ? (
               <AppText tone="muted" className="mt-8 text-center">
                 Nothing matched. Try a topic, creator, or show instead.
               </AppText>
             ) : null}
+            <CataloguePaginationFooter
+              loading={search.loadingMore}
+              hasMore={search.hasMore}
+              error={search.loadMoreError}
+              onLoadMore={search.loadNextPage}
+              className="mt-5"
+            />
           </>
         )}
         <VoiceTip

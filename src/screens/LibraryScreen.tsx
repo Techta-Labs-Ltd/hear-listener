@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
 import { ScrollView, View } from "@/tw";
@@ -21,7 +22,18 @@ export function LibraryScreen() {
   const router = useRouter();
   const account = useAccountAccess();
   const { preferences } = usePreferences();
-  const { stories, loading, refreshing, refresh } = useContent();
+  const {
+    stories,
+    loading,
+    refreshing,
+    initialLoadComplete,
+    refresh,
+    fetchCatalogue,
+  } = useContent();
+
+  useEffect(() => {
+    void fetchCatalogue();
+  }, [fetchCatalogue]);
 
   const savedCount = preferences.savedIds.length;
   const followingCount = preferences.followingIds.length;
@@ -30,6 +42,8 @@ export function LibraryScreen() {
   ).length;
   const syncError = account.status === "error";
   const syncing = account.status === "signingIn";
+  const initialLoading =
+    stories.length === 0 && (!initialLoadComplete || loading || refreshing);
 
   return (
     <AppScreen
@@ -47,7 +61,7 @@ export function LibraryScreen() {
           />
         }
       >
-        {loading ? (
+        {initialLoading ? (
           <LibrarySkeleton />
         ) : (
           <>

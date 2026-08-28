@@ -6,6 +6,8 @@ export const EXTERNAL_VOICE_CONFIG = {
   apiKey: process.env.EXPO_PUBLIC_HEAR_SERVICE_KEY?.trim() || "",
   timeoutMs: 15_000,
   delayedProgressMs: 4_000,
+  cataloguePageSize: 20,
+  voiceSearchLimit: 3,
   clientName: "hear-listener",
   clientVersion: "1.0.0",
 } as const;

@@ -11,7 +11,10 @@ import type {
   HearSearchRequest,
   HearSearchSort,
 } from "@/types";
-import { RESOLVER_EXACT_CONFIDENCE } from "@/constants/external-voice";
+import {
+  EXTERNAL_VOICE_CONFIG,
+  RESOLVER_EXACT_CONFIDENCE,
+} from "@/constants/external-voice";
 
 const ENTITY_TYPES: ReadonlySet<EntityType> = new Set([
   "organization",
@@ -202,7 +205,7 @@ export function buildHearSearchRequest(
     isLocal,
     isRecommended: result.slots.isRecommended,
     page: 0,
-    limit: 3,
+    limit: EXTERNAL_VOICE_CONFIG.voiceSearchLimit,
   };
   if (Object.keys(filter).length > 0) request.filter = filter;
   if (sort) request.sort = sort;
@@ -288,16 +291,50 @@ export function buildConfirmationPrompt(
 export function parseHearSearchResponse(
   value: unknown,
   maxResults = Number.POSITIVE_INFINITY,
-): { tracks: ExternalPlaybackTrack[]; total: number } | undefined {
+): {
+  tracks: ExternalPlaybackTrack[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  remaining: number;
+} | undefined {
   if (!isRecord(value) || !Array.isArray(value.results)) return undefined;
+  if (
+    (value.page !== undefined && !nonNegativeInteger(value.page)) ||
+    (value.limit !== undefined && !positiveInteger(value.limit)) ||
+    (value.total !== undefined && !nonNegativeInteger(value.total)) ||
+    (value.totalPages !== undefined && !nonNegativeInteger(value.totalPages)) ||
+    (value.remaining !== undefined && !nonNegativeInteger(value.remaining))
+  ) {
+    return undefined;
+  }
   const expanded = value.results.slice(0, maxResults).flatMap(expandPublication);
   const tracks = expanded.flatMap((item) => {
     const track = parseSearchTrack(item);
     return track ? [track] : [];
   });
+  const page = nonNegativeInteger(value.page) ? value.page : 0;
+  const fallbackLimit = Number.isFinite(maxResults)
+    ? Math.max(1, Math.floor(maxResults))
+    : Math.max(1, value.results.length);
+  const limit = positiveInteger(value.limit) ? value.limit : fallbackLimit;
+  const total = nonNegativeInteger(value.total) ? value.total : tracks.length;
+  const totalPages = nonNegativeInteger(value.totalPages)
+    ? value.totalPages
+    : total === 0
+      ? 0
+      : Math.ceil(total / limit);
+  const remaining = nonNegativeInteger(value.remaining)
+    ? value.remaining
+    : Math.max(0, total - (page + 1) * limit);
   return {
     tracks,
-    total: finiteNumber(value.total) ? value.total : tracks.length,
+    page,
+    limit,
+    total,
+    totalPages,
+    remaining,
   };
 }
 
@@ -801,6 +838,14 @@ function firstFiniteNumber(...values: unknown[]): number | undefined {
 
 function optionalNonNegativeInteger(value: unknown): boolean {
   return value === null || value === undefined || (integer(value) && value >= 0);
+}
+
+function nonNegativeInteger(value: unknown): value is number {
+  return integer(value) && value >= 0;
+}
+
+function positiveInteger(value: unknown): value is number {
+  return integer(value) && value > 0;
 }
 
 function integer(value: unknown): value is number {

@@ -5,11 +5,13 @@ import { OfflineNotice } from "@/components/content/OfflineNotice";
 import { OnlineDiscoverContent } from "@/components/content/OnlineDiscoverContent";
 import { DiscoverSkeleton } from "@/components/content/DiscoverSkeleton";
 import { StoryRow } from "@/components/content/StoryRow";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { AppScreen } from "@/components/ui/AppScreen";
 import { AppText } from "@/components/ui/AppText";
 import { SkeletonBlock } from "@/components/ui/SkeletonBlock";
 import { useContent } from "@/stores";
 import { useNetworkState } from "@/hooks/useNetworkState";
+import { useLoadMoreOnScroll } from "@/hooks/useLoadMoreOnScroll";
 import { librarySectionRoute } from "@/navigation/routes";
 import { ScrollView, View } from "@/tw";
 import { discoverCopy } from "@/utils/copy/discover";
@@ -17,7 +19,18 @@ import { discoverCopy } from "@/utils/copy/discover";
 export function DiscoverScreen() {
   const router = useRouter();
   const { isOnline } = useNetworkState();
-  const { stories, loading, refreshing, refresh, fetchCatalogue } = useContent();
+  const {
+    stories,
+    loading,
+    loadingMore,
+    refreshing,
+    initialLoadComplete,
+    hasMore,
+    error,
+    refresh,
+    fetchCatalogue,
+    loadNextPage,
+  } = useContent();
 
   useEffect(() => {
     void fetchCatalogue();
@@ -26,6 +39,13 @@ export function DiscoverScreen() {
   const editorPick = stories[2];
   const tonight = stories[3];
   const offlineStories = stories.filter((item) => item.downloaded);
+  const initialLoading =
+    stories.length === 0 && (!initialLoadComplete || loading || refreshing);
+  const onScroll = useLoadMoreOnScroll({
+    hasMore: isOnline && hasMore,
+    loading: loadingMore,
+    onLoadMore: loadNextPage,
+  });
 
   return (
     <AppScreen
@@ -36,6 +56,8 @@ export function DiscoverScreen() {
       <ScrollView
         contentContainerClassName="px-4 sm:px-5 pt-4 sm:pt-8 pb-[140px]"
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={200}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -43,8 +65,16 @@ export function DiscoverScreen() {
           />
         }
       >
-        {loading ? (
+        {initialLoading ? (
           <DiscoverSkeleton />
+        ) : isOnline && error && stories.length === 0 ? (
+          <EmptyState
+            icon="network"
+            title="Discover could not load"
+            description={error}
+            actionLabel="Try Discover again"
+            onAction={() => void fetchCatalogue()}
+          />
         ) : (
           <>
             <AppText

@@ -2,13 +2,17 @@ import { useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SymbolView } from "@/components/ui/AppIcon";
 import { PromoCard } from "@/components/content/PromoCard";
+import { CataloguePaginationFooter } from "@/components/content/CataloguePaginationFooter";
 import { StoryRow } from "@/components/content/StoryRow";
 import { TopicSkeleton } from "@/components/content/TopicSkeleton";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { AppScreen } from "@/components/ui/AppScreen";
 import { AppText } from "@/components/ui/AppText";
 import { Pressable, ScrollView, View } from "@/tw";
 import { colors } from "@/constants/theme";
 import { useContent, usePlayback } from "@/stores";
+import { useHearCatalogueSearch } from "@/hooks/useHearCatalogueSearch";
+import { useLoadMoreOnScroll } from "@/hooks/useLoadMoreOnScroll";
 import { icons } from "@/utils/icons/app-icons";
 import { routes } from "@/navigation/routes";
 import { safeBack } from "@/utils/navigation";
@@ -18,17 +22,26 @@ export function TopicScreen() {
   const router = useRouter();
   const playback = usePlayback();
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const { stories, topics, loading, fetchCatalogue } = useContent();
+  const { topics, fetchCatalogue } = useContent();
 
   useEffect(() => {
     void fetchCatalogue();
   }, [fetchCatalogue]);
 
-  const topic = topics.find((item) => item.id === id) ?? topics[0];
-  const items = topic
-    ? stories.filter((item) => item.topicIds?.includes(topic.id))
-    : [];
-  const briefing = items[0] ?? stories[0];
+  const topic = id
+    ? topics.find((item) => item.id === id)
+    : topics[0];
+  const topicId = id ?? topic?.id;
+  const search = useHearCatalogueSearch({
+    filter: topicId ? { categorySlugs: [topicId] } : undefined,
+    sort: "latest",
+  });
+  const onScroll = useLoadMoreOnScroll({
+    hasMore: search.hasMore,
+    loading: search.loadingMore,
+    onLoadMore: search.loadNextPage,
+  });
+  const briefing = search.items[0];
 
   return (
     <AppScreen
@@ -39,9 +52,19 @@ export function TopicScreen() {
       <ScrollView
         contentContainerClassName="px-4 sm:px-5 pt-4 sm:pt-8 pb-[140px]"
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={200}
       >
-        {loading ? (
+        {search.loading ? (
           <TopicSkeleton />
+        ) : search.error ? (
+          <EmptyState
+            icon={icons.audioOutput}
+            title="This topic could not load"
+            description={search.error}
+            actionLabel="Try this topic again"
+            onAction={search.retry}
+          />
         ) : (
           <>
             <View className="flex-row items-center">
@@ -87,11 +110,11 @@ export function TopicScreen() {
               />
             ) : null}
             <View className="mt-[20px] gap-[13px]">
-              {items.map((item) => (
+              {search.items.map((item) => (
                 <StoryRow key={item.id} item={item} showPlay />
               ))}
             </View>
-            {items.length === 0 ? (
+            {search.items.length === 0 ? (
               <View className="mt-10 gap-2 rounded-[20px] border border-border bg-surface p-6">
                 <AppText className="font-body-bold text-ink">
                   {topicCopy.emptyTitle}
@@ -101,6 +124,13 @@ export function TopicScreen() {
                 </AppText>
               </View>
             ) : null}
+            <CataloguePaginationFooter
+              loading={search.loadingMore}
+              hasMore={search.hasMore}
+              error={search.loadMoreError}
+              onLoadMore={search.loadNextPage}
+              className="mt-5"
+            />
           </>
         )}
       </ScrollView>

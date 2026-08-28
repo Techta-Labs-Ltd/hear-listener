@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { AppScreen } from "@/components/ui/AppScreen";
 import { SavedSection } from "@/components/library/SavedSection";
@@ -13,7 +14,22 @@ export function LibrarySectionScreen() {
   const activeSection = parseLibrarySection(
     useLocalSearchParams<{ section?: string }>().section,
   );
-  const { loading } = useContent();
+  const {
+    stories,
+    loading,
+    refreshing,
+    initialLoadComplete,
+    fetchCatalogue,
+  } = useContent();
+
+  useEffect(() => {
+    if (activeSection !== "history") void fetchCatalogue();
+  }, [activeSection, fetchCatalogue]);
+
+  const catalogueLoading =
+    activeSection !== "history" &&
+    stories.length === 0 &&
+    (!initialLoadComplete || loading || refreshing);
 
   return (
     <AppScreen
@@ -25,7 +41,7 @@ export function LibrarySectionScreen() {
         contentContainerClassName="px-5 pt-4 pb-[40px]"
         showsVerticalScrollIndicator={false}
       >
-        {loading ? (
+        {catalogueLoading ? (
           <SectionListSkeleton />
         ) : activeSection === "saved" ? (
           <SavedSection />

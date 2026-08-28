@@ -58,12 +58,17 @@ export class HttpHearCatalogueService {
       );
     }
 
-    const limit = Math.max(1, Math.min(100, options.limit ?? 20));
+    const limit = Number.isFinite(options.limit)
+      ? Math.max(1, Math.min(100, Math.floor(options.limit ?? 20)))
+      : EXTERNAL_VOICE_CONFIG.cataloguePageSize;
+    const requestedPage = Number.isFinite(options.page)
+      ? Math.max(0, Math.floor(options.page ?? 0))
+      : 0;
     const request: HearSearchRequest = {
       q: options.query?.trim() ?? "",
       isLocal: options.isLocal ?? false,
       isRecommended: options.isRecommended ?? false,
-      page: Math.max(0, options.page ?? 0),
+      page: requestedPage,
       limit,
       ...(options.filter ? { filter: options.filter } : {}),
       ...(options.sort ? { sort: options.sort } : {}),
@@ -115,9 +120,19 @@ export class HttpHearCatalogueService {
         "invalid-response",
       );
     }
+    if (parsed.page !== requestedPage) {
+      throw new HearCatalogueError(
+        "Hear! catalogue returned an unexpected page.",
+        "invalid-response",
+      );
+    }
     return {
       items: toRemoteContentItems(parsed.tracks),
+      page: parsed.page,
+      limit: parsed.limit,
       total: parsed.total,
+      totalPages: parsed.totalPages,
+      remaining: parsed.remaining,
     };
   }
 }

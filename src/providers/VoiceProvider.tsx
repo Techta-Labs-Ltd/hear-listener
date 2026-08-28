@@ -1179,6 +1179,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         sessionId: id,
         transcript: "",
         message: "Getting ready…",
+        errorCode: undefined,
+        retryable: false,
+        prompt: "",
         choices: [],
       });
 

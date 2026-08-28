@@ -177,34 +177,60 @@ export function KineticProvider({
     }
 
     let isSubscribed = false;
+    let sensorSession = 0;
     let gyroSub: { remove: () => void } | null = null;
     let accelSub: { remove: () => void } | null = null;
 
     const startSensors = () => {
       if (isSubscribed) return;
       isSubscribed = true;
+      const currentSession = ++sensorSession;
       engineRef.current?.reset();
 
-      try {
-        Gyroscope.setUpdateInterval(DEFAULT_KINETIC_CONFIG.samplingIntervalMs);
-        Accelerometer.setUpdateInterval(DEFAULT_KINETIC_CONFIG.samplingIntervalMs);
+      void Promise.all([
+        Gyroscope.isAvailableAsync().catch(() => false),
+        Accelerometer.isAvailableAsync().catch(() => false),
+      ]).then(([gyroscopeAvailable, accelerometerAvailable]) => {
+        if (!isSubscribed || currentSession !== sensorSession) return;
 
-        gyroSub = Gyroscope.addListener((data) => {
-          engineRef.current?.processGyroscope(data, sensorTimestampMs(data.timestamp));
-        });
+        engineRef.current?.setGyroscopeAvailable(gyroscopeAvailable);
 
-        accelSub = Accelerometer.addListener((data) => {
-          engineRef.current?.processAccelerometer(
-            data,
-            sensorTimestampMs(data.timestamp),
+        if (gyroscopeAvailable) {
+          try {
+            Gyroscope.setUpdateInterval(
+              DEFAULT_KINETIC_CONFIG.samplingIntervalMs,
+            );
+            gyroSub = Gyroscope.addListener((data) => {
+              engineRef.current?.processGyroscope(
+                data,
+                sensorTimestampMs(data.timestamp),
+              );
+            });
+          } catch {
+            engineRef.current?.setGyroscopeAvailable(false);
+          }
+        }
+
+        if (!accelerometerAvailable) return;
+
+        try {
+          Accelerometer.setUpdateInterval(
+            DEFAULT_KINETIC_CONFIG.samplingIntervalMs,
           );
-        });
-      } catch {}
+          accelSub = Accelerometer.addListener((data) => {
+            engineRef.current?.processAccelerometer(
+              data,
+              sensorTimestampMs(data.timestamp),
+            );
+          });
+        } catch {}
+      });
     };
 
     const stopSensors = () => {
       if (!isSubscribed) return;
       isSubscribed = false;
+      sensorSession += 1;
       try {
         gyroSub?.remove();
         accelSub?.remove();

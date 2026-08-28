@@ -45,6 +45,7 @@ export class KineticGestureEngine {
   private shakePeakLatched = false;
   private lastSensorTime = 0;
   private pendingShakeSuppressionMs = 0;
+  private gyroscopeAvailable = true;
 
   constructor(
     config: Partial<KineticConfig> = {},
@@ -66,6 +67,17 @@ export class KineticGestureEngine {
 
   public getState(): KineticEngineState {
     return this.state;
+  }
+
+  public setGyroscopeAvailable(available: boolean): void {
+    if (this.gyroscopeAvailable === available) return;
+
+    this.gyroscopeAvailable = available;
+    this.gyroBuffer = [];
+    this.gyroSamples = [];
+    this.lastGyroMagnitude = 0;
+    this.lastGyroTime = 0;
+    this.disarmShake();
   }
 
   public suppressShakeFor(durationMs: number, now?: number): void {
@@ -189,6 +201,18 @@ export class KineticGestureEngine {
     accel: Vector3D,
     now: number,
   ): void {
+    this.expireShakeCandidates(now);
+    if (
+      (this.state === "IDLE" ||
+        this.state === "CANDIDATE_TILT_RIGHT" ||
+        this.state === "CANDIDATE_TILT_LEFT") &&
+      this.shakePeaks.length > 0
+    ) {
+      this.candidateStartTime = 0;
+      this.setState("IDLE");
+      return;
+    }
+
     const omegaY = gyro.y;
     const isScreenFacingUp = accel.z > 0.1;
 
@@ -263,19 +287,20 @@ export class KineticGestureEngine {
     linearMagnitude: number,
     now: number,
   ): void {
+    const peakThreshold = this.getShakePeakThreshold();
     if (linearMagnitude <= this.config.shakeReleaseThresholdG) {
       this.shakePeakLatched = false;
       return;
     }
 
     if (!this.canCollectShake(now)) {
-      if (linearMagnitude >= this.config.shakeThresholdG) {
+      if (linearMagnitude >= peakThreshold) {
         this.shakePeakLatched = true;
       }
       return;
     }
 
-    if (linearMagnitude < this.config.shakeThresholdG) {
+    if (linearMagnitude < peakThreshold) {
       return;
     }
 
@@ -322,6 +347,7 @@ export class KineticGestureEngine {
   }
 
   private evaluateShake(now: number): void {
+    this.expireShakeCandidates(now);
     if (this.shakeWarmupUntil === 0 || now < this.shakeWarmupUntil) {
       this.clearShakeCandidates();
       return;
@@ -352,30 +378,56 @@ export class KineticGestureEngine {
       return;
     }
 
-    if (this.shakePeaks.length < this.config.shakeRequiredPeaks) return;
+    const requiredPeaks = this.gyroscopeAvailable
+      ? this.config.shakeRequiredPeaks
+      : this.config.shakeFallbackRequiredPeaks;
+    if (this.shakePeaks.length < requiredPeaks) return;
 
     const firstPeak = this.shakePeaks[0];
     const lastPeak = this.shakePeaks.at(-1);
     if (!firstPeak || !lastPeak) return;
 
-    if (lastPeak.time - firstPeak.time > this.config.shakeWindowMs) {
+    const shakeWindowMs = this.gyroscopeAvailable
+      ? this.config.shakeWindowMs
+      : this.config.shakeFallbackWindowMs;
+    if (lastPeak.time - firstPeak.time > shakeWindowMs) {
       this.clearShakeCandidates();
       return;
     }
 
-    const gyroQualifiedPeaks = this.shakePeaks.filter((peak) =>
-      this.hasGyroMotionNear(peak.time),
-    ).length;
-    if (gyroQualifiedPeaks < this.config.shakeRequiredGyroPeaks) return;
+    if (this.gyroscopeAvailable) {
+      const gyroQualifiedPeaks = this.shakePeaks.filter((peak) =>
+        this.hasGyroMotionNear(peak.time),
+      ).length;
+      if (gyroQualifiedPeaks < this.config.shakeRequiredGyroPeaks) return;
+    }
 
-    this.candidateStartTime = now;
+    this.candidateStartTime = 0;
     this.shakeCooldownUntil = now + this.config.shakeCooldownDurationMs;
     this.shakeRequiresNeutral = true;
     this.shakeArmed = false;
     this.shakeNeutralStartTime = 0;
     this.clearShakeCandidates();
-    this.setState("LOCKED");
+    if (
+      this.state === "CANDIDATE_TILT_RIGHT" ||
+      this.state === "CANDIDATE_TILT_LEFT"
+    ) {
+      this.setState("IDLE");
+    }
     this.onGestureCallback?.("SHAKE");
+  }
+
+  private getShakePeakThreshold(): number {
+    return this.gyroscopeAvailable
+      ? this.config.shakeThresholdG
+      : this.config.shakeFallbackThresholdG;
+  }
+
+  private expireShakeCandidates(now: number): void {
+    const lastPeak = this.shakePeaks.at(-1);
+    if (lastPeak && now - lastPeak.time > this.config.shakePeakMaxGapMs) {
+      this.clearShakeCandidates();
+    }
   }
 
   private canCollectShake(now: number): boolean {

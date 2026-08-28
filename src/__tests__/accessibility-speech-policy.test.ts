@@ -81,6 +81,28 @@ describe("accessibility-speech-policy", () => {
     expect(ukSpeech.speak).not.toHaveBeenCalled();
   });
 
+  it("waits for voice capture to close before speaking validation feedback", async () => {
+    accessibilitySpeechPolicy.setVoiceCaptureActive(true);
+    expect(speechCoordinator.isQuiet()).toBe(true);
+
+    const announcement = accessibilitySpeechPolicy.announceGuidedInstruction(
+      "I didn't hear anything. Shake device to try again.",
+      "onboarding:voiceTestError",
+    );
+    await Promise.resolve();
+
+    expect(ukSpeech.speak).not.toHaveBeenCalled();
+
+    accessibilitySpeechPolicy.setVoiceCaptureActive(false);
+    expect(speechCoordinator.isQuiet()).toBe(false);
+    await announcement;
+
+    expect(ukSpeech.speak).toHaveBeenCalledWith(
+      "I didn't hear anything. Shake device to try again.",
+      { interrupt: true },
+    );
+  });
+
   it("rate limits and deduplicates critical accessibility announcements", () => {
     accessibilitySpeechPolicy.announceCriticalAccessibility("Microphone error");
     expect(AccessibilityInfo.announceForAccessibility).toHaveBeenCalledTimes(1);

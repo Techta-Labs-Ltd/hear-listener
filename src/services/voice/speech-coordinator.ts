@@ -28,12 +28,16 @@ const priorityRank: Record<SpeechPriority, number> = {
 class SpeechCoordinator {
   private active?: { key: string; priority: SpeechPriority };
   private readonly quietScopes = new Set<string>();
+  private readonly audibleWaiters = new Set<() => void>();
+  private readonly deferredSpeech = new Map<string, Promise<void>>();
+  private deferredSpeechGeneration = 0;
   private screenReaderEnabled = false;
   lastCompletion: "DONE" | "INTERRUPTED" | "ERROR" | "TIMEOUT" = "DONE";
 
   setScreenReaderEnabled(enabled: boolean): void {
     this.screenReaderEnabled = enabled;
     if (enabled) {
+      this.deferredSpeechGeneration += 1;
       void ukSpeech.stop();
       this.active = undefined;
     }
@@ -53,6 +57,7 @@ class SpeechCoordinator {
   exitQuietMode(scope = "voice"): void {
     this.quietScopes.delete(scope);
     voiceAudioGate.exitQuietMode(scope);
+    this.releaseAudibleWaiters();
   }
 
   setContentPlaybackActive(active: boolean): void {
@@ -99,6 +104,30 @@ class SpeechCoordinator {
     return this.speak(request);
   }
 
+  announceWhenAudible(
+    request: SpeechRequest,
+    timeoutMs = 3000,
+  ): Promise<void> {
+    const existing = this.deferredSpeech.get(request.key);
+    if (existing) return existing;
+
+    const generation = this.deferredSpeechGeneration;
+    const pending = (async () => {
+      const audible = await this.waitUntilAudible(timeoutMs);
+      if (!audible || generation !== this.deferredSpeechGeneration) return;
+      await this.speak(request);
+    })();
+
+    this.deferredSpeech.set(request.key, pending);
+    const cleanup = () => {
+      if (this.deferredSpeech.get(request.key) === pending) {
+        this.deferredSpeech.delete(request.key);
+      }
+    };
+    pending.then(cleanup, cleanup);
+    return pending;
+  }
+
   async speakBeforeListening(request: {
     text: string;
     key?: string;
@@ -117,12 +146,38 @@ class SpeechCoordinator {
   }
 
   async cancel(_scope?: string): Promise<void> {
+    this.deferredSpeechGeneration += 1;
     this.active = undefined;
     await ukSpeech.stop();
   }
 
   reset(_key?: string): void {
     this.active = undefined;
+  }
+
+  private waitUntilAudible(timeoutMs: number): Promise<boolean> {
+    if (!this.isQuiet()) return Promise.resolve(true);
+
+    return new Promise((resolve) => {
+      let settled = false;
+      let timeout: ReturnType<typeof setTimeout> | undefined;
+      const complete = () => {
+        if (settled) return;
+        settled = true;
+        if (timeout) clearTimeout(timeout);
+        this.audibleWaiters.delete(complete);
+        resolve(!this.isQuiet());
+      };
+
+      this.audibleWaiters.add(complete);
+      timeout = setTimeout(complete, Math.max(0, timeoutMs));
+    });
+  }
+
+  private releaseAudibleWaiters(): void {
+    if (this.isQuiet()) return;
+    const waiters = Array.from(this.audibleWaiters);
+    for (const release of waiters) release();
   }
 }
 

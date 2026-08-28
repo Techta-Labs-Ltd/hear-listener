@@ -152,7 +152,56 @@ describe("KineticGestureEngine", () => {
       performShake(now);
 
       expect(firedGestures).toEqual(["SHAKE"]);
-      expect(engine.getState()).toBe("LOCKED");
+      expect(engine.getState()).toBe("IDLE");
+    });
+
+    it("does not let tilt classification steal an active shake sequence", () => {
+      const now = settleEngine();
+      sample(now, 1.5, 12);
+      sample(now + 40, 0, 12);
+      sample(now + 80, -1.5, 12);
+      sample(now + 120, 0, 12);
+      sample(now + 160, 1.5, 12);
+
+      expect(firedGestures).toEqual(["SHAKE"]);
+      expect(engine.getState()).toBe("IDLE");
+    });
+
+    it("uses a stricter accelerometer-only fallback when no gyroscope exists", () => {
+      engine.setGyroscopeAvailable(false);
+
+      let now = 1000;
+      for (let i = 0; i < 35; i++) {
+        engine.processAccelerometer({ x: 0, y: 0, z: 1 }, now);
+        now += 20;
+      }
+
+      const fallbackShake = (startTime: number, existingGestureCount: number) => {
+        engine.processAccelerometer({ x: 1.8, y: 0, z: 1 }, startTime);
+        engine.processAccelerometer({ x: 0, y: 0, z: 1 }, startTime + 60);
+        engine.processAccelerometer({ x: -1.8, y: 0, z: 1 }, startTime + 120);
+        engine.processAccelerometer({ x: 0, y: 0, z: 1 }, startTime + 180);
+        engine.processAccelerometer({ x: 1.8, y: 0, z: 1 }, startTime + 240);
+
+        expect(firedGestures).toHaveLength(existingGestureCount);
+
+        engine.processAccelerometer({ x: 0, y: 0, z: 1 }, startTime + 300);
+        engine.processAccelerometer({ x: -1.8, y: 0, z: 1 }, startTime + 360);
+        return startTime + 380;
+      };
+
+      now = fallbackShake(now, 0);
+      expect(firedGestures).toEqual(["SHAKE"]);
+      expect(engine.getState()).toBe("IDLE");
+
+      now += 800;
+      for (let i = 0; i < 12; i++) {
+        engine.processAccelerometer({ x: 0, y: 0, z: 1 }, now);
+        now += 20;
+      }
+      fallbackShake(now, 1);
+
+      expect(firedGestures).toEqual(["SHAKE", "SHAKE"]);
     });
 
     it("treats sustained samples as one physical peak until acceleration releases", () => {

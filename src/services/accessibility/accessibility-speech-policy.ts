@@ -76,7 +76,7 @@ class AccessibilitySpeechPolicyManager {
     await this.screenReaderStatusReady;
     if (this.screenReaderEnabled) return;
 
-    await speechCoordinator.announce({
+    await speechCoordinator.announceWhenAudible({
       key,
       text: message,
       priority: "screen",

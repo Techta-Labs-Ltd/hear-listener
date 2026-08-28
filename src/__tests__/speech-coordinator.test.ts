@@ -66,4 +66,43 @@ describe("speech coordinator playback gate", () => {
     speechCoordinator.exitQuietMode();
     expect(speechCoordinator.isQuiet()).toBe(false);
   });
+
+  it("speaks queued validation feedback after voice capture closes", async () => {
+    speechCoordinator.enterQuietMode();
+
+    const announcement = speechCoordinator.announceWhenAudible({
+      key: "onboarding:voiceTestError",
+      text: "I didn't hear anything. Shake device to try again.",
+      priority: "screen",
+      force: true,
+    });
+    await Promise.resolve();
+
+    expect(ukSpeech.speak).not.toHaveBeenCalled();
+
+    speechCoordinator.exitQuietMode();
+    await announcement;
+
+    expect(ukSpeech.speak).toHaveBeenCalledWith(
+      "I didn't hear anything. Shake device to try again.",
+      { interrupt: true },
+    );
+  });
+
+  it("deduplicates queued validation feedback by key", async () => {
+    speechCoordinator.enterQuietMode();
+    const request = {
+      key: "onboarding:voiceTestError",
+      text: "Shake device to try again.",
+      priority: "screen" as const,
+      force: true,
+    };
+
+    const first = speechCoordinator.announceWhenAudible(request);
+    const duplicate = speechCoordinator.announceWhenAudible(request);
+    speechCoordinator.exitQuietMode();
+    await Promise.all([first, duplicate]);
+
+    expect(ukSpeech.speak).toHaveBeenCalledTimes(1);
+  });
 });

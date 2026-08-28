@@ -70,6 +70,7 @@
   "scripts": {
     "start": "expo start",
     "android": "expo run:android --port 8081",
+    "android:shake": "node scripts/simulate-android-shake.mjs",
     "dev:android": "node scripts/start-android-dev.mjs",
     "dev:android:clear": "node scripts/start-android-dev.mjs --clear",
     "ios": "expo run:ios",

@@ -249,22 +249,6 @@ export function useOnboardingSetup() {
         msg,
         "onboarding:permissionBlocked",
       );
-    } else if (phase === "voiceTestError") {
-      void appHaptics.error();
-      const isNoSpeech =
-        voice.errorCode === "no-speech" ||
-        voice.errorCode === "no-speech-timeout";
-      const isUnrecognised =
-        voice.errorCode === "unrecognised" || voice.errorCode === "no_match";
-      const msg = isNoSpeech
-        ? ONBOARDING_SPEECH.voiceTestNoSpeech
-        : isUnrecognised
-          ? ONBOARDING_SPEECH.voiceTestNotRecognised
-          : ONBOARDING_SPEECH.voiceTestError;
-      accessibility.announceGuidedInstruction(
-        msg,
-        "onboarding:voiceTestError",
-      );
     } else if (phase === "account") {
       if (!isTransitioning.current) {
         const accountIntro =
@@ -279,7 +263,6 @@ export function useOnboardingSetup() {
     accessibility,
     phase,
     startAccountVoiceSelection,
-    voice.errorCode,
   ]);
 
   useEffect(() => {
@@ -469,17 +452,31 @@ export function useOnboardingSetup() {
 
         if (sessionEnded && !voiceReady.current) {
           const result = validateVoiceTestCommand(state.transcript || "");
+          const validationErrorCode = result.transcript
+            ? "unrecognised"
+            : state.state === "cancelled"
+              ? "cancelled"
+              : state.errorCode || "no-speech";
+          const failureSpeech = result.transcript
+            ? result.speechText
+            : validationErrorCode === "cancelled"
+              ? ONBOARDING_SPEECH.voiceTestCancel
+              : validationErrorCode === "no-speech" ||
+                  validationErrorCode === "no-speech-timeout"
+                ? result.speechText
+                : ONBOARDING_SPEECH.voiceTestError;
           void appHaptics.error();
           setPhase("voiceTestError");
           useVoiceStore.getState().setVoice({
             state: "error",
             message: result.feedbackText,
             transcript: result.transcript,
+            errorCode: validationErrorCode,
             retryable: true,
             choices: [],
           });
           accessibility.announceGuidedInstruction(
-            result.speechText,
+            failureSpeech,
             "onboarding:voiceTestError",
           );
         }

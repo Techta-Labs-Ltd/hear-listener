@@ -31,6 +31,9 @@ export interface KineticConfig {
   shakeGyroThresholdRadS: number;
   shakeGyroCorrelationMs: number;
   shakeRequiredGyroPeaks: number;
+  shakeFallbackThresholdG: number;
+  shakeFallbackRequiredPeaks: number;
+  shakeFallbackWindowMs: number;
   shakeCooldownDurationMs: number;
   shakeNeutralDurationMs: number;
   shakeNeutralGyroThresholdRadS: number;

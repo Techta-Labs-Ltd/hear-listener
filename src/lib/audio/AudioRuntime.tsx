@@ -5,7 +5,11 @@ import {
   type AudioSource,
 } from "expo-audio";
 import { useEffect, useRef } from "react";
-import { usePlaybackStore, useSpeechStore } from "@/stores";
+import {
+  useContentStore,
+  usePlaybackStore,
+  useSpeechStore,
+} from "@/stores";
 
 export function AudioRuntime() {
   const player = useAudioPlayer(null);
@@ -18,6 +22,8 @@ export function AudioRuntime() {
   const isSpeaking = useSpeechStore((state) => state.isSpeaking);
   const lastSource = useRef<AudioSource | null>(null);
   const lastSeekToken = useRef(seekToken);
+  const lastHistoryCheckpoint = useRef(-1);
+  const finishedHistoryItemId = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     void setAudioModeAsync({
@@ -31,6 +37,7 @@ export function AudioRuntime() {
     const source = current?.audioUrl ?? null;
     if (source === lastSource.current) return;
     lastSource.current = source;
+    lastHistoryCheckpoint.current = -1;
     if (source == null || !current) {
       if (!player.paused) player.pause();
       player.setActiveForLockScreen(false);
@@ -70,11 +77,40 @@ export function AudioRuntime() {
   }, [seekToken, status.duration, player]);
 
   useEffect(() => {
-    if (status.duration > 0)
+    if (status.duration > 0) {
       usePlaybackStore
         .getState()
         .setTiming(status.currentTime / status.duration, status.duration);
-  }, [status.currentTime, status.duration]);
+    }
+    if (!current || !status.isLoaded) return;
+    if (!status.didJustFinish) {
+      finishedHistoryItemId.current = undefined;
+    } else if (
+      finishedHistoryItemId.current &&
+      finishedHistoryItemId.current !== current.id
+    ) {
+      return;
+    } else {
+      finishedHistoryItemId.current = current.id;
+    }
+    const checkpoint = Math.floor(status.currentTime / 30);
+    if (
+      checkpoint === lastHistoryCheckpoint.current &&
+      !status.didJustFinish
+    ) {
+      return;
+    }
+    lastHistoryCheckpoint.current = checkpoint;
+    useContentStore
+      .getState()
+      .recordHistory(current, status.currentTime, status.didJustFinish);
+  }, [
+    current,
+    status.currentTime,
+    status.didJustFinish,
+    status.duration,
+    status.isLoaded,
+  ]);
 
   useEffect(() => {
     if (status.didJustFinish) {

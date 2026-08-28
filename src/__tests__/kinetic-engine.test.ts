@@ -233,5 +233,39 @@ describe("KineticGestureEngine", () => {
 
       expect(firedGestures).toEqual(["SHAKE", "SHAKE"]);
     });
+
+    it("anchors runtime feedback suppression to the native sensor clock", () => {
+      let now = settleEngine();
+
+      engine.suppressShakeFor(650);
+      performShake(now);
+      expect(firedGestures).toHaveLength(0);
+
+      now += 700;
+      for (let i = 0; i < 12; i++) {
+        sample(now, 0, 0);
+        now += 20;
+      }
+      performShake(now);
+
+      expect(firedGestures).toEqual(["SHAKE"]);
+    });
+
+    it("applies feedback suppression raised before the first sensor sample", () => {
+      engine.suppressShakeFor(650);
+
+      let now = settleEngine();
+      performShake(now);
+      expect(firedGestures).toHaveLength(0);
+
+      now += 700;
+      for (let i = 0; i < 12; i++) {
+        sample(now, 0, 0);
+        now += 20;
+      }
+      performShake(now);
+
+      expect(firedGestures).toEqual(["SHAKE"]);
+    });
   });
 });

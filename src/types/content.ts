@@ -43,6 +43,7 @@ export type LibrarySection = "saved" | "following" | "downloads" | "history";
 
 export type HistoryItem = {
   storyId: string;
+  item?: ContentItem;
   playedMinutes: number;
   completed: boolean;
   playedAt: string;
@@ -70,6 +71,11 @@ export type ContentState = {
   fetchCatalogue: () => Promise<void>;
   refresh: () => Promise<void>;
   clearHistory: () => void;
+  recordHistory: (
+    item: ContentItem,
+    playedSeconds: number,
+    completed?: boolean,
+  ) => void;
   getStoryById: (id: string) => ContentItem | undefined;
   getStoriesByTopic: (topicId: string) => ContentItem[];
   getStoriesByEntity: (entityName: string) => ContentItem[];

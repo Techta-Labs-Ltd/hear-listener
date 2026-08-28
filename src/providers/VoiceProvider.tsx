@@ -76,6 +76,10 @@ import {
   withVoiceRetryGuidance,
 } from "@/utils/copy/voice";
 import { generateVoiceSessionId } from "@/utils/voice";
+import {
+  playbackInterruptionPrompt,
+  shouldResumeAfterPlaybackCommand,
+} from "@/utils/voice/playback-interruption";
 import { useRouter } from "expo-router";
 import {
   ExpoSpeechRecognitionModule,
@@ -164,6 +168,24 @@ async function withDelayedExternalProgress<T>(
 export function VoiceProvider({ children }: PropsWithChildren) {
   const voice = useVoiceStore();
   const router = useRouter();
+  const playbackCompletion = usePlaybackStore((state) => state.completion);
+  const announcedCompletionSequence = useRef(0);
+
+  useEffect(() => {
+    if (
+      !playbackCompletion ||
+      playbackCompletion.sequence <= announcedCompletionSequence.current
+    ) {
+      return;
+    }
+    announcedCompletionSequence.current = playbackCompletion.sequence;
+    usePlaybackStore.getState().clearCompletion();
+    speechCoordinator.exitQuietMode();
+    void voiceAnnounce(
+      `You’ve finished ${playbackCompletion.publicationTitle}. Shake device and say give feedback if you’d like to rate this publication.`,
+      `voice:publication-complete:${playbackCompletion.sequence}`,
+    );
+  }, [playbackCompletion]);
 
   const [activeScreen, setActiveScreen] = useState<ScreenVoiceContext | null>(
     null,
@@ -294,8 +316,11 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         await ukSpeech.stop();
         await waitForMicrophoneClose();
         speechCoordinator.exitQuietMode();
-        if (announce) void voiceAnnounce(announce);
+        if (announce) await voiceAnnounce(announce);
         if (withFeedback) triggerVoiceCloseFeedback("cancel");
+        if (session?.playbackWasPlaying) {
+          usePlaybackStore.getState().resume();
+        }
       })();
       useVoiceStore.getState().resetVoice();
     },
@@ -369,15 +394,20 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         choices: [],
         prompt: "",
       });
-      void waitForMicrophoneClose().then(() => {
+      void waitForMicrophoneClose().then(async () => {
         speechCoordinator.exitQuietMode();
-        if (session?.playbackWasPlaying) usePlaybackStore.getState().resume();
         triggerVoiceCloseFeedback("error");
         if (session?.source !== "onboardingPractice") {
-          void voiceAnnounce(
+          await voiceAnnounce(
             spokenMessage,
             `voice:error:${errorCode ?? "general"}`,
           );
+        }
+        if (
+          session?.playbackWasPlaying ||
+          options.resumePlaybackOnClose === true
+        ) {
+          usePlaybackStore.getState().resume();
         }
       });
     },
@@ -482,6 +512,13 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       }
 
       const message = result.feedback ?? "Done";
+      const resumeAfterSpeech = shouldResumeAfterPlaybackCommand(
+        invocation.executorKey,
+        current?.playbackWasPlaying === true,
+      );
+      if (resumeAfterSpeech) {
+        usePlaybackStore.getState().pause();
+      }
       active.current = undefined;
       useVoiceStore.getState().setVoice({
         state: "success",
@@ -494,7 +531,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       speechCoordinator.exitQuietMode();
       await voiceAnnounce(message, `voice:success:${invocation.idempotencyKey}`);
 
-      if (
+      if (resumeAfterSpeech) {
+        usePlaybackStore.getState().resume();
+      } else if (
         current?.playbackWasPlaying &&
         !PLAYBACK_EXECUTORS.has(invocation.executorKey)
       ) {
@@ -574,10 +613,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       }
 
       if (response.kind === "unresolved") {
-        finish(response.prompt, "external-unresolved");
-        if (context.resumePlaybackOnCancel) {
-          usePlaybackStore.getState().resume();
-        }
+        finish(response.prompt, "external-unresolved", {
+          resumePlaybackOnClose: context.resumePlaybackOnCancel,
+        });
         return;
       }
 
@@ -586,10 +624,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           externalVoice.cancelRequest();
           return;
         }
-        finish(response.message, response.code);
-        if (context.resumePlaybackOnCancel) {
-          usePlaybackStore.getState().resume();
-        }
+        finish(response.message, response.code, {
+          resumePlaybackOnClose: context.resumePlaybackOnCancel,
+        });
         return;
       }
 
@@ -599,6 +636,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         finish(
           "I found results, but none can be played right now.",
           "non-playable-results",
+          { resumePlaybackOnClose: context.resumePlaybackOnCancel },
         );
         return;
       }
@@ -855,7 +893,12 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           id,
           cleanHypotheses,
           capability,
-          { preferences, playback, currentPath: snapshotPath ?? "/" },
+          {
+            preferences,
+            playback,
+            playbackWasPlaying: session.playbackWasPlaying,
+            currentPath: snapshotPath ?? "/",
+          },
           session.controller.signal,
         );
         clearTimeout(timeout);
@@ -896,12 +939,20 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         } else if (routeResult.kind === "feedback") {
           active.current = undefined;
           useVoiceStore.getState().setVoice({
-            state: "clarifying",
+            state: routeResult.reopenListening ? "clarifying" : "success",
             prompt: routeResult.prompt,
             message: routeResult.prompt,
             choices: [],
           });
-          void voiceAnnounce(routeResult.prompt);
+          await voiceAnnounce(routeResult.prompt, `voice:feedback:${id}`);
+          if (routeResult.reopenListening) {
+            voiceEvents.trigger("contextualAction", false);
+          } else {
+            useVoiceStore.getState().resetVoice();
+            if (routeResult.resumePlaybackOnClose) {
+              usePlaybackStore.getState().resume();
+            }
+          }
         } else if (routeResult.kind === "selected") {
           active.current = undefined;
           useVoiceStore.getState().setVoice({ state: "clarifying" });
@@ -1191,7 +1242,17 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           }
         }
 
-        if (announceLocation) {
+        const shakePlaybackPrompt =
+          _source === "shakeGesture"
+            ? playbackInterruptionPrompt(playback)
+            : undefined;
+        if (shakePlaybackPrompt) {
+          speechCoordinator.exitQuietMode();
+          await voiceAnnounce(
+            shakePlaybackPrompt,
+            `voice:playback-interruption:${id}`,
+          );
+        } else if (announceLocation) {
           speechCoordinator.exitQuietMode();
           await announceListeningPrompt();
         }

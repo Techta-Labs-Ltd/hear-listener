@@ -1,6 +1,7 @@
 import * as Speech from "expo-speech";
 import { Platform } from "react-native";
 import { UkSpeechService } from "@/services/voice/speech";
+import { useSpeechStore } from "@/stores/speech-store";
 import { isUkLanguage, voiceScore } from "@/utils/voice/speech";
 
 jest.mock("expo-speech", () => ({
@@ -19,6 +20,7 @@ describe("UkSpeechService", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    useSpeechStore.getState().resetSpeech();
     service = new UkSpeechService();
   });
 
@@ -141,6 +143,27 @@ describe("UkSpeechService", () => {
       await expect(promise).resolves.toBe("TIMEOUT");
       platform.restore();
       jest.useRealTimers();
+    });
+
+    it("keeps content audio gated while the native fallback voice speaks", async () => {
+      const observedSpeechStates: boolean[] = [];
+      (Speech.getAvailableVoicesAsync as jest.Mock).mockResolvedValue([]);
+      (Speech.speak as jest.Mock)
+        .mockImplementationOnce((_text, options) => options?.onError?.())
+        .mockImplementationOnce((_text, options) => {
+          observedSpeechStates.push(useSpeechStore.getState().isSpeaking);
+          options?.onStart?.();
+          options?.onDone?.();
+        });
+
+      await expect(service.speak("Use the fallback voice")).resolves.toBe("DONE");
+
+      expect(observedSpeechStates).toEqual([true]);
+      expect(useSpeechStore.getState().isSpeaking).toBe(false);
+      expect(Speech.speak).toHaveBeenLastCalledWith(
+        "Use the fallback voice",
+        expect.objectContaining({ useApplicationAudioSession: false }),
+      );
     });
 
     it("skips sensitive or empty messages", async () => {

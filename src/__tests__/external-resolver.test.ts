@@ -492,6 +492,8 @@ describe("Hear API contract transformations", () => {
           spokenTitle: "A call to action for young people",
           creator: { name: "Lichfield Diocesan Digest" },
           publication: { id: "publication-1", title: "Community Monthly" },
+          publicationTrackIndex: 0,
+          publicationTrackCount: 2,
           playbackSpeedUrls: [
             { speed: 1.5, url: "https://audio.hear.media/track-1-5.mp3" },
           ],

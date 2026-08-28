@@ -43,6 +43,8 @@ export class KineticGestureEngine {
   private shakeArmed = false;
   private shakeRequiresNeutral = false;
   private shakePeakLatched = false;
+  private lastSensorTime = 0;
+  private pendingShakeSuppressionMs = 0;
 
   constructor(
     config: Partial<KineticConfig> = {},
@@ -66,15 +68,31 @@ export class KineticGestureEngine {
     return this.state;
   }
 
-  public suppressShakeFor(durationMs: number, now = Date.now()): void {
+  public suppressShakeFor(durationMs: number, now?: number): void {
+    const suppressionDurationMs = Math.max(0, durationMs);
+    const suppressionStart = now ?? this.lastSensorTime;
+
+    if (suppressionStart <= 0) {
+      this.pendingShakeSuppressionMs = Math.max(
+        this.pendingShakeSuppressionMs,
+        suppressionDurationMs,
+      );
+      this.disarmShake();
+      return;
+    }
+
     this.shakeSuppressedUntil = Math.max(
       this.shakeSuppressedUntil,
-      now + durationMs,
+      suppressionStart + suppressionDurationMs,
     );
     this.shakeCooldownUntil = Math.max(
       this.shakeCooldownUntil,
-      now + durationMs,
+      suppressionStart + suppressionDurationMs,
     );
+    this.disarmShake();
+  }
+
+  private disarmShake(): void {
     this.shakeRequiresNeutral = true;
     this.shakeArmed = false;
     this.shakeNeutralStartTime = 0;
@@ -107,10 +125,13 @@ export class KineticGestureEngine {
     this.shakeArmed = false;
     this.shakeRequiresNeutral = false;
     this.shakePeakLatched = false;
+    this.lastSensorTime = 0;
+    this.pendingShakeSuppressionMs = 0;
     this.clearShakeCandidates();
   }
 
   public processGyroscope(sample: Vector3D, now = Date.now()): void {
+    this.registerSensorTime(now);
     this.gyroBuffer.push(sample);
     if (this.gyroBuffer.length > this.config.filterWindowSize) {
       this.gyroBuffer.shift();
@@ -134,6 +155,7 @@ export class KineticGestureEngine {
   }
 
   public processAccelerometer(sample: Vector3D, now = Date.now()): void {
+    this.registerSensorTime(now);
     if (this.shakeWarmupUntil === 0) {
       this.shakeWarmupUntil = now + this.config.shakeWarmupDurationMs;
     }
@@ -362,6 +384,24 @@ export class KineticGestureEngine {
       now >= this.shakeCooldownUntil &&
       this.state !== "LOCKED" &&
       this.state !== "COOLDOWN"
+    );
+  }
+
+  private registerSensorTime(now: number): void {
+    if (!Number.isFinite(now) || now <= 0) return;
+
+    this.lastSensorTime = Math.max(this.lastSensorTime, now);
+    if (this.pendingShakeSuppressionMs <= 0) return;
+
+    const durationMs = this.pendingShakeSuppressionMs;
+    this.pendingShakeSuppressionMs = 0;
+    this.shakeSuppressedUntil = Math.max(
+      this.shakeSuppressedUntil,
+      now + durationMs,
+    );
+    this.shakeCooldownUntil = Math.max(
+      this.shakeCooldownUntil,
+      now + durationMs,
     );
   }
 

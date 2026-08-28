@@ -15,7 +15,9 @@ export function HistorySection() {
   const { history, stories, clearHistory } = useContent();
 
   const groups = history.filter((group) =>
-    group.rows.some((row) => stories.some((s) => s.id === row.storyId)),
+    group.rows.some(
+      (row) => row.item || stories.some((story) => story.id === row.storyId),
+    ),
   );
 
   return (
@@ -34,7 +36,8 @@ export function HistorySection() {
                 {group.label}
               </AppText>
               {group.rows.map((row) => {
-                const item = stories.find((story) => story.id === row.storyId);
+                const item =
+                  row.item ?? stories.find((story) => story.id === row.storyId);
                 return item ? (
                   <StoryRow key={row.storyId} item={item} thumbSize="none" subtitle={row.meta} />
                 ) : null;

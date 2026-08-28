@@ -240,17 +240,23 @@ describe("LocalCommandRouter", () => {
 
   it("opens a feedback interaction for playback context and handles ratings", async () => {
     const entry = await router.route("s1", hypotheses("give feedback"), undefined, {
-      playback: { current: { id: "daily", title: "Daily" }, playing: true },
+      playback: { current: { id: "daily", title: "Daily" }, playing: false },
+      playbackWasPlaying: true,
     });
-    expect(entry).toMatchObject({ kind: "feedback" });
-    expect(feedbackVoiceController.getTarget()).toBeDefined();
+    expect(entry).toMatchObject({ kind: "feedback", reopenListening: true });
+    expect(feedbackVoiceController.getTarget()).toMatchObject({
+      resumePlaybackOnClose: true,
+    });
 
     const rating = await router.route("s1", hypotheses("good"));
-    expect(rating).toMatchObject({ kind: "selected" });
+    expect(rating).toMatchObject({ kind: "feedback", reopenListening: true });
     expect(feedbackVoiceController.getRating()).toBe(4);
 
     const send = await router.route("s1", hypotheses("send"));
-    expect(send).toMatchObject({ kind: "selected" });
+    expect(send).toMatchObject({
+      kind: "feedback",
+      resumePlaybackOnClose: true,
+    });
     expect(feedbackVoiceController.getTarget()).toBeUndefined();
   });
 });

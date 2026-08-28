@@ -388,6 +388,7 @@ export type VoiceFailureOptions = {
   announce?: boolean;
   includeRetryGuidance?: boolean;
   retryable?: boolean;
+  resumePlaybackOnClose?: boolean;
 };
 
 export type PanelPhase = "initializing" | "listening" | "working";

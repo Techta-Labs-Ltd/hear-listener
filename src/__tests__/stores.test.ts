@@ -1,6 +1,7 @@
 import {
   initialPreferences,
   usePlaybackStore,
+  useContentStore,
   usePreferencesStore,
   useVoiceStore,
   useAccountStore,
@@ -17,8 +18,12 @@ describe("Zustand stores", () => {
       speed: 1,
       repeat: false,
       queue: [],
+      queueMode: "single",
+      playbackSessionId: "",
+      completion: undefined,
       sleepTimerEndsAt: null,
     });
+    useContentStore.setState({ history: [] });
     useVoiceStore.getState().resetVoice();
     useAccountStore.getState().clear();
     useOnboardingVoiceStore.setState({
@@ -64,6 +69,33 @@ describe("Zustand stores", () => {
       current: undefined,
       playing: false,
     });
+  });
+  it("keeps listening history empty until real remote audio starts", () => {
+    expect(useContentStore.getState().history).toEqual([]);
+    const item = {
+      id: "remote-history",
+      title: "A real Hear! story",
+      creator: "Hear! creator",
+      publication: "Hear! Daily",
+      duration: "2:00",
+      category: "News",
+      color: "#5B3B82",
+      audioUrl: "https://cdn.hear.media/history.mp3",
+      origin: "hear-search" as const,
+    };
+    useContentStore.getState().recordHistory(item, 0);
+    expect(useContentStore.getState().history).toMatchObject([
+      {
+        label: "TODAY",
+        rows: [
+          {
+            storyId: "remote-history",
+            item: { title: "A real Hear! story" },
+            meta: "Started · Hear! Daily",
+          },
+        ],
+      },
+    ]);
   });
   it("resets voice sessions completely", () => {
     useVoiceStore

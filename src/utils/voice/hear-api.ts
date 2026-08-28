@@ -287,16 +287,16 @@ export function buildConfirmationPrompt(
 
 export function parseHearSearchResponse(
   value: unknown,
-  maxTracks = Number.POSITIVE_INFINITY,
+  maxResults = Number.POSITIVE_INFINITY,
 ): { tracks: ExternalPlaybackTrack[]; total: number } | undefined {
   if (!isRecord(value) || !Array.isArray(value.results)) return undefined;
-  const expanded = value.results.flatMap(expandPublication);
+  const expanded = value.results.slice(0, maxResults).flatMap(expandPublication);
   const tracks = expanded.flatMap((item) => {
     const track = parseSearchTrack(item);
     return track ? [track] : [];
   });
   return {
-    tracks: tracks.slice(0, maxTracks),
+    tracks,
     total: finiteNumber(value.total) ? value.total : tracks.length,
   };
 }
@@ -504,9 +504,10 @@ function fallbackSearchQuery(
 function expandPublication(value: unknown): Record<string, unknown>[] {
   if (!isRecord(value)) return [];
   if (!Array.isArray(value.tracks) || value.tracks.length === 0) return [value];
+  const tracks = value.tracks;
   const publicationId = firstString(value.publicationId, value.contentId);
   const publicationTitle = firstString(value.publicationTitle, value.title);
-  return value.tracks.flatMap((track, index) =>
+  return tracks.flatMap((track, index) =>
     isRecord(track)
       ? [
           {
@@ -515,7 +516,7 @@ function expandPublication(value: unknown): Record<string, unknown>[] {
             tracks: undefined,
             isPublication: true,
             trackIndex: index,
-            trackCount: value.tracks.length,
+            trackCount: tracks.length,
             publication: {
               id: publicationId,
               title: publicationTitle,

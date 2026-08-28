@@ -17,6 +17,7 @@ import { PlaybackRuntime } from "@/components/player/PlaybackRuntime";
 import { AppActivityRuntime } from "@/components/player/AppActivityRuntime";
 import { AccountRuntime } from "@/components/account/AccountRuntime";
 import { AudioRuntime } from "@/lib/audio/AudioRuntime";
+import { CatalogueLoadingRuntime } from "@/components/content/CatalogueLoadingRuntime";
 import { RootNavigator } from "./RootNavigator";
 import { LoadingScreen } from "@/components/brand/LoadingScreen";
 import { AnimatedLaunchScreen } from "@/components/brand/AnimatedLaunchScreen";
@@ -47,6 +48,7 @@ export function AppRoot() {
         <>
           <PlaybackRuntime />
           <AudioRuntime />
+          <CatalogueLoadingRuntime />
           <AppActivityRuntime />
           <AccountRuntime />
           <StatusBar style="dark" />

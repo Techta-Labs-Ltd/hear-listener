@@ -79,7 +79,12 @@
           "enableFTS": true
         }
       ],
-      "expo-audio",
+      [
+        "expo-audio",
+        {
+          "enableBackgroundPlayback": true
+        }
+      ],
       "expo-secure-store",
       [
         "expo-notifications",

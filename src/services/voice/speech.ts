@@ -136,6 +136,7 @@ export class UkSpeechService {
         settled = true;
         if (startTimeout) clearTimeout(startTimeout);
         if (completionTimeout) clearTimeout(completionTimeout);
+        useSpeechStore.getState().setSpeaking(false, null);
         resolve();
       };
 
@@ -145,12 +146,15 @@ export class UkSpeechService {
         Math.max(12000, Math.ceil(text.length * 140)),
       );
 
+      useSpeechStore.getState().setSpeaking(true, text);
       Speech.speak(text, {
         language: "en",
         rate: options.rate ?? 0.92,
         pitch: options.pitch ?? 0.94,
+        useApplicationAudioSession: false,
         onStart: () => {
           if (startTimeout) clearTimeout(startTimeout);
+          useSpeechStore.getState().setSpeaking(true, text);
         },
         onDone: complete,
         onStopped: complete,

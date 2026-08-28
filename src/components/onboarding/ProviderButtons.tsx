@@ -3,9 +3,9 @@ import { playClick } from "@/lib/audio/one-shots";
 import { Pressable, View } from "@/tw";
 import type { ProviderButtonProps } from "@/types";
 import { cn } from "@/utils/styles";
-import * as Haptics from "expo-haptics";
 import { ActivityIndicator } from "react-native";
 import { SvgXml } from "react-native-svg";
+import { appHaptics } from "@/lib/haptics";
 
 const APPLE_LOGO_SVG = `<svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.44443 8.05554C2.41666 8.05554 0 11.2778 0 16.1111C0 22.5555 4.02777 29 8.05554 29C10.4722 29 11.2778 27.3888 13.6944 27.3888C16.1111 27.3888 16.9166 29 19.3333 29C23.3611 29 27.3888 23.3611 27.3888 17.7222C27.3888 12.8889 24.1666 8.8611 20.1389 8.05554C16.9166 8.05554 15.3055 9.66665 13.6944 9.66665C11.2778 9.66665 9.66665 8.05554 6.44443 8.05554Z" fill="white"/><path d="M13.6945 6.44443C13.6945 2.41666 16.9167 0 20.9445 0C20.9445 4.02777 17.7223 6.44443 13.6945 6.44443Z" fill="white"/></svg>`;
 
@@ -13,7 +13,7 @@ const GOOGLE_LOGO_SVG = `<svg width="22" height="22" viewBox="0 0 22 22" fill="n
 
 function useProviderPress(onPress: () => void) {
   return () => {
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    void appHaptics.changed();
     playClick();
     onPress();
   };

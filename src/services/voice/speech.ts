@@ -1,43 +1,7 @@
 import { Platform } from "react-native";
 import * as Speech from "expo-speech";
 import { useSpeechStore } from "@/stores/speech-store";
-
-const preferredUkNames = [
-  "daniel",
-  "arthur",
-  "oliver",
-  "george",
-  "serena",
-  "stephanie",
-  "hazel",
-  "martha",
-  "ryan",
-  "male",
-  "en-gb",
-];
-
-export function isUkLanguage(language?: string): boolean {
-  if (!language) return false;
-  const normalized = language.toLowerCase().replace(/_/g, "-");
-  return (
-    normalized === "en-gb" ||
-    normalized.startsWith("en-gb-") ||
-    normalized === "en-uk" ||
-    normalized.startsWith("en-uk-")
-  );
-}
-
-export function voiceScore(voice: Speech.Voice): number {
-  const identity = `${voice.name} ${voice.identifier}`.toLowerCase();
-  const preferredIndex = preferredUkNames.findIndex((name) =>
-    identity.includes(name),
-  );
-  return (
-    (voice.quality === "Enhanced" ? 100 : 0) +
-    (identity.includes("network") || identity.includes("premium") ? 40 : 0) +
-    (preferredIndex >= 0 ? 80 - preferredIndex : 0)
-  );
-}
+import { isUkLanguage, voiceScore } from "@/utils/voice/speech";
 
 export class UkSpeechService {
   private voicePromise?: Promise<string | undefined>;

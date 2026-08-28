@@ -19,9 +19,15 @@ export function WelcomeStep({ screenReaderEnabled, onContinue }: WelcomeStepProp
       className="flex-1 bg-canvas"
     >
       <OnboardingHero height={118} wash showWave>
-        <AppText className="font-display text-[34px] leading-[41px] text-white">
-          Hear.
-        </AppText>
+        <View className="flex-row items-start" accessible={false}>
+          <AppText className="font-display text-[34px] leading-[41px] text-white">
+            Hear
+          </AppText>
+          <View className="ml-1 mt-[7px] items-center gap-[5px]">
+            <View className="h-[21px] w-[4px] rounded-full bg-white" />
+            <View className="h-[4px] w-[4px] rounded-full bg-white" />
+          </View>
+        </View>
         <View className="flex-1" />
         <VoiceStatusBadge label="HEAR IS SPEAKING" className="mb-11" />
       </OnboardingHero>
@@ -34,20 +40,36 @@ export function WelcomeStep({ screenReaderEnabled, onContinue }: WelcomeStepProp
         <AppText variant="overline" tone="primary" className="mt-[26px] tracking-[0.4px]">
           WELCOME · 1 OF 3
         </AppText>
-        <AppText
+        <View
+          accessible
           accessibilityRole="header"
-          className="mt-[18px] font-display text-[41px] leading-[49px] text-ink"
+          accessibilityLabel="Hear! what matters. Skip the screens."
+          className="mt-[18px]"
         >
-          Hear what matters.{"\n"}Skip the screens.
-        </AppText>
+          <View className="flex-row items-start">
+            <AppText className="font-display text-[41px] leading-[49px] text-ink">
+              Hear
+            </AppText>
+            <View className="ml-1 mt-[9px] items-center gap-[5px]">
+              <View className="h-[26px] w-[5px] rounded-full bg-ink" />
+              <View className="h-[5px] w-[5px] rounded-full bg-ink" />
+            </View>
+            <AppText className="font-display text-[41px] leading-[49px] text-ink">
+              {" what matters."}
+            </AppText>
+          </View>
+          <AppText className="font-display text-[41px] leading-[49px] text-ink">
+            Skip the screens.
+          </AppText>
+        </View>
         <AppText tone="muted" className="mt-[23px] text-[17px] leading-[21px]">
-          Hear helps you listen and use the app without needing to see the screen.
+          Hear! helps you listen and use the app without needing to see the screen.
         </AppText>
         <PromptCard label="EXAMPLE" command="“Play my local news.”" className="mt-[38px]" />
         <InstructionFooter
           className="mt-[46px]"
           title="Shake device"
-          subtitle="to begin voice setup. Hear will guide you aloud."
+          subtitle="to begin voice setup. Hear! will guide you aloud."
           notes={screenReaderEnabled ? ["Screen reader: shake device to continue."] : undefined}
         />
       </ScrollView>

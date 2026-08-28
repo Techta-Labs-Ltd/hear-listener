@@ -9,10 +9,10 @@ export const defaultHistoryGroups: HistoryGroup[] = [
         playedMinutes: 18,
         completed: false,
         playedAt: "8:20 PM",
-        meta: "18 min played · Hear Daily",
+        meta: "18 min played · Hear! Daily",
       },
       {
-        storyId: "lagos",
+        storyId: "london",
         playedMinutes: 6,
         completed: true,
         playedAt: "2:15 PM",

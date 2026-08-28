@@ -1,16 +1,16 @@
 import {
   decideResolution,
   rankEntityCandidates,
-} from "@/services/voice/matching/candidate-ranker";
+} from "@/utils/voice/matching/candidate-ranker";
 import {
   phoneticCodeScore,
   rarityWeightedCoverage,
-} from "@/services/voice/matching/phonetic";
+} from "@/utils/voice/matching/phonetic";
 import {
   doubleMetaphoneCodes,
   phoneticCodeSimilarity,
-} from "@/services/voice/normalize";
-import { defaultResolverConfig } from "@/services/voice/matching/resolver-config";
+} from "@/utils/voice/normalize";
+import { DEFAULT_VOICE_RESOLVER_CONFIG } from "@/constants/voice-resolver";
 import type { EntityCandidate } from "@/types";
 
 function candidate(
@@ -88,7 +88,7 @@ describe("SQLite trigram, phonetic and ASR matcher pipeline", () => {
       fts: 0.45,
     });
     const ranked = rankEntityCandidates([generic, tyndale], {
-      config: defaultResolverConfig,
+      config: DEFAULT_VOICE_RESOLVER_CONFIG,
       queryTokens: ["tinder", "talking", "magazine"],
       rarity: { tinder: 0.9, talking: 0.2, magazine: 0.2 },
     });
@@ -104,10 +104,12 @@ describe("SQLite trigram, phonetic and ASR matcher pipeline", () => {
       phonetic: 1,
     });
     const ranked = rankEntityCandidates([strong], {
-      config: defaultResolverConfig,
+      config: DEFAULT_VOICE_RESOLVER_CONFIG,
       queryTokens: ["a"],
     });
-    expect(decideResolution(ranked, defaultResolverConfig)).toMatchObject({
+    expect(
+      decideResolution(ranked, DEFAULT_VOICE_RESOLVER_CONFIG),
+    ).toMatchObject({
       kind: "resolved",
     });
 
@@ -116,10 +118,12 @@ describe("SQLite trigram, phonetic and ASR matcher pipeline", () => {
       candidate("publication", "b", "B", { exact: 1, fts: 0.85, trigram: 0.9, phonetic: 0.9 }),
     ];
     const closeRanked = rankEntityCandidates(close, {
-      config: defaultResolverConfig,
+      config: DEFAULT_VOICE_RESOLVER_CONFIG,
       queryTokens: ["x"],
     });
-    expect(decideResolution(closeRanked, defaultResolverConfig)).toMatchObject({
+    expect(
+      decideResolution(closeRanked, DEFAULT_VOICE_RESOLVER_CONFIG),
+    ).toMatchObject({
       kind: "ambiguous",
     });
   });
@@ -131,10 +135,12 @@ describe("SQLite trigram, phonetic and ASR matcher pipeline", () => {
       phonetic: 0.2,
     });
     const ranked = rankEntityCandidates([weak], {
-      config: defaultResolverConfig,
+      config: DEFAULT_VOICE_RESOLVER_CONFIG,
       queryTokens: ["something"],
     });
-    expect(decideResolution(ranked, defaultResolverConfig)).toMatchObject({
+    expect(
+      decideResolution(ranked, DEFAULT_VOICE_RESOLVER_CONFIG),
+    ).toMatchObject({
       kind: "unresolved",
     });
   });

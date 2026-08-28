@@ -23,7 +23,7 @@ import { appHaptics } from "@/lib/haptics";
 import {
   checkMicrophonePermissionStatus,
   requestMicrophonePermissionSafely,
-} from "@/utils/voice";
+} from "@/services/voice/microphone-permission-service";
 import {
   validateAccountChoice,
   validateVoiceTestCommand,
@@ -65,6 +65,7 @@ export function useOnboardingSetup() {
     completed.current = true;
     clearIdleTimers();
     onboardingVoiceBridge.setGestureMode("inactive");
+    onboardingVoiceBridge.setVoiceInvocationAllowed(true);
     void speechCoordinator.cancel();
     voice.close();
     router.replace(routes.home);
@@ -86,14 +87,14 @@ export function useOnboardingSetup() {
       | "inactive" = "inactive";
     let stepIndex = 0;
     let title = "Welcome";
-    let description = "Hear what matters. Skip the screens.";
+    let description = "Hear! what matters. Skip the screens.";
     let options = ["Shake device to begin voice setup"];
 
     if (phase === "welcome") {
       gestureMode = "advanceWelcome";
       stepIndex = 0;
       title = "Welcome";
-      description = "Hear what matters. Skip the screens.";
+      description = "Hear! what matters. Skip the screens.";
       options = ["Shake device to begin voice setup"];
     } else if (
       phase === "permissionIntro" ||
@@ -107,24 +108,25 @@ export function useOnboardingSetup() {
     ) {
       stepIndex = 1;
       title = "Voice access";
-      if (phase === "permissionDenied" || phase === "permissionBlocked") {
+      if (phase === "permissionDenied") {
+        gestureMode = "requestPermission";
+        description = "Microphone access is off.";
+        options = ["Shake device to request microphone permission again"];
+      } else if (phase === "permissionBlocked") {
         gestureMode = "permissionDenied";
         description = "Microphone access is off.";
-        options =
-          Platform.OS === "web"
-            ? ["Shake device to request microphone permission"]
-            : ["Shake device to open Settings"];
+        options = ["Shake device to open Hear! microphone settings"];
       } else if (phase === "voiceTestReady" || phase === "voiceTestError") {
         gestureMode = "startVoiceTest";
         description = "Let's try one command.";
         options = ["Say “Play my local news.”", "Shake device to try again"];
       } else if (phase === "voiceTestListening") {
         gestureMode = "inactive";
-        description = "Hear is listening.";
+        description = "Hear! is listening.";
         options = ["Say “Play my local news.”"];
       } else {
         gestureMode = "requestPermission";
-        description = "Hear listens only after you call it.";
+        description = "Hear! listens only after you call it.";
         options = ["Shake device to request microphone permission"];
       }
     } else if (phase === "account") {
@@ -138,6 +140,7 @@ export function useOnboardingSetup() {
           : ["Say Google", "Say Not now"];
     }
 
+    onboardingVoiceBridge.setVoiceInvocationAllowed(false);
     onboardingVoiceBridge.setGestureMode(gestureMode);
     onboardingVoiceBridge.registerStep({
       stepIndex,
@@ -391,9 +394,13 @@ export function useOnboardingSetup() {
     try {
       await Linking.openSettings();
     } catch {
-      void requestPermission();
+      accessibility.announce(
+        "Unable to open Hear! settings. Open your phone Settings, select Hear!, then enable Microphone.",
+        "onboarding:openSettingsFailed",
+        true,
+      );
     }
-  }, [clearIdleTimers, requestPermission]);
+  }, [accessibility, clearIdleTimers, requestPermission]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener(
@@ -413,7 +420,9 @@ export function useOnboardingSetup() {
               const msg =
                 Platform.OS === "web"
                   ? ONBOARDING_SPEECH.permissionStillDeniedWeb
-                  : ONBOARDING_SPEECH.permissionStillDenied;
+                  : status.canAskAgain === false
+                    ? ONBOARDING_SPEECH.permissionStillDenied
+                    : ONBOARDING_SPEECH.permissionDenied;
               accessibility.announce(msg, "onboarding:stillDenied", true);
             }
           });

@@ -48,7 +48,7 @@ export const LISTENING_PHASE_COPY = {
   initializing: {
     badge: "GETTING READY",
     title: "Getting everything ready.",
-    sub: "Hear asks for microphone access first. Your phone owns the dialog.",
+    sub: "Hear! asks for microphone access first. Your phone owns the dialog.",
   },
   listening: {
     badge: "LISTENING",
@@ -74,11 +74,3 @@ export const VOICE_STATE_BADGES: Record<VoiceState, string> = {
   error: "I DIDN’T HEAR A COMMAND",
   cancelled: "VOICE CLOSED",
 };
-
-export const EXTERNAL_RESOLVER_CONFIG = {
-  baseUrl: process.env.EXPO_PUBLIC_RESOLVER_URL || "https://resolver.hear.media",
-  resolveEndpoint: "/v1/resolve",
-  timeoutMs: 15000,
-  clientName: "hear-listener",
-  clientVersion: "1.0.0",
-} as const;

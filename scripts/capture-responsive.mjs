@@ -35,11 +35,11 @@ const PREFS = {
     ...basePrefs,
     setupComplete: true,
     homeGuideDismissed: true,
-    town: "Lagos",
+    town: "London, UK",
     interests: ["local", "technology"],
-    savedIds: ["daily", "arts", "tech", "lagos"],
-    followingIds: ["culture-weekly", "signal-noise", "hear-daily", "lagos-radio"],
-    downloadedIds: ["daily", "lagos"],
+    savedIds: ["daily", "arts", "tech", "london"],
+    followingIds: ["culture-weekly", "signal-noise", "hear-daily", "london-radio"],
+    downloadedIds: ["daily", "london"],
   },
 };
 
@@ -48,7 +48,7 @@ const VOICE_ON = { ...PREFS.returning, spokenGuidanceEnabled: true };
 const PLAYBACK_STORIES = {
   "city-lab": {
     id: "city-lab",
-    title: "A better way to move around Lagos",
+    title: "A better way to move around London, UK",
     creator: "City Lab",
     publication: "Ideas",
     duration: "21 min",
@@ -58,15 +58,15 @@ const PLAYBACK_STORIES = {
     topicIds: ["local", "business"],
     downloaded: true,
   },
-  lagos: {
-    id: "lagos",
-    title: "What changed in Lagos today",
-    creator: "Lagos Community Radio",
+  london: {
+    id: "london",
+    title: "What changed in London, UK today",
+    creator: "London Community Radio",
     publication: "Local news",
     duration: "6 min",
     category: "New",
     color: "#21798A",
-    description: "Markets, roads and neighbourhoods: the changes Lagos noticed today.",
+    description: "Markets, roads and neighbourhoods: the changes London, UK noticed today.",
     topicIds: ["local"],
   },
   arts: {
@@ -88,7 +88,7 @@ const PLAYBACK = {
     progress: 0.42,
     speed: 1,
     repeat: false,
-    queue: [PLAYBACK_STORIES.lagos, PLAYBACK_STORIES.arts],
+    queue: [PLAYBACK_STORIES.london, PLAYBACK_STORIES.arts],
     sleepTimerEndsAt: null,
   },
 };

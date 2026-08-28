@@ -71,3 +71,49 @@ export type SpeechCapabilityStore = {
   setModelState: (state: AndroidSpeechModelState) => void;
   reset: () => void;
 };
+
+export type DoubleMetaphoneCodes = {
+  primary: string;
+  secondary: string;
+};
+
+export type TranscriptPreparationResult = {
+  original: string;
+  sanitized: string;
+  removedFillerCount: number;
+};
+
+export type ProfanityDictionaryEntry = {
+  canonical: string;
+  variants: string[];
+  severity: "mild" | "strong";
+};
+
+export type ProfanityFilterMode = "remove" | "mask";
+
+export type ProfanityFilterResult = {
+  original: string;
+  sanitized: string;
+  removedCount: number;
+  matchedTerms: string[];
+};
+
+export interface ProfanityFilter {
+  sanitize(text: string, mode?: ProfanityFilterMode): ProfanityFilterResult;
+}
+
+export type BiasTermSource =
+  | "active-entity"
+  | "ambiguity-candidate"
+  | "current-publication"
+  | "current-organization"
+  | "current-creator"
+  | "visible-result"
+  | "recently-played"
+  | "recently-searched"
+  | "popular";
+
+export type BiasTermInput = {
+  term: string;
+  source: BiasTermSource;
+};

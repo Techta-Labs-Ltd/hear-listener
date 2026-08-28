@@ -9,7 +9,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "bundleIdentifier": "com.samuedev33.hearlistener",
-      "usesAppleSignIn": true,
+      "userInterfaceStyle": "automatic",
       "icon": "./assets/images/hear-icon.png",
       "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "Hear! uses Apple speech recognition to understand your voice commands.",
@@ -43,7 +43,6 @@
     },
     "plugins": [
       "expo-router",
-      "expo-apple-authentication",
       [
         "expo-splash-screen",
         {

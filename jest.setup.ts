@@ -2,6 +2,13 @@
   globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
 ).IS_REACT_ACT_ENVIRONMENT = true;
 
+// Replace Expo's lazy native fetch getter before tests inspect or mock it.
+Object.defineProperty(globalThis, "fetch", {
+  configurable: true,
+  writable: true,
+  value: jest.fn(),
+});
+
 jest.mock("@react-native-async-storage/async-storage", () =>
   require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
 );
@@ -39,4 +46,3 @@ jest.mock("expo-apple-authentication", () => ({
     EMAIL: 1,
   },
 }));
-

@@ -16,3 +16,4 @@ export * from "./notifications";
 export * from "./icons";
 export * from "./kinetic";
 export * from "./interaction";
+export * from "./external-voice";

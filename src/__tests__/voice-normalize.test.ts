@@ -6,7 +6,7 @@ import {
   phoneticCodeSimilarity,
   phoneticKey,
   voiceTrigrams,
-} from "@/services/voice/normalize";
+} from "@/utils/voice/normalize";
 
 describe("voice normalization", () => {
   it("normalizes accents, contractions, number words, and ASR aliases", () => {

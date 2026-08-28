@@ -1,4 +1,4 @@
-import { rankBiasTerms } from "@/services/voice/recognition-dictionary";
+import { rankBiasTerms } from "@/utils/voice/recognition-dictionary";
 import type { BiasTermInput } from "@/types";
 
 describe("recognition dictionary bias ranking", () => {

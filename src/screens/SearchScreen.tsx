@@ -67,7 +67,7 @@ export function SearchScreen() {
           </Pressable>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`Search query: ${query}. Tap to speak a new search.`}
+            accessibilityLabel={`Search query: ${query}. Shake device to speak a new search.`}
             accessibilityHint="Starts voice listening to speak a search query."
             onPress={() =>
               void voice.startVoiceSession({ source: "contextualAction" })

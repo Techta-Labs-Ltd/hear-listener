@@ -3,7 +3,8 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { useShallow } from "zustand/react/shallow";
 import { stories } from "@/data/catalogue";
-import { speedOptions, type PlaybackStore } from "@/types";
+import { PLAYBACK_SPEED_OPTIONS } from "@/constants/voice-execution";
+import type { PlaybackStore } from "@/types";
 
 export const usePlaybackStore = create<PlaybackStore>()(
   persist(
@@ -21,10 +22,24 @@ export const usePlaybackStore = create<PlaybackStore>()(
       play: (item = stories[0]) => {
         set({
           current: item,
+          queue: [],
           progress: item.progress ?? 0,
           durationSeconds: item.audioDurationSeconds ?? 1080,
           playing: true,
         });
+      },
+      playQueue: (items) => {
+        const playable = items.filter((item) => item.audioUrl);
+        const first = playable[0];
+        if (!first) return;
+        set((state) => ({
+          current: first,
+          queue: playable,
+          progress: first.progress ?? 0,
+          durationSeconds: first.audioDurationSeconds ?? 1080,
+          playing: true,
+          seekToken: state.seekToken + 1,
+        }));
       },
       pause: () => set({ playing: false }),
       resume: () => set({ playing: true }),
@@ -50,14 +65,14 @@ export const usePlaybackStore = create<PlaybackStore>()(
       setSpeed: (speed) => set({ speed }),
       stepSpeed: (direction) =>
         set((state) => {
-          const index = speedOptions.indexOf(state.speed);
+          const index = PLAYBACK_SPEED_OPTIONS.indexOf(state.speed);
           return {
             speed:
-              speedOptions[
+              PLAYBACK_SPEED_OPTIONS[
                 Math.max(
                   0,
                   Math.min(
-                    speedOptions.length - 1,
+                    PLAYBACK_SPEED_OPTIONS.length - 1,
                     index + (direction === "up" ? 1 : -1),
                   ),
                 )
@@ -76,7 +91,7 @@ export const usePlaybackStore = create<PlaybackStore>()(
     }),
     {
       name: "hear-playback",
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => safeAsyncStorage),
       partialize: ({
         current,
@@ -99,11 +114,14 @@ function stepStory(
   set: (change: Partial<PlaybackStore>) => void,
 ) {
   const current = get().current;
+  const queue = get().queue;
+  const source =
+    current?.origin === "hear-search" && queue.length > 0 ? queue : stories;
   const index = current
-    ? stories.findIndex((story) => story.id === current.id)
+    ? source.findIndex((story) => story.id === current.id)
     : -1;
-  const nextIndex = (index + direction + stories.length) % stories.length;
-  const next = stories[nextIndex];
+  const nextIndex = (index + direction + source.length) % source.length;
+  const next = source[nextIndex];
   set({
     current: next,
     progress: 0,
@@ -113,16 +131,17 @@ function stepStory(
   });
 }
 
-function migratePlayback(stored: unknown): Partial<PlaybackStore> {
+export function migratePlayback(stored: unknown): Partial<PlaybackStore> {
   if (!isRecord(stored)) return { sleepTimerEndsAt: null };
-  const current = findStoredStory(stored.current);
+  const current = findStoredContent(stored.current);
   const queue = Array.isArray(stored.queue)
     ? stored.queue.flatMap((item) => {
-        const story = findStoredStory(item);
+        const story = findStoredContent(item);
         return story ? [story] : [];
       })
     : [];
-  const speed = speedOptions.find((value) => value === stored.speed) ?? 1;
+  const speed =
+    PLAYBACK_SPEED_OPTIONS.find((value) => value === stored.speed) ?? 1;
   const progress =
     typeof stored.progress === "number" && Number.isFinite(stored.progress)
       ? Math.max(0, Math.min(1, stored.progress))
@@ -137,9 +156,55 @@ function migratePlayback(stored: unknown): Partial<PlaybackStore> {
   };
 }
 
-function findStoredStory(value: unknown) {
+function findStoredContent(value: unknown) {
   if (!isRecord(value) || typeof value.id !== "string") return undefined;
-  return stories.find((story) => story.id === value.id);
+  const catalogueStory = stories.find((story) => story.id === value.id);
+  if (catalogueStory) return catalogueStory;
+  if (
+    value.origin !== "hear-search" ||
+    typeof value.audioUrl !== "string" ||
+    !isHttpsUrl(value.audioUrl) ||
+    typeof value.title !== "string" ||
+    typeof value.creator !== "string"
+  ) {
+    return undefined;
+  }
+  return {
+    id: value.id,
+    title: value.title,
+    creator: value.creator,
+    publication:
+      typeof value.publication === "string" ? value.publication : "Hear!",
+    duration: typeof value.duration === "string" ? value.duration : "",
+    category: typeof value.category === "string" ? value.category : "Audio",
+    color: typeof value.color === "string" ? value.color : "#5B3B82",
+    audioUrl: value.audioUrl,
+    origin: "hear-search" as const,
+    ...(typeof value.description === "string"
+      ? { description: value.description }
+      : {}),
+    ...(typeof value.audioDurationSeconds === "number" &&
+    Number.isFinite(value.audioDurationSeconds)
+      ? { audioDurationSeconds: value.audioDurationSeconds }
+      : {}),
+    ...(typeof value.organization === "string"
+      ? { organization: value.organization }
+      : {}),
+    ...(Array.isArray(value.tags)
+      ? { tags: value.tags.filter((tag): tag is string => typeof tag === "string") }
+      : {}),
+    ...(typeof value.publishedAt === "string"
+      ? { publishedAt: value.publishedAt }
+      : {}),
+  };
+}
+
+function isHttpsUrl(value: string): boolean {
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

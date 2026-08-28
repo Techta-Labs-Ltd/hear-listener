@@ -53,7 +53,7 @@ describe("buildScreenReadout", () => {
       }),
     );
     expect(readout).toContain("Now playing: The stories shaping your evening");
-    expect(readout).toContain("by Hear Daily");
+    expect(readout).toContain("by Hear! Daily");
     expect(readout).toContain("speed 1 times");
   });
 
@@ -84,6 +84,6 @@ describe("buildScreenReadout", () => {
   it("reads a topic page with its stories", () => {
     const readout = buildScreenReadout(context("/topic/local"));
     expect(readout).toContain("Topic: Local news");
-    expect(readout).toContain("What changed in Lagos today");
+    expect(readout).toContain("What changed in London, UK today");
   });
 });

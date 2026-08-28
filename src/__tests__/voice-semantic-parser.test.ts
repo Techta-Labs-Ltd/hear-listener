@@ -1,4 +1,4 @@
-import { parseUtterance } from "@/services/voice/matching/semantic-parser";
+import { parseUtterance } from "@/utils/voice/matching/semantic-parser";
 
 describe("semantic utterance parser", () => {
   it("detects play actions and strips the starter", () => {

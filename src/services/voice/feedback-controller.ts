@@ -1,38 +1,37 @@
-import { requestLedger } from "./request-ledger";
+import { useFeedbackVoiceStore } from "@/stores/feedback-voice-store";
 import type { FeedbackTarget } from "@/types";
+import { requestLedger } from "./request-ledger";
 
 export class FeedbackVoiceController {
-  private activeTarget?: FeedbackTarget;
-  private pendingRating?: number;
-
-  public startFeedback(target: FeedbackTarget): void {
-    this.activeTarget = target;
-    this.pendingRating = undefined;
+  startFeedback(target: FeedbackTarget): void {
+    useFeedbackVoiceStore.getState().startFeedback(target);
   }
 
-  public getTarget(): FeedbackTarget | undefined {
-    return this.activeTarget;
+  getTarget(): FeedbackTarget | undefined {
+    return useFeedbackVoiceStore.getState().activeTarget;
   }
 
-  public setRating(rating: number): void {
-    this.pendingRating = rating;
+  setRating(rating: number): void {
+    useFeedbackVoiceStore.getState().setRating(rating);
   }
 
-  public getRating(): number | undefined {
-    return this.pendingRating;
+  getRating(): number | undefined {
+    return useFeedbackVoiceStore.getState().pendingRating;
   }
 
-  public getDedupeKey(userId = "anonymous"): string {
-    if (!this.activeTarget) return "";
+  getDedupeKey(userId = "anonymous"): string {
+    const target = this.getTarget();
+    if (!target) return "";
     const targetId =
-      this.activeTarget.kind === "track"
-        ? this.activeTarget.trackId
-        : this.activeTarget.publicationId;
-    return `${userId}:${this.activeTarget.playbackSessionId}:${this.activeTarget.kind}:${targetId}`;
+      target.kind === "track" ? target.trackId : target.publicationId;
+    return `${userId}:${target.playbackSessionId}:${target.kind}:${targetId}`;
   }
 
-  public async submitFeedback(userId = "anonymous"): Promise<{ ok: boolean; message: string }> {
-    if (!this.activeTarget) {
+  async submitFeedback(
+    userId = "anonymous",
+  ): Promise<{ ok: boolean; message: string }> {
+    const target = this.getTarget();
+    if (!target) {
       return { ok: false, message: "No active feedback target." };
     }
 
@@ -41,9 +40,10 @@ export class FeedbackVoiceController {
       return { ok: true, message: "Feedback already submitted." };
     }
 
-    const receipt = {
-      requestId: `feedback_${Date.now()}`,
-      sessionId: this.activeTarget.playbackSessionId,
+    const now = Date.now();
+    requestLedger.record({
+      requestId: `feedback_${now}`,
+      sessionId: target.playbackSessionId,
       idempotencyKey: dedupeKey,
       origin: {
         screenId: "player",
@@ -52,21 +52,17 @@ export class FeedbackVoiceController {
         routeKey: "/player",
       },
       actionId: "feedback_submit",
-      status: "completed" as const,
-      startedAt: Date.now(),
-      completedAt: Date.now(),
-    };
-
-    requestLedger.record(receipt);
-    this.activeTarget = undefined;
-    this.pendingRating = undefined;
+      status: "completed",
+      startedAt: now,
+      completedAt: now,
+    });
+    useFeedbackVoiceStore.getState().clearFeedback();
 
     return { ok: true, message: "Thank you for your feedback." };
   }
 
-  public clear(): void {
-    this.activeTarget = undefined;
-    this.pendingRating = undefined;
+  clear(): void {
+    useFeedbackVoiceStore.getState().clearFeedback();
   }
 }
 

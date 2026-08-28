@@ -2,7 +2,7 @@ import type { Href } from "expo-router";
 import type { ContentItem, Entity, Topic } from "./content";
 import type { Preferences } from "./preferences";
 import type { SpeedMultiplier } from "./playback";
-import type { PlayMode, VoiceInvocation } from "./voice";
+import type { PlayMode, VoiceCommand, VoiceInvocation } from "./voice";
 import type { RecognitionPurpose } from "./voice-speech";
 
 export type VoiceNavigationServices = {
@@ -14,6 +14,7 @@ export type VoiceNavigationServices = {
 
 export type VoicePlaybackServices = {
   current?: ContentItem;
+  speed?: SpeedMultiplier;
   play: (item?: ContentItem) => void;
   pause: () => void;
   resume: () => void;
@@ -73,6 +74,15 @@ export type PlayCommandInput = {
   entityId?: string;
   entityType?: "organization" | "publication" | "creator" | "category";
   entityName?: string;
+};
+
+export type LocalCommandSpec = {
+  id: string;
+  executorKey: VoiceInvocation["executorKey"];
+  risk?: VoiceInvocation["risk"];
+  confirm?: boolean;
+  onboardingOnly?: boolean;
+  build?: (sessionId: string, normalized: string) => VoiceCommand;
 };
 
 export type VoiceDiagnostic = {

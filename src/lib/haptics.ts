@@ -1,11 +1,12 @@
 import * as Haptics from "expo-haptics";
+import { DEFAULT_KINETIC_CONFIG } from "@/constants/kinetic";
+import { suppressKineticShakeFor } from "@/services/kinetic/kinetic-interference";
 
 async function safely(trigger: () => Promise<void>) {
   try {
+    suppressKineticShakeFor(DEFAULT_KINETIC_CONFIG.shakeFeedbackSuppressionMs);
     await trigger();
-  } catch {
-
-  }
+  } catch {}
 }
 
 export const appHaptics = {
@@ -18,6 +19,11 @@ export const appHaptics = {
   changed() {
     return safely(() =>
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light),
+    );
+  },
+  heavy() {
+    return safely(() =>
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy),
     );
   },
   success() {

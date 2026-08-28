@@ -4,8 +4,8 @@ import type { ButtonProps } from "@/types";
 import { AppText } from "./AppText";
 import { cn } from "@/utils/styles";
 import { colors } from "@/constants/theme";
-import * as Haptics from "expo-haptics";
 import { playClick } from "@/lib/audio/one-shots";
+import { appHaptics } from "@/lib/haptics";
 
 export function Button({
   label,
@@ -21,7 +21,7 @@ export function Button({
   const ghost = variant === "ghost";
   const inverse = variant === "inverse";
   const handlePress = async (e: GestureResponderEvent) => {
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    void appHaptics.changed();
     playClick();
     if (onPress) onPress();
   };

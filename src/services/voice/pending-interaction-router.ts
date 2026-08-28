@@ -1,137 +1,18 @@
 import type { LocalRoutingResult, PendingRouterContext } from "@/types";
+import {
+  AMBIGUITY_REPEAT_PHRASES,
+  AMBIGUITY_SELECTION_LEFT_PHRASES,
+  AMBIGUITY_SELECTION_RIGHT_PHRASES,
+  AMBIGUITY_SELECT_CURRENT_PHRASES,
+  AMBIGUITY_SELECT_PHRASES,
+  FEEDBACK_DISCARD_PHRASES,
+  FEEDBACK_ENTRY_PHRASES,
+  FEEDBACK_RATING_BY_PHRASE,
+  FEEDBACK_SUBMIT_PHRASES,
+} from "@/constants/voice-interactions";
 import { ambiguityController } from "./ambiguity-controller";
 import { feedbackVoiceController } from "./feedback-controller";
 import { voiceAnnounce } from "./speech-coordinator";
-
-const SELECTION_LEFT = new Set([
-  "left",
-  "previous",
-  "previous option",
-  "go left",
-  "last one",
-  "previous one",
-]);
-
-const SELECTION_RIGHT = new Set([
-  "right",
-  "next",
-  "next option",
-  "go right",
-]);
-
-const REPEAT_OPTIONS = new Set([
-  "repeat",
-  "repeat options",
-  "repeat the options",
-  "what are my options",
-  "what were the options",
-  "say them again",
-  "say the options again",
-]);
-
-const SELECT_PHRASES = new Set([
-  "select",
-  "choose",
-  "choose it",
-  "choose this",
-  "choose this one",
-  "that one",
-  "this one",
-  "it",
-  "yes",
-  "confirm",
-  "first one",
-  "the first one",
-  "first",
-  "second one",
-  "the second one",
-  "second",
-  "third one",
-  "the third one",
-  "third",
-  "fourth one",
-  "the fourth one",
-  "fourth",
-  "one",
-  "two",
-  "three",
-  "four",
-  "five",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "option 1",
-  "option 2",
-  "option 3",
-  "option 4",
-  "option 5",
-  "option one",
-  "option two",
-  "option three",
-  "option four",
-  "option five",
-  "number 1",
-  "number 2",
-  "number 3",
-  "number 4",
-  "number 5",
-  "number one",
-  "number two",
-  "number three",
-  "number four",
-  "number five",
-]);
-
-const SELECT_CURRENT = new Set([
-  "select",
-  "choose",
-  "choose it",
-  "choose this",
-  "choose this one",
-  "that one",
-  "this one",
-  "it",
-  "yes",
-  "confirm",
-]);
-
-const RATING_MAP: Record<string, number> = {
-  "1": 1,
-  one: 1,
-  bad: 1,
-  awful: 1,
-  terrible: 1,
-  poor: 1,
-  "2": 2,
-  two: 2,
-  "3": 3,
-  three: 3,
-  okay: 3,
-  "4": 4,
-  four: 4,
-  good: 4,
-  "5": 5,
-  five: 5,
-  great: 5,
-  excellent: 5,
-  brilliant: 5,
-};
-
-const FEEDBACK_ENTRY = new Set([
-  "give feedback",
-  "feedback",
-  "feedback on this",
-  "feedback on this track",
-  "feedback on this publication",
-  "i want to leave feedback",
-  "leave feedback",
-  "rate this",
-]);
-
-const FEEDBACK_SUBMIT = new Set(["yes", "submit", "send it", "send"]);
-const FEEDBACK_DISCARD = new Set(["no", "never mind", "forget it"]);
 
 export class PendingInteractionRouter {
   route(
@@ -161,7 +42,7 @@ export class PendingInteractionRouter {
       return this.routeAmbiguity(normalized);
     }
 
-    if (FEEDBACK_ENTRY.has(normalized)) {
+    if (FEEDBACK_ENTRY_PHRASES.has(normalized)) {
       const current = context.playback?.current;
       if (!current) return undefined;
       feedbackVoiceController.startFeedback({
@@ -180,22 +61,22 @@ export class PendingInteractionRouter {
   }
 
   private routeAmbiguity(normalized: string): LocalRoutingResult | undefined {
-    if (SELECTION_LEFT.has(normalized)) {
+    if (AMBIGUITY_SELECTION_LEFT_PHRASES.has(normalized)) {
       ambiguityController.previous();
       return { kind: "selected" };
     }
-    if (SELECTION_RIGHT.has(normalized)) {
+    if (AMBIGUITY_SELECTION_RIGHT_PHRASES.has(normalized)) {
       ambiguityController.next();
       return { kind: "selected" };
     }
-    if (REPEAT_OPTIONS.has(normalized)) {
+    if (AMBIGUITY_REPEAT_PHRASES.has(normalized)) {
       this.announceOptions();
       return { kind: "selected" };
     }
-    if (SELECT_PHRASES.has(normalized)) {
+    if (AMBIGUITY_SELECT_PHRASES.has(normalized)) {
       const selected =
         ambiguityController.selectByTranscript(normalized) ??
-        (SELECT_CURRENT.has(normalized)
+        (AMBIGUITY_SELECT_CURRENT_PHRASES.has(normalized)
           ? ambiguityController.confirm()
           : undefined);
       if (selected?.invocation) {
@@ -207,7 +88,7 @@ export class PendingInteractionRouter {
   }
 
   private routeFeedback(normalized: string): LocalRoutingResult | undefined {
-    if (FEEDBACK_SUBMIT.has(normalized)) {
+    if (FEEDBACK_SUBMIT_PHRASES.has(normalized)) {
       const current = feedbackVoiceController.getRating();
       if (current === undefined) {
         void voiceAnnounce(
@@ -220,7 +101,7 @@ export class PendingInteractionRouter {
       }
       return { kind: "selected" };
     }
-    if (FEEDBACK_DISCARD.has(normalized)) {
+    if (FEEDBACK_DISCARD_PHRASES.has(normalized)) {
       feedbackVoiceController.clear();
       void voiceAnnounce("Feedback cancelled.");
       return { kind: "selected" };
@@ -234,7 +115,7 @@ export class PendingInteractionRouter {
       );
       return { kind: "selected" };
     }
-    const rating = RATING_MAP[normalized];
+    const rating = FEEDBACK_RATING_BY_PHRASE[normalized];
     if (rating !== undefined) {
       feedbackVoiceController.setRating(rating);
       void voiceAnnounce(`Rating ${rating} out of five. Say send when ready.`);

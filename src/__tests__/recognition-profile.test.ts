@@ -45,7 +45,8 @@ describe("recognition profile", () => {
       expect(android.maxAlternatives).toBe(5);
       expect(ios.maxAlternatives).toBe(5);
       expect(android.contextualStrings).toEqual(["Tynedale"]);
-      expect(android.continuous).toBe(false);
+      expect(android.continuous).toBe(true);
+      expect(ios.continuous).toBe(false);
     }
   });
 

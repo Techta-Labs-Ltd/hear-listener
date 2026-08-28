@@ -9,7 +9,7 @@
     { "id": "sport", "name": "Sport" }
   ],
   "publications": [
-    { "id": "hear-daily", "name": "Hear Daily", "storyIds": ["daily", "morning-headlines"] },
+    { "id": "hear-daily", "name": "Hear! Daily", "storyIds": ["daily", "morning-headlines"] },
     {
       "id": "tyndale-talking-magazine",
       "name": "Tyndale Talking Magazine",
@@ -32,7 +32,7 @@
     { "id": "culture-weekly", "name": "Culture Weekly", "storyIds": ["arts"] },
     { "id": "market-street", "name": "Market Street", "storyIds": ["business"] },
     { "id": "today", "name": "Today", "storyIds": ["daily", "local-voices"] },
-    { "id": "local-news", "name": "Local news", "storyIds": ["lagos"] },
+    { "id": "local-news", "name": "Local news", "storyIds": ["london"] },
     { "id": "arts", "name": "Arts", "storyIds": ["arts"] },
     { "id": "news", "name": "News", "storyIds": ["morning-headlines"] },
     { "id": "ideas", "name": "Ideas", "storyIds": ["city-lab"] },
@@ -42,7 +42,7 @@
     { "id": "sport", "name": "Sport", "storyIds": ["sport"] }
   ],
   "organizations": [
-    { "id": "lagos-community-radio", "name": "Lagos Community Radio", "storyIds": ["lagos"], "aliases": ["Lagos Radio"] },
+    { "id": "london-community-radio", "name": "London Community Radio", "storyIds": ["london"], "aliases": ["London Radio"] },
     {
       "id": "tyndale-talking-magazine",
       "name": "Tyndale Talking Magazine",
@@ -58,25 +58,25 @@
     }
   ],
   "creators": [
-    { "id": "hear-daily", "name": "Hear Daily", "storyIds": ["daily", "morning-headlines"] },
-    { "id": "lagos-community-radio", "name": "Lagos Community Radio", "storyIds": ["lagos"], "aliases": ["Lagos Radio"] },
+    { "id": "hear-daily", "name": "Hear! Daily", "storyIds": ["daily", "morning-headlines"] },
+    { "id": "london-community-radio", "name": "London Community Radio", "storyIds": ["london"], "aliases": ["London Radio"] },
     { "id": "culture-weekly", "name": "Culture Weekly", "storyIds": ["arts"] },
     { "id": "street-stories", "name": "Street Stories", "storyIds": ["local-voices"] },
     { "id": "city-lab", "name": "City Lab", "storyIds": ["city-lab"] },
     { "id": "signal-noise", "name": "Signal & Noise", "storyIds": ["tech"] },
     { "id": "still-morning", "name": "Still Morning", "storyIds": ["wellbeing"] },
     { "id": "market-street", "name": "Market Street", "storyIds": ["business"] },
-    { "id": "hear-sport", "name": "Hear Sport", "storyIds": ["sport"] },
+    { "id": "hear-sport", "name": "Hear! Sport", "storyIds": ["sport"] },
     { "id": "tyndale-talking-magazine", "name": "Tyndale Talking Magazine", "storyIds": ["tyndale-edition"] }
   ],
   "tags": [],
   "stories": [
-    { "id": "daily", "title": "The stories shaping your evening", "creator": "Hear Daily", "publication": "Today" },
-    { "id": "lagos", "title": "What changed in Lagos today", "creator": "Lagos Community Radio", "publication": "Local news" },
+    { "id": "daily", "title": "The stories shaping your evening", "creator": "Hear! Daily", "publication": "Today" },
+    { "id": "london", "title": "What changed in London, UK today", "creator": "London Community Radio", "publication": "Local news" },
     { "id": "arts", "title": "Inside the city's new arts space", "creator": "Culture Weekly", "publication": "Arts" },
     { "id": "local-voices", "title": "How the city is changing after dark", "creator": "Street Stories", "publication": "Today" },
-    { "id": "morning-headlines", "title": "Morning headlines", "creator": "Hear Daily", "publication": "News" },
-    { "id": "city-lab", "title": "A better way to move around Lagos", "creator": "City Lab", "publication": "Ideas" },
+    { "id": "morning-headlines", "title": "Morning headlines", "creator": "Hear! Daily", "publication": "News" },
+    { "id": "city-lab", "title": "A better way to move around London, UK", "creator": "City Lab", "publication": "Ideas" },
     { "id": "tech", "title": "The human side of new technology", "creator": "Signal & Noise", "publication": "Technology" },
     { "id": "wellbeing", "title": "A quieter way to start the day", "creator": "Still Morning", "publication": "Wellbeing" },
     { "id": "business", "title": "Small shops, big ideas", "creator": "Market Street", "publication": "Business" },

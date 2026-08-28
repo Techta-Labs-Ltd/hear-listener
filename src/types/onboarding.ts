@@ -160,7 +160,6 @@ export type OnboardingVoiceCommand =
   | { type: "back" }
   | { type: "skip" }
   | { type: "requestPermission" }
-  | { type: "openSettings" }
   | { type: "retryVoiceTest" }
   | { type: "selectProvider"; provider: AccountProvider }
   | { type: "setTown"; name: string; locationId?: string }
@@ -223,4 +222,3 @@ export type AccountChoiceValidationResult = {
   feedbackText: string;
   speechText: string;
 };
-

@@ -3,8 +3,8 @@ import { View } from "react-native";
 import { useVoice } from "@/hooks/useVoice";
 import { speechCoordinator } from "@/services/voice/speech-coordinator";
 import { onboardingVoiceBridge } from "@/stores/onboarding-voice-store";
-import * as Haptics from "expo-haptics";
 import { playClick } from "@/lib/audio/one-shots";
+import { appHaptics } from "@/lib/haptics";
 
 export function VoiceGestureLayer({ children }: PropsWithChildren) {
   const { startVoiceSession } = useVoice();
@@ -22,9 +22,7 @@ export function VoiceGestureLayer({ children }: PropsWithChildren) {
           const onboardingMode = onboardingVoiceBridge.reportGesture();
           if (onboardingMode !== "inactive") {
             void playClick();
-            void Haptics.notificationAsync(
-              Haptics.NotificationFeedbackType.Success,
-            );
+            void appHaptics.success();
             return;
           }
           void startVoiceSession({

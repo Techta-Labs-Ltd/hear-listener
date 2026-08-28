@@ -33,8 +33,8 @@ export function PermissionDeniedView({
           {/* Subtitle */}
           <AppText tone="muted" className="mt-3 text-center text-[16px] leading-[23px] max-w-[320px]">
             {isWeb
-              ? "Allow microphone access in your browser address bar to use double-tap voice control."
-              : "Allow microphone access in Settings to use double-tap voice control."}
+              ? "Allow microphone access in your browser address bar to use shake voice control."
+              : "Allow microphone access in Settings to use shake voice control."}
           </AppText>
 
           {/* Action Buttons */}

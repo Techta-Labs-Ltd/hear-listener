@@ -24,15 +24,15 @@ describe("Zustand stores", () => {
     useOnboardingVoiceStore.setState({
       gestureLessonActive: false,
       gestureLessonCompleted: false,
-      voiceInvocationAllowed: true,
+      voiceInvocationAllowed: false,
     });
   });
   it("updates and resets preferences", () => {
     usePreferencesStore
       .getState()
-      .updatePreferences({ town: "Lagos", savedIds: ["tech"] });
+      .updatePreferences({ town: "London, UK", savedIds: ["tech"] });
     expect(usePreferencesStore.getState()).toMatchObject({
-      town: "Lagos",
+      town: "London, UK",
       savedIds: ["tech"],
     });
     usePreferencesStore.getState().resetPreferences();
@@ -73,11 +73,11 @@ describe("Zustand stores", () => {
   });
 
   it("migrates older preferences with safe voice-first defaults", () => {
-    expect(migratePreferences({ setupComplete: true, town: "Lagos" })).toMatchObject({
+    expect(migratePreferences({ setupComplete: true, town: "London, UK" })).toMatchObject({
       setupComplete: true,
       onboardingVersion: 1,
       spokenGuidanceEnabled: false,
-      town: "Lagos",
+      town: "London, UK",
     });
   });
 
@@ -103,7 +103,7 @@ describe("Zustand stores", () => {
     expect(useOnboardingVoiceStore.getState()).toMatchObject({
       gestureLessonActive: false,
       gestureLessonCompleted: false,
-      voiceInvocationAllowed: true,
+      voiceInvocationAllowed: false,
     });
   });
 });

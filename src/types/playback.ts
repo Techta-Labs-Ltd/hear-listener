@@ -1,6 +1,5 @@
 import type { ContentItem } from "./content";
-export const speedOptions = [0.75, 1, 1.25, 1.5, 2] as const;
-export type SpeedMultiplier = (typeof speedOptions)[number];
+export type SpeedMultiplier = 0.5 | 0.75 | 1 | 1.25 | 1.5 | 2;
 export type RepeatMode = "on" | "off";
 export type SleepTimerOptionId = "15" | "30" | "end";
 export type PlaybackSnapshot = {
@@ -18,6 +17,7 @@ export type PlaybackStore = PlaybackSnapshot & {
   hydrated: boolean;
   seekToken: number;
   play: (item?: ContentItem) => void;
+  playQueue: (items: ContentItem[]) => void;
   pause: () => void;
   resume: () => void;
   toggle: () => void;

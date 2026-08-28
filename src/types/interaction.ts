@@ -71,6 +71,30 @@ export type PendingAmbiguity = {
   expiresAt: number;
 };
 
+export type AmbiguitySelection = {
+  id: string;
+  label: string;
+  choice?: VoiceChoice;
+  invocation?: VoiceInvocation;
+};
+
+export type AmbiguityStore = {
+  pending?: PendingAmbiguity;
+  setAmbiguity: (
+    sessionId: string,
+    requestId: string,
+    choices: VoiceChoice[],
+    invocations?: VoiceInvocation[],
+    now?: number,
+  ) => PendingAmbiguity;
+  getPending: (now?: number) => PendingAmbiguity | undefined;
+  moveSelection: (direction: 1 | -1) => PendingAmbiguity | undefined;
+  selectIndex: (index: number) => AmbiguitySelection | undefined;
+  confirmSelection: () => AmbiguitySelection | undefined;
+  selectByTranscript: (transcript: string) => AmbiguitySelection | undefined;
+  clearAmbiguity: () => void;
+};
+
 export type FeedbackTarget =
   | {
       kind: "track";
@@ -84,3 +108,11 @@ export type FeedbackTarget =
       playbackSessionId: string;
       listenedTrackIds: string[];
     };
+
+export type FeedbackVoiceStore = {
+  activeTarget?: FeedbackTarget;
+  pendingRating?: number;
+  startFeedback: (target: FeedbackTarget) => void;
+  setRating: (rating: number) => void;
+  clearFeedback: () => void;
+};

@@ -42,7 +42,7 @@ export function AppRoot() {
   }
 
   return (
-    <AppProviders>
+    <AppProviders kineticActive={launchComplete}>
       {launchComplete ? (
         <>
           <PlaybackRuntime />

@@ -118,62 +118,100 @@ describe("KineticGestureEngine", () => {
   });
 
   describe("Shake Detection (SHAKE)", () => {
-    it("fires SHAKE on small wrist shake with directional sign inversion", () => {
-      let now = 1000;
-
-      // Settle gravity
-      for (let i = 0; i < 5; i++) {
-        engine.processAccelerometer({ x: 0, y: 0, z: 1.0 }, now);
+    function settleEngine(now = 1000) {
+      for (let i = 0; i < 22; i++) {
+        engine.processGyroscope({ x: 0, y: 0, z: 0 }, now);
+        engine.processAccelerometer({ x: 0, y: 0, z: 1 }, now);
         now += 20;
       }
+      return now;
+    }
 
-      // Small shake: +0.6g on X, then -0.6g on X
-      engine.processAccelerometer({ x: 0.6, y: 0, z: 1.0 }, now);
-      now += 80;
-      engine.processAccelerometer({ x: -0.6, y: 0, z: 1.0 }, now);
+    function sample(
+      now: number,
+      accelX: number,
+      gyroY: number,
+      accelY = 0,
+      accelZ = 1,
+    ) {
+      engine.processGyroscope({ x: 0, y: gyroY, z: 0 }, now);
+      engine.processAccelerometer({ x: accelX, y: accelY, z: accelZ }, now);
+    }
+
+    function performShake(now: number) {
+      sample(now, 1.5, 1.2);
+      sample(now + 80, -1.5, -1.2);
+      sample(now + 160, 1.5, 1.2);
+      return now + 180;
+    }
+
+    it("fires once for a three-peak same-axis wrist shake with gyro motion", () => {
+      const now = settleEngine();
+      performShake(now);
 
       expect(firedGestures).toEqual(["SHAKE"]);
       expect(engine.getState()).toBe("LOCKED");
     });
 
-    it("re-arms to IDLE after cooldown and device settles", () => {
-      let now = 1000;
-
-      for (let i = 0; i < 5; i++) {
-        engine.processAccelerometer({ x: 0, y: 0, z: 1.0 }, now);
+    it("rejects vibration-like alternating acceleration without rotational motion", () => {
+      let now = settleEngine();
+      for (let i = 0; i < 10; i++) {
+        sample(now, i % 2 === 0 ? 1.2 : -1.2, 0.05);
         now += 20;
       }
-
-      engine.processAccelerometer({ x: 0.6, y: 0, z: 1.0 }, now);
-      now += 80;
-      engine.processAccelerometer({ x: -0.6, y: 0, z: 1.0 }, now);
-
-      expect(firedGestures).toEqual(["SHAKE"]);
-      expect(engine.getState()).toBe("LOCKED");
-
-      now += 400;
-      for (let i = 0; i < 5; i++) {
-        engine.processAccelerometer({ x: 0, y: 0, z: 1.0 }, now);
-        now += 20;
-      }
-      expect(engine.getState()).toBe("IDLE");
-    });
-
-    it("ignores single-direction continuous acceleration without reversal", () => {
-      let now = 1000;
-
-      for (let i = 0; i < 5; i++) {
-        engine.processAccelerometer({ x: 0, y: 0, z: 1.0 }, now);
-        now += 20;
-      }
-
-      engine.processAccelerometer({ x: 0.6, y: 0, z: 1.0 }, now);
-      now += 80;
-      engine.processAccelerometer({ x: 0.6, y: 0, z: 1.0 }, now);
-      now += 80;
-      engine.processAccelerometer({ x: 0.6, y: 0, z: 1.0 }, now);
 
       expect(firedGestures).toHaveLength(0);
+    });
+
+    it("rejects two peaks, cross-axis reversals, and stale peaks", () => {
+      let now = settleEngine();
+      sample(now, 1.5, 1.2);
+      sample(now + 80, -1.5, -1.2);
+      expect(firedGestures).toHaveLength(0);
+
+      engine.reset();
+      now = settleEngine(now + 200);
+      sample(now, 1.5, 1.2);
+      sample(now + 80, 0, -1.2, -1.5);
+      sample(now + 160, 0, 1.2, 1.5);
+      expect(firedGestures).toHaveLength(0);
+
+      engine.reset();
+      now = settleEngine(now + 200);
+      sample(now, 1.5, 1.2);
+      sample(now + 300, -1.5, -1.2);
+      sample(now + 600, 1.5, 1.2);
+      expect(firedGestures).toHaveLength(0);
+    });
+
+    it("does not treat accelerometer values above 4g as metres per second squared", () => {
+      const now = settleEngine();
+      sample(now, 5, 1.2);
+      sample(now + 80, -5, -1.2);
+      sample(now + 160, 5, 1.2);
+
+      expect(firedGestures).toEqual(["SHAKE"]);
+    });
+
+    it("suppresses feedback motion and only re-arms after cooldown and neutral settling", () => {
+      let now = settleEngine();
+      now = performShake(now);
+      expect(firedGestures).toEqual(["SHAKE"]);
+
+      engine.suppressShakeFor(650, now);
+      for (let i = 0; i < 10; i++) {
+        sample(now, i % 2 === 0 ? 1.5 : -1.5, 0.05);
+        now += 20;
+      }
+      expect(firedGestures).toEqual(["SHAKE"]);
+
+      for (let i = 0; i < 60; i++) {
+        sample(now, 0, 0);
+        now += 20;
+      }
+      performShake(now);
+
+      expect(firedGestures).toEqual(["SHAKE", "SHAKE"]);
     });
   });
 });

@@ -28,7 +28,7 @@ export function validateVoiceTestCommand(
       valid: false,
       transcript: "",
       feedbackText: "I didn't hear anything. Shake device to try again.",
-      speechText: "I didn't hear anything. Shake device or tap to try again. After the tone, say Play my local news.",
+      speechText: "I didn't hear anything. Shake device to try again. After the tone, say Play my local news.",
     };
   }
 
@@ -129,8 +129,8 @@ export function validateAccountChoice(
       valid: true,
       choice: "skip",
       transcript: clean,
-      feedbackText: "Not now selected. Setup complete. Opening Hear.",
-      speechText: "Not now selected. Setup complete. Opening Hear.",
+      feedbackText: "Not now selected. Setup complete. Opening Hear!.",
+      speechText: "Not now selected. Setup complete. Opening Hear!.",
     };
   }
 
@@ -141,4 +141,3 @@ export function validateAccountChoice(
     speechText: `I heard “${clean}”. Please say ${defaultChoicesSpeech}. Shake device to try again.`,
   };
 }
-

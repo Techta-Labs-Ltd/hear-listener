@@ -26,7 +26,7 @@ const FORBIDDEN_PATTERNS = [
   /tyndale/i,
   /tinder/i,
   /talking magazine/i,
-  /lagos community radio/i,
+  /london community radio/i,
   /signal & noise/i,
   /still morning/i,
   /market street/i,

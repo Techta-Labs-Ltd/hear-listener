@@ -22,6 +22,11 @@ export type ContentItem = {
   downloaded?: boolean;
   audioUrl?: AudioSource;
   audioDurationSeconds?: number;
+  origin?: "catalogue" | "hear-search";
+  organization?: string;
+  tags?: string[];
+  publishedAt?: string;
+  playbackSpeedUrls?: { speed: number; url: string }[];
 };
 export type LibrarySection = "saved" | "following" | "downloads" | "history";
 

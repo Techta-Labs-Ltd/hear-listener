@@ -1,4 +1,4 @@
-import { SQLiteVoiceResolver } from "@/services/voice/resolver";
+import { SQLiteVoiceResolver } from "@/services/voice/local-voice-resolver";
 import { initialPreferences } from "@/stores/preferences-store";
 import type {
   EntityCandidate,

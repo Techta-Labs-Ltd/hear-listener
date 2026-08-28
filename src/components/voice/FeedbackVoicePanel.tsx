@@ -1,13 +1,14 @@
 import { AppText } from "@/components/ui/AppText";
 import { Pressable, View } from "@/tw";
 import { feedbackVoiceController } from "@/services/voice/feedback-controller";
+import { useFeedbackVoiceStore } from "@/stores/feedback-voice-store";
 
 export function FeedbackVoicePanel({
   onDismiss,
 }: {
   onDismiss?: () => void;
 }) {
-  const target = feedbackVoiceController.getTarget();
+  const target = useFeedbackVoiceStore((state) => state.activeTarget);
 
   const handleRating = async (rating: number) => {
     feedbackVoiceController.setRating(rating);

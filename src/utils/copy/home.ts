@@ -6,7 +6,7 @@ export const homeCopy = {
   seeAllLabel: "See all",
   firstUseTitle: "Your listening starts here.",
   voiceReadyEyebrow: "VOICE IS READY",
-  voiceReadyTitle: "Shake device or tap",
+  voiceReadyTitle: "Shake device",
   voiceReadyExample: "Try “Play my local news.”",
   quickStartTitle: "A quick start",
   quickStartSteps: [

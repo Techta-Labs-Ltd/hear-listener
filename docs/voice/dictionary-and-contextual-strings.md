@@ -12,7 +12,7 @@ Layer 4: SQLite entity vocabulary    (data — what exists)
 ## Layer 1 — local command dictionary
 
 `LOCAL_COMMAND_DICTIONARY` in
-`src/services/voice/recognition-dictionary.ts` maps canonical action IDs to
+`src/constants/voice-dictionary.ts` maps canonical action IDs to
 phrase lists. `local-command-router.ts` consumes it; synonyms map to existing
 canonical actions, never new duplicate actions. It contains zero catalog
 names.
@@ -26,7 +26,7 @@ never applies inside protected entity phrases. If uncertain, preserve.
 
 Play/find starters, modifiers (latest/local/recommended/publication), and
 relations (from/by/in/about) are parsed structurally by
-`matching/semantic-parser.ts` — never deleted blindly.
+`src/utils/voice/matching/semantic-parser.ts` — never deleted blindly.
 
 ## Layer 4 — SQLite entity vocabulary
 

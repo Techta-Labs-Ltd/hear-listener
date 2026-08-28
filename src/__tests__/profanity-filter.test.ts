@@ -1,4 +1,4 @@
-import { WholeWordProfanityFilter } from "@/services/voice/profanity-filter";
+import { WholeWordProfanityFilter } from "@/utils/voice/profanity-filter";
 
 describe("profanity filter", () => {
   it("removes offensive whole tokens without corrupting innocent words", () => {

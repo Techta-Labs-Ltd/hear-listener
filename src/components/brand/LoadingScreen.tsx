@@ -14,7 +14,7 @@ export function LoadingScreen() {
   const [cursorAnim] = useState(() => new Animated.Value(1));
 
   useEffect(() => {
-    void ukSpeech.speak("Getting Hear ready for you.");
+    void ukSpeech.speak("Getting Hear! ready for you.");
   }, []);
 
   useEffect(() => {

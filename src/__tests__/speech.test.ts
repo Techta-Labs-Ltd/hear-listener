@@ -1,6 +1,7 @@
 import * as Speech from "expo-speech";
 import { Platform } from "react-native";
-import { isUkLanguage, UkSpeechService, voiceScore } from "@/services/voice/speech";
+import { UkSpeechService } from "@/services/voice/speech";
+import { isUkLanguage, voiceScore } from "@/utils/voice/speech";
 
 jest.mock("expo-speech", () => ({
   getAvailableVoicesAsync: jest.fn(),

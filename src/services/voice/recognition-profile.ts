@@ -5,17 +5,10 @@ import type {
 } from "@/types";
 import type { ExpoSpeechRecognitionOptions } from "expo-speech-recognition";
 import { VOICE_LANGUAGE, VOICE_MAX_ALTERNATIVES } from "@/constants/voice";
-
-const GOOGLE_SERVICE_PACKAGES = [
-  "com.google.android.googlequicksearchbox",
-  "com.google.android.as",
-];
-
-const IOS_CATEGORY: ExpoSpeechRecognitionOptions["iosCategory"] = {
-  category: "playAndRecord",
-  categoryOptions: ["defaultToSpeaker", "allowBluetooth"],
-  mode: "measurement",
-};
+import {
+  IOS_RECOGNITION_AUDIO_CATEGORY,
+  PREFERRED_ANDROID_SPEECH_PACKAGES,
+} from "@/constants/voice-recognition";
 
 function androidApiLevel(): number {
   return typeof Platform.Version === "number"
@@ -52,7 +45,9 @@ export function pickAndroidRecognitionService(
   capabilities: PlatformSpeechCapabilities,
 ): string | undefined {
   const available = new Set(capabilities.services);
-  const preferred = GOOGLE_SERVICE_PACKAGES.find((pkg) => available.has(pkg));
+  const preferred = PREFERRED_ANDROID_SPEECH_PACKAGES.find((pkg) =>
+    available.has(pkg),
+  );
   return preferred ?? capabilities.defaultService ?? undefined;
 }
 
@@ -65,7 +60,7 @@ export function buildRecognitionOptions(
     lang: VOICE_LANGUAGE,
     interimResults: true,
     maxAlternatives: VOICE_MAX_ALTERNATIVES,
-    continuous: false,
+    continuous: capabilities.platform === "android",
     requiresOnDeviceRecognition: false,
     addsPunctuation: false,
     contextualStrings,
@@ -92,7 +87,7 @@ export function buildRecognitionOptions(
   return {
     ...common,
     iosTaskHint: iosTaskHintFor(purpose),
-    iosCategory: IOS_CATEGORY,
+    iosCategory: IOS_RECOGNITION_AUDIO_CATEGORY,
     iosVoiceProcessingEnabled: false,
   };
 }

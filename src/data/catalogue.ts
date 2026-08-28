@@ -7,7 +7,7 @@ const baseStories: ContentItem[] = [
   {
     id: "daily",
     title: "The stories shaping your evening",
-    creator: "Hear Daily",
+    creator: "Hear! Daily",
     publication: "Today",
     duration: "18 min left",
     category: "Continue",
@@ -18,15 +18,15 @@ const baseStories: ContentItem[] = [
     progress: 0.62,
   },
   {
-    id: "lagos",
-    title: "What changed in Lagos today",
-    creator: "Lagos Community Radio",
+    id: "london",
+    title: "What changed in London, UK today",
+    creator: "London Community Radio",
     publication: "Local news",
     duration: "6 min",
     category: "New",
     color: "#21798A",
     description:
-      "Markets, roads and neighbourhoods: the changes Lagos noticed today.",
+      "Markets, roads and neighbourhoods: the changes London, UK noticed today.",
     topicIds: ["local"],
   },
   {
@@ -56,7 +56,7 @@ const baseStories: ContentItem[] = [
   {
     id: "morning-headlines",
     title: "Morning headlines",
-    creator: "Hear Daily",
+    creator: "Hear! Daily",
     publication: "News",
     duration: "8 min",
     category: "Downloaded",
@@ -67,7 +67,7 @@ const baseStories: ContentItem[] = [
   },
   {
     id: "city-lab",
-    title: "A better way to move around Lagos",
+    title: "A better way to move around London, UK",
     creator: "City Lab",
     publication: "Ideas",
     duration: "21 min",
@@ -115,7 +115,7 @@ const baseStories: ContentItem[] = [
   {
     id: "sport",
     title: "The weekend in sport",
-    creator: "Hear Sport",
+    creator: "Hear! Sport",
     publication: "Sport",
     duration: "16 min",
     category: "Latest",
@@ -123,18 +123,6 @@ const baseStories: ContentItem[] = [
     description:
       "Results, voices and the stories behind this weekend’s action.",
     topicIds: ["sport"],
-  },
-  {
-    id: "tyndale-edition",
-    title: "Tyndale Talking Magazine",
-    creator: "Tyndale Talking Magazine",
-    publication: "Tyndale Talking Magazine",
-    duration: "25 min",
-    category: "New",
-    color: "#4C3D8F",
-    description:
-      "The latest audio edition and community news from Tyndale Talking Magazine.",
-    topicIds: ["local", "culture"],
   },
 ];
 
@@ -156,19 +144,13 @@ export const topics: Topic[] = [
 export const entities: Entity[] = [
   {
     id: "hear-daily",
-    name: "Hear Daily",
+    name: "Hear! Daily",
     kind: "publication",
     description: "Local daily briefs",
   },
   {
-    id: "tyndale-talking-magazine",
-    name: "Tyndale Talking Magazine",
-    kind: "publication",
-    description: "Community audio magazine",
-  },
-  {
-    id: "lagos-radio",
-    name: "Lagos Community Radio",
+    id: "london-radio",
+    name: "London Community Radio",
     kind: "organisation",
     description: "Community station",
   },

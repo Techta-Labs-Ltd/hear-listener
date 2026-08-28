@@ -21,7 +21,20 @@ export interface KineticConfig {
   neutralVelocityThreshold: number;
   cooldownDurationMs: number;
   shakeThresholdG: number;
+  shakeReleaseThresholdG: number;
   shakeWindowMs: number;
+  shakeWarmupDurationMs: number;
+  shakePeakMinGapMs: number;
+  shakePeakMaxGapMs: number;
+  shakeAxisDominanceRatio: number;
+  shakeRequiredPeaks: number;
+  shakeGyroThresholdRadS: number;
+  shakeGyroCorrelationMs: number;
+  shakeRequiredGyroPeaks: number;
+  shakeCooldownDurationMs: number;
+  shakeNeutralDurationMs: number;
+  shakeNeutralGyroThresholdRadS: number;
+  shakeFeedbackSuppressionMs: number;
   filterWindowSize: number;
 }
 

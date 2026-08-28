@@ -43,7 +43,7 @@ export function AccountStep({
             Keep your listening{"\n"}with you.
           </AppText>
           <AppText tone="muted" className="mt-3 text-[16px] leading-[22px]">
-            An account syncs saved audio and progress.{"\n"}Hear works fully
+            An account syncs saved audio and progress.{"\n"}Hear! works fully
             without one.
           </AppText>
           {error ? (
@@ -71,7 +71,7 @@ export function AccountStep({
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Not now"
-              accessibilityHint="Skips sign-in and opens Hear without an account."
+              accessibilityHint="Skips sign-in and opens Hear! without an account."
               onPress={onSkip}
               className="min-h-12 items-center justify-center rounded-2xl border border-border bg-surface px-6 active:opacity-70"
             >

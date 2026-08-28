@@ -5,7 +5,7 @@ import type { AppScreenProps, ScreenVoiceContext } from "@/types";
 import { useVoice } from "@/hooks/useVoice";
 import { useAppAccessibility } from "@/providers/AccessibilityProvider";
 import { speechCoordinator } from "@/services/voice/speech-coordinator";
-import { getVoiceScreenDefinition } from "@/services/voice/screen-registry";
+import { getVoiceScreenDefinition } from "@/navigation/voice-screen-registry";
 import {
   SCREEN_IDLE_HINTS,
   SCREEN_IDLE_HINTS_2,

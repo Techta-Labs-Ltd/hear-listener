@@ -3,7 +3,7 @@ import { colors } from "@/constants/theme";
 import { VOICE_STATE_BADGES, VOICE_TIMING } from "@/constants/voice";
 import { useListeningTimer } from "@/hooks/useListeningTimer";
 import { useVoice } from "@/hooks/useVoice";
-import { useVoiceStore } from "@/stores/voice-store";
+import { voiceCopy as copy } from "@/utils/copy/voice";
 import { View } from "@/tw";
 import { LinearGradient } from "expo-linear-gradient";
 import { usePathname } from "expo-router";
@@ -30,6 +30,7 @@ import { VoiceStatusBadge } from "./VoiceStatusBadge";
 
 export function GlobalVoiceDock() {
   const voice = useVoice();
+  const closeVoice = voice.close;
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const currentPathRef = useRef(pathname);
@@ -46,10 +47,10 @@ export function GlobalVoiceDock() {
     if (currentPathRef.current !== pathname) {
       currentPathRef.current = pathname;
       if (voice.state !== "idle") {
-        useVoiceStore.getState().resetVoice();
+        closeVoice();
       }
     }
-  }, [pathname, voice.state]);
+  }, [closeVoice, pathname, voice.state]);
 
   const { fillPercent } = useListeningTimer(
     voice.listeningDeadlineAt,
@@ -57,21 +58,20 @@ export function GlobalVoiceDock() {
     VOICE_TIMING.noSpeechTimeout,
   );
 
-  const cancel =
-    listening || voice.state === "preparing" ? voice.cancel : voice.close;
   const stop = voice.stop;
+  const dismiss = voice.dismiss;
 
   useEffect(() => {
     if (!isVoiceOpen || Platform.OS !== "android") return;
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       () => {
-        cancel();
+        dismiss();
         return true;
       },
     );
     return () => backHandler.remove();
-  }, [isVoiceOpen, cancel]);
+  }, [isVoiceOpen, dismiss]);
 
   if (!isVoiceOpen) return null;
 
@@ -85,8 +85,8 @@ export function GlobalVoiceDock() {
       >
         <StatusBar style="dark" />
         <PermissionDeniedView
-          onBack={cancel}
-          onContinueWithoutVoice={cancel}
+          onBack={dismiss}
+          onContinueWithoutVoice={dismiss}
         />
       </Animated.View>
     );
@@ -114,7 +114,7 @@ export function GlobalVoiceDock() {
         accessibilityRole={isBackdropDismissible ? "button" : undefined}
         accessibilityLabel={isBackdropDismissible ? "Dismiss voice control" : undefined}
         accessibilityHint={isBackdropDismissible ? "Closes voice control and returns to the current screen." : undefined}
-        onPress={isBackdropDismissible ? cancel : undefined}
+        onPress={isBackdropDismissible ? dismiss : undefined}
         className="absolute inset-0 bg-black/40"
       />
 
@@ -173,8 +173,12 @@ export function GlobalVoiceDock() {
                 accessibilityLabel={
                   listening ? "Stop listening" : "Cancel voice session"
                 }
-                accessibilityHint="Stops voice listening and closes the voice panel."
-                onPress={listening ? stop : cancel}
+                accessibilityHint={
+                  listening
+                    ? "Stops listening and handles what you said."
+                    : "Closes voice control."
+                }
+                onPress={listening ? stop : dismiss}
                 hitSlop={8}
                 className="min-h-10 items-center justify-center rounded-xl px-3 active:bg-white/10"
               >
@@ -280,7 +284,7 @@ export function GlobalVoiceDock() {
                 }
                 choices={voice.choices}
                 onSelect={(choice) => voice.choose(choice)}
-                onCancel={cancel}
+                onCancel={dismiss}
               />
             ) : voice.state === "preparing" ? (
               <>
@@ -291,7 +295,7 @@ export function GlobalVoiceDock() {
                   Getting ready…
                 </AppText>
                 <AppText className="mt-0.5 text-sm sm:text-[15px] leading-5 text-voice-muted">
-                  {voice.message || "Hear is preparing voice control."}
+                  {voice.message || "Hear! is preparing voice control."}
                 </AppText>
                 <View className="mt-4 flex-row items-center justify-between border-t border-voice-track pt-3.5">
                   <AppText className="text-xs sm:text-[13px] leading-4 text-voice-muted">
@@ -314,10 +318,12 @@ export function GlobalVoiceDock() {
 
                 <View className="mt-4 border-t border-voice-track pt-3.5">
                   <AppText className="font-body-bold text-[14px] sm:text-[15px] leading-5 text-white">
-                    Say “Play my local news.”
+                    {voice.retryable
+                      ? "Say “Play my local news.”"
+                      : "Voice control isn't available."}
                   </AppText>
                   <AppText className="mt-1 text-xs sm:text-[13px] leading-4 text-voice-muted">
-                    Shake device to speak again.
+                    {voice.retryable ? copy.retryHint : copy.unavailableHint}
                   </AppText>
                 </View>
               </>

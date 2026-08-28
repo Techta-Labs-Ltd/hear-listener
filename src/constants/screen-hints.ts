@@ -26,8 +26,8 @@ export const SCREEN_IDLE_HINTS_2: Record<string, string> = {
 export const ONBOARDING_IDLE_HINTS = {
   welcome: "Shake device to continue.",
   permissionIntro: "Voice access. Shake device to request microphone permission.",
-  permissionDenied: "Microphone access is off. Shake device to open Settings.",
-  permissionBlocked: "Microphone access is off. Shake device to open Settings.",
+  permissionDenied: "Microphone access is off. Shake device to request microphone permission again.",
+  permissionBlocked: "Microphone access is off. Shake device to open Hear! microphone settings.",
   voiceTestError: "Shake your device to try the voice test again.",
   account: "Optional account. Say Apple, or Not now.",
   accountIos: "Optional account. Say Apple, or Not now.",
@@ -37,8 +37,8 @@ export const ONBOARDING_IDLE_HINTS = {
 export const ONBOARDING_IDLE_HINTS_2 = {
   welcome: "When you're ready, shake device to continue.",
   permissionIntro: "When you're ready, shake device to continue.",
-  permissionDenied: "When you're ready, shake device to open Settings.",
-  permissionBlocked: "When you're ready, shake device to open Settings.",
+  permissionDenied: "When you're ready, shake device to request microphone permission again.",
+  permissionBlocked: "When you're ready, shake device to open Hear! microphone settings.",
   voiceTestError: "When you're ready, shake your device to try again.",
   account: "When you're ready, say Apple, or Not now.",
   accountIos: "When you're ready, say Apple, or Not now.",

@@ -1,4 +1,4 @@
-import { runCommand } from "@/services/voice/executor";
+import { runCommand } from "@/services/voice/voice-executor";
 import { entities, stories, topics } from "@/data/catalogue";
 import {
   onboardingVoiceBridge,
@@ -114,7 +114,7 @@ describe("runCommand", () => {
       "Playing your local news",
     );
     expect(s.playback.play).toHaveBeenCalledWith(
-      expect.objectContaining({ id: "lagos" }),
+      expect.objectContaining({ id: "london" }),
     );
     expect(
       runCommand({ type: "play", mode: "story", storyId: "tech" }, s),
@@ -165,11 +165,11 @@ describe("runCommand", () => {
   it("sets speed, repeat and sleep timer", () => {
     const s = makeServices();
     expect(runCommand({ type: "speed", multiplier: 1.5 }, s)).toBe(
-      "Speed set to 1.5 times",
+      "Playback speed set to 1.5x.",
     );
     expect(s.playback.setSpeed).toHaveBeenCalledWith(1.5);
     expect(runCommand({ type: "speedStep", direction: "up" }, s)).toBe(
-      "Speeding up",
+      "Playback speed set to 1.25x.",
     );
     expect(runCommand({ type: "repeat", mode: "on" }, s)).toBe("Repeat on");
     expect(s.playback.setRepeat).toHaveBeenCalledWith("on");
@@ -217,13 +217,13 @@ describe("runCommand", () => {
   it("follows and unfollows entities", () => {
     const s = makeServices();
     expect(runCommand({ type: "follow", entityId: "hear-daily" }, s)).toBe(
-      "Now following Hear Daily",
+      "Now following Hear! Daily",
     );
     expect(s.preferences.update).toHaveBeenCalledWith({
       followingIds: ["hear-daily"],
     });
     expect(runCommand({ type: "unfollow", entityId: "hear-daily" }, s)).toBe(
-      "Unfollowed Hear Daily",
+      "Unfollowed Hear! Daily",
     );
   });
 

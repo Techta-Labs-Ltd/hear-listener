@@ -20,9 +20,10 @@ export function OnboardingScreen() {
     ) {
       setup.requestPermission();
     } else if (
-      setup.phase === "permissionDenied" ||
-      setup.phase === "permissionBlocked"
+      setup.phase === "permissionDenied"
     ) {
+      setup.requestPermission();
+    } else if (setup.phase === "permissionBlocked") {
       setup.openSettings();
     } else if (
       setup.phase === "voiceTestReady" ||

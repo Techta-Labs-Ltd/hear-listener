@@ -1,8 +1,9 @@
 import { LocalCommandRouter } from "@/services/voice/local-command-router";
-import { voiceResolver } from "@/services/voice/resolver";
+import { voiceResolver } from "@/services/voice/local-voice-resolver";
 import { ambiguityController } from "@/services/voice/ambiguity-controller";
 import { feedbackVoiceController } from "@/services/voice/feedback-controller";
-import { makeInvocation } from "@/services/voice/matching/invocation";
+import { externalTranscriptPreparer } from "@/services/voice/external-transcript-preparer";
+import { makeInvocation } from "@/utils/voice/matching/invocation";
 import type { VoiceHypothesis } from "@/types";
 
 jest.mock("@/services/voice/speech-coordinator", () => ({
@@ -69,6 +70,62 @@ describe("LocalCommandRouter", () => {
     expect(resolveSpy).not.toHaveBeenCalled();
   });
 
+  it.each([
+    ["set playback speed to 1.25", 1.25],
+    ["set playback speed to one point two five", 1.25],
+    ["set play back speed to one and a half", 1.5],
+    ["set playback speed to second speed", 0.75],
+    ["set playback speed to normal speed", 1],
+    ["tyndale talking magazine set playback speed to double", 2],
+    ["play at half speed", 0.5],
+  ])(
+    "executes playback speed locally for %s",
+    async (phrase, multiplier) => {
+      const resolveSpy = jest.spyOn(voiceResolver, "resolve");
+      const result = await router.route("s1", hypotheses(phrase));
+
+      expect(result).toMatchObject({
+        kind: "execute",
+        invocation: { command: { type: "speed", multiplier } },
+      });
+      expect(resolveSpy).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    ["double speed", "up"],
+    ["play it faster", "up"],
+    ["half speed", "down"],
+    ["play this slower", "down"],
+  ] as const)(
+    "matches Alexa-style speed step %s locally",
+    async (phrase, direction) => {
+      const resolveSpy = jest.spyOn(voiceResolver, "resolve");
+      const result = await router.route("s1", hypotheses(phrase));
+
+      expect(result).toMatchObject({
+        kind: "execute",
+        invocation: { command: { type: "speedStep", direction } },
+      });
+      expect(resolveSpy).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    "set playback speed",
+    "set playback speed to 1.4",
+    "set playback speed to seventh speed",
+  ])(
+    "keeps unsupported playback-speed request %s local",
+    async (phrase) => {
+      const resolveSpy = jest.spyOn(voiceResolver, "resolve");
+      const result = await router.route("s1", hypotheses(phrase));
+
+      expect(result).toMatchObject({ kind: "feedback" });
+      expect(resolveSpy).not.toHaveBeenCalled();
+    },
+  );
+
   it("maps stop to pause while playing and close otherwise", async () => {
     const playing = await router.route("s1", hypotheses("stop"), undefined, {
       playback: { playing: true },
@@ -86,22 +143,24 @@ describe("LocalCommandRouter", () => {
     });
   });
 
-  it("passes content requests to the semantic resolver and returns remote on unresolved", async () => {
+  it("prepares non-local content for the external resolver without local playback", async () => {
     const resolveSpy = jest
       .spyOn(voiceResolver, "resolve")
       .mockResolvedValue({ kind: "unrecognized", confidence: 0 });
+    jest.spyOn(externalTranscriptPreparer, "prepare").mockResolvedValue({
+      originalTranscript: "play tyndale talking magazine",
+      preparedTranscript: "play Tyndale Talking Magazine",
+      corrections: [],
+    });
     const result = await router.route(
       "s1",
       hypotheses("play tyndale talking magazine"),
     );
-    expect(resolveSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        hypotheses: hypotheses("play tyndale talking magazine"),
-      }),
-    );
+    expect(resolveSpy).not.toHaveBeenCalled();
     expect(result).toMatchObject({
       kind: "remote",
-      transcript: "play tyndale talking magazine",
+      originalTranscript: "play tyndale talking magazine",
+      preparedTranscript: "play Tyndale Talking Magazine",
     });
   });
 

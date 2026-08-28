@@ -13,7 +13,7 @@ export const useOnboardingVoiceStore = create<OnboardingVoiceStore>()((set, get)
   gestureMode: "inactive",
   gestureLessonActive: false,
   gestureLessonCompleted: false,
-  voiceInvocationAllowed: true,
+  voiceInvocationAllowed: false,
   registerStep: (stepReadout: OnboardingStepReadout) => set({ stepReadout }),
   dispatch: (command: OnboardingVoiceCommand) =>
     set({ lastCommand: { ...command, id: ++commandCounter } }),
@@ -45,7 +45,7 @@ export const useOnboardingVoiceStore = create<OnboardingVoiceStore>()((set, get)
       gestureEvent: undefined,
       gestureLessonActive: false,
       gestureLessonCompleted: false,
-      voiceInvocationAllowed: true,
+      voiceInvocationAllowed: false,
     }),
 }));
 
@@ -62,6 +62,8 @@ export const onboardingVoiceBridge = {
     useOnboardingVoiceStore.getState().gestureLessonActive,
   completeGestureLesson: () =>
     useOnboardingVoiceStore.getState().completeGestureLesson(),
+  setVoiceInvocationAllowed: (allowed: boolean) =>
+    useOnboardingVoiceStore.getState().setVoiceInvocationAllowed(allowed),
   isVoiceInvocationAllowed: () =>
     useOnboardingVoiceStore.getState().voiceInvocationAllowed,
   resetExperience: () => useOnboardingVoiceStore.getState().resetExperience(),

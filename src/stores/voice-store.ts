@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import type {
-  ExternalResolverResponse,
-  ExternalResolverStatus,
   VoiceChoice,
   VoiceState,
   VoiceStore,
@@ -13,6 +11,8 @@ const initialVoice = {
   isDockVisible: false,
   sessionId: undefined,
   transcript: "",
+  originalTranscript: undefined,
+  preparedTranscript: undefined,
   message: "",
   prompt: "",
   choices: [] as VoiceChoice[],
@@ -23,10 +23,6 @@ const initialVoice = {
   speechDetected: false,
   activeScreenId: null,
   activeScreenTitle: null,
-  externalResolving: false,
-  externalStatus: "idle" as ExternalResolverStatus,
-  externalError: null as string | null,
-  lastExternalResponse: null as ExternalResolverResponse | null,
 };
 
 export const useVoiceStore = create<VoiceStore>((set) => ({

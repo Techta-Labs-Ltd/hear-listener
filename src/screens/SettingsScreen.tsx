@@ -86,8 +86,8 @@ export function SettingsScreen() {
   return (
     <AppScreen
       screenTitle="Settings"
-      screenOrientation="Settings. Say change accessibility, change location, set up Hear again, or read this screen."
-      voiceCommands={["change accessibility", "change location", "set up Hear again", "read this screen"]}
+      screenOrientation="Settings. Say change accessibility, change location, set up Hear! again, or read this screen."
+      voiceCommands={["change accessibility", "change location", "set up Hear! again", "read this screen"]}
     >
       <ScreenHeader
         title="Settings"

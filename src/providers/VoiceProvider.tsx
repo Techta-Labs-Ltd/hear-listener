@@ -1,25 +1,36 @@
 import { GlobalVoiceDock } from "@/components/voice/GlobalVoiceDock";
 import { VoiceGestureLayer } from "@/components/voice/VoiceGestureLayer";
-import { PLAYBACK_EXECUTORS, VOICE_LANGUAGE, VOICE_TIMING } from "@/constants/voice";
+import { EXTERNAL_VOICE_CONFIG } from "@/constants/external-voice";
+import {
+  PLAYBACK_EXECUTORS,
+  VOICE_LANGUAGE,
+  VOICE_TIMING,
+} from "@/constants/voice";
 import { entities, stories, topics } from "@/data/catalogue";
 import { playListeningStartTone } from "@/lib/audio/one-shots";
 import { appHaptics } from "@/lib/haptics";
 import { routes, topicRoute } from "@/navigation/routes";
 import { speechCoordinator, voiceAnnounce } from "@/services/voice/speech-coordinator";
+import { voiceDiagnostics } from "@/services/voice/diagnostics";
 import {
   confidenceBand,
   latencyBand,
-  voiceDiagnostics,
-} from "@/services/voice/diagnostics";
+} from "@/utils/voice/diagnostics";
 import { voiceEvents } from "@/services/voice/events";
-import { voiceExecutor } from "@/services/voice/executor";
-import { voiceTermRepository } from "@/services/voice/repository";
+import { voiceExecutor } from "@/services/voice/voice-executor";
+import { voiceTermRepository } from "@/services/voice/voice-repository";
 import { localCommandRouter } from "@/services/voice/local-command-router";
-import { externalVoiceResolver } from "@/services/voice/external-resolver";
+import { externalVoiceResolver } from "@/services/voice/external-resolver-service";
+import { getVoiceInstallationId } from "@/services/voice/installation-id";
+import {
+  remotePlaybackAnnouncement,
+  toRemoteContentItems,
+} from "@/utils/voice/external-playback";
 import { ukSpeech } from "@/services/voice/speech";
+import { triggerVoiceCloseFeedback } from "@/services/voice/voice-feedback";
 import { ambiguityController } from "@/services/voice/ambiguity-controller";
 import { feedbackVoiceController } from "@/services/voice/feedback-controller";
-import { hasMeaningfulSpeech } from "@/services/voice/normalize";
+import { hasMeaningfulSpeech } from "@/utils/voice/normalize";
 import {
   detectPlatformSpeechCapabilities,
   ensureVoicePermissions,
@@ -31,8 +42,8 @@ import {
 import {
   prepareAsrHypotheses,
   sanitizedHypotheses,
-} from "@/services/voice/asr-hypotheses";
-import { WholeWordProfanityFilter } from "@/services/voice/profanity-filter";
+} from "@/utils/voice/asr-hypotheses";
+import { WholeWordProfanityFilter } from "@/utils/voice/profanity-filter";
 import {
   modelStateNeedsRecheck,
   speechModelManager,
@@ -41,22 +52,28 @@ import {
   usePlaybackStore,
   usePreferencesStore,
   useSpeechCapabilityStore,
+  useExternalVoiceStore,
   useVoiceStore,
 } from "@/stores";
 import type {
   ActiveVoiceSession,
   EntityType,
+  ExternalResolverResponse,
   PlatformSpeechCapabilities,
   RecognitionPurpose,
   ScreenVoiceCapability,
   ScreenVoiceContext,
   VoiceChoice,
   VoiceContextValue,
+  VoiceFailureOptions,
   VoiceHypothesis,
   VoiceInvocation,
   VoiceInvocationSource,
 } from "@/types";
-import { voiceCopy as copy } from "@/utils/copy/voice";
+import {
+  voiceCopy as copy,
+  withVoiceRetryGuidance,
+} from "@/utils/copy/voice";
 import { generateVoiceSessionId } from "@/utils/voice";
 import { useRouter } from "expo-router";
 import {
@@ -117,6 +134,32 @@ function overlapAwareAppend(existing: string, incoming: string): boolean {
   return false;
 }
 
+async function withDelayedExternalProgress<T>(
+  requestId: string,
+  signal: AbortSignal,
+  request: () => Promise<T>,
+): Promise<T> {
+  let progressSpeech: Promise<void> | undefined;
+  const timer = setTimeout(() => {
+    if (signal.aborted) return;
+    useVoiceStore.getState().setVoice({
+      state: "resolving",
+      message: "Still searching Hear!…",
+    });
+    progressSpeech = voiceAnnounce(
+      "I’m still searching Hear!",
+      `voice:external-progress:${requestId}`,
+    );
+  }, EXTERNAL_VOICE_CONFIG.delayedProgressMs);
+  try {
+    const result = await request();
+    if (progressSpeech) await progressSpeech;
+    return result;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export function VoiceProvider({ children }: PropsWithChildren) {
   const voice = useVoiceStore();
   const router = useRouter();
@@ -174,15 +217,16 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   const activityWatchdogTimer = useRef<
     ReturnType<typeof setTimeout> | undefined
   >(undefined);
-  const asrStartTimeoutTimer = useRef<
-    ReturnType<typeof setTimeout> | undefined
-  >(undefined);
   const asrStopWaitTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
     undefined,
   );
   const capabilitiesRef = useRef<PlatformSpeechCapabilities | null>(null);
   const contextualStringsRef = useRef<string[]>([]);
   const recognitionPurposeRef = useRef<RecognitionPurpose>("command");
+  const externalDispatchLatch = useRef(false);
+  const externalRequestController = useRef<AbortController | undefined>(
+    undefined,
+  );
 
   const finalSegments = useRef<string[]>([]);
   const currentPartial = useRef<string>("");
@@ -195,13 +239,11 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       clearTimeout(postSpeechSilenceTimer.current);
     if (activityWatchdogTimer.current)
       clearTimeout(activityWatchdogTimer.current);
-    if (asrStartTimeoutTimer.current) clearTimeout(asrStartTimeoutTimer.current);
     if (asrStopWaitTimer.current) clearTimeout(asrStopWaitTimer.current);
     preSpeechTimer.current = undefined;
     noSpeechHapticTimer.current = undefined;
     postSpeechSilenceTimer.current = undefined;
     activityWatchdogTimer.current = undefined;
-    asrStartTimeoutTimer.current = undefined;
     asrStopWaitTimer.current = undefined;
   };
 
@@ -234,20 +276,26 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   const microphoneCloseResolvers = useRef(new Set<() => void>());
 
   const endSession = useCallback(
-    (announce?: string) => {
+    (announce?: string, withFeedback = false) => {
       const session = active.current;
       session?.controller.abort();
       active.current = undefined;
       clearTimers();
-      try {
-        ExpoSpeechRecognitionModule.abort();
-      } catch { }
-      microphoneClosed.current = false;
-      void waitForMicrophoneClose().then(() => {
+      if (session) {
+        try {
+          ExpoSpeechRecognitionModule.abort();
+        } catch { }
+        microphoneClosed.current = false;
+      } else {
+        microphoneClosed.current = true;
+      }
+      void (async () => {
+        await ukSpeech.stop();
+        await waitForMicrophoneClose();
         speechCoordinator.exitQuietMode();
         if (announce) void voiceAnnounce(announce);
-      });
-      void ukSpeech.stop();
+        if (withFeedback) triggerVoiceCloseFeedback("cancel");
+      })();
       useVoiceStore.getState().resetVoice();
     },
     [clearTimers, waitForMicrophoneClose],
@@ -273,7 +321,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       readScreen: () => {
         const current = activeScreenRef.current;
         if (!current)
-          return "You are browsing Hear Listener. Shake device to speak.";
+          return "You are browsing Hear! Listener. Shake device to speak.";
         if (typeof current.readout === "function") return current.readout();
         return (
           current.readout ||
@@ -289,8 +337,17 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   }, [router]);
 
   const finish = useCallback(
-    (message: string, errorCode?: string) => {
+    (
+      message: string,
+      errorCode?: string,
+      options: VoiceFailureOptions = {},
+    ) => {
       const session = active.current;
+      const retryable = options.retryable ?? true;
+      const spokenMessage =
+        options.includeRetryGuidance === false
+          ? message
+          : withVoiceRetryGuidance(message);
       session?.controller.abort();
       active.current = undefined;
       clearTimers();
@@ -302,16 +359,19 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         state: "error",
         message,
         errorCode,
-        retryable: true,
+        retryable,
         choices: [],
         prompt: "",
       });
       void waitForMicrophoneClose().then(() => {
         speechCoordinator.exitQuietMode();
         if (session?.playbackWasPlaying) usePlaybackStore.getState().resume();
-        void appHaptics.error();
+        triggerVoiceCloseFeedback("error");
         if (session?.source !== "onboardingPractice") {
-          void voiceAnnounce(message, `voice:error:${errorCode ?? "general"}`);
+          void voiceAnnounce(
+            spokenMessage,
+            `voice:error:${errorCode ?? "general"}`,
+          );
         }
       });
     },
@@ -319,8 +379,17 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   );
 
   const finishWithoutResume = useCallback(
-    (message: string, errorCode?: string) => {
+    (
+      message: string,
+      errorCode?: string,
+      options: VoiceFailureOptions = {},
+    ) => {
       const session = active.current;
+      const retryable = options.retryable ?? true;
+      const spokenMessage =
+        options.includeRetryGuidance === false
+          ? message
+          : withVoiceRetryGuidance(message);
       session?.controller.abort();
       clearTimers();
       try {
@@ -331,16 +400,19 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         state: "error",
         message,
         errorCode,
-        retryable: true,
+        retryable,
         choices: [],
         prompt: "",
       });
       active.current = undefined;
       void waitForMicrophoneClose().then(() => {
         speechCoordinator.exitQuietMode();
-        void appHaptics.error();
-        if (session?.source !== "onboardingPractice") {
-          void voiceAnnounce(message, `voice:error:${errorCode ?? "general"}`);
+        triggerVoiceCloseFeedback("error");
+        if (options.announce !== false && session?.source !== "onboardingPractice") {
+          void voiceAnnounce(
+            spokenMessage,
+            `voice:error:${errorCode ?? "general"}`,
+          );
         }
       });
     },
@@ -360,6 +432,21 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       if (!result.ok) {
         if (result.errorCode === "duplicate") return;
         finish("That action could not be completed.", result.errorCode);
+        return;
+      }
+
+      if (invocation.executorKey === "cancel") {
+        active.current = undefined;
+        useVoiceStore.getState().resetVoice();
+        triggerVoiceCloseFeedback("cancel");
+        speechCoordinator.exitQuietMode();
+        await voiceAnnounce(
+          copy.closedAnnounce,
+          `voice:cancel:${invocation.idempotencyKey}`,
+        );
+        if (current?.playbackWasPlaying) {
+          usePlaybackStore.getState().resume();
+        }
         return;
       }
 
@@ -422,6 +509,200 @@ export function VoiceProvider({ children }: PropsWithChildren) {
     [finish, services],
   );
 
+  const handleExternalResponse = useCallback(
+    async (
+      response: ExternalResolverResponse,
+      context: {
+        voiceSessionId: string;
+        installationId: string;
+        resumePlaybackOnCancel?: boolean;
+      },
+      signal: AbortSignal,
+    ) => {
+      if (signal.aborted) return;
+      const externalVoice = useExternalVoiceStore.getState();
+      const pending = externalVoice.receiveResponse(response, context);
+
+      if (response.kind === "ambiguity" || response.kind === "confirmation") {
+        if (!pending) return;
+        active.current = undefined;
+        clearTimers();
+        useVoiceStore.getState().setVoice({
+          state: "clarifying",
+          prompt: pending.prompt,
+          message: pending.prompt,
+          choices: pending.choices,
+        });
+        void appHaptics.clarification();
+        await voiceAnnounce(
+          pending.prompt,
+          `voice:external-${pending.phase}:${pending.interactionToken}`,
+        );
+        if (
+          !signal.aborted &&
+          useExternalVoiceStore.getState().getPending()?.interactionToken ===
+            pending.interactionToken
+        ) {
+          voiceEvents.trigger("contextualAction", false);
+        }
+        return;
+      }
+
+      if (response.kind === "clarification") {
+        active.current = undefined;
+        clearTimers();
+        useVoiceStore.getState().setVoice({
+          state: "clarifying",
+          prompt: response.prompt,
+          message: response.prompt,
+          choices: [],
+        });
+        await voiceAnnounce(response.prompt, "voice:external-clarification");
+        if (
+          !signal.aborted &&
+          useVoiceStore.getState().state === "clarifying"
+        ) {
+          voiceEvents.trigger("contextualAction", false);
+        }
+        return;
+      }
+
+      if (response.kind === "unresolved") {
+        finish(response.prompt, "external-unresolved");
+        if (context.resumePlaybackOnCancel) {
+          usePlaybackStore.getState().resume();
+        }
+        return;
+      }
+
+      if (response.kind === "error") {
+        if (response.code === "request-cancelled") {
+          externalVoice.cancelRequest();
+          return;
+        }
+        finish(response.message, response.code);
+        if (context.resumePlaybackOnCancel) {
+          usePlaybackStore.getState().resume();
+        }
+        return;
+      }
+
+      const items = toRemoteContentItems(response.tracks);
+      const first = response.tracks[0];
+      if (!first || items.length === 0) {
+        finish(
+          "I found results, but none can be played right now.",
+          "non-playable-results",
+        );
+        return;
+      }
+
+      clearTimers();
+      useVoiceStore.getState().setVoice({
+        state: "executing",
+        message: "Getting your audio ready.",
+        choices: [],
+        prompt: "",
+      });
+      const announcement =
+        response.announcement ?? remotePlaybackAnnouncement(first);
+      await voiceAnnounce(
+        announcement,
+        `voice:external-playback:${first.contentId}`,
+      );
+      if (signal.aborted) return;
+      active.current = undefined;
+      useVoiceStore.getState().resetVoice();
+      void appHaptics.success();
+      usePlaybackStore.getState().playQueue(items);
+    },
+    [clearTimers, finish],
+  );
+
+  const continueExternalInteraction = useCallback(
+    async (
+      action:
+        | { kind: "select"; candidateId: string }
+        | { kind: "confirm"; approved: boolean },
+    ) => {
+      const externalVoice = useExternalVoiceStore.getState();
+      const pending = externalVoice.getPending();
+      if (!pending || externalDispatchLatch.current) return;
+      if (action.kind === "confirm" && !action.approved) {
+        externalVoice.clearPending();
+        active.current = undefined;
+        useVoiceStore.getState().resetVoice();
+        triggerVoiceCloseFeedback("cancel");
+        await voiceAnnounce(copy.closedAnnounce, "voice:external-cancel");
+        if (pending.resumePlaybackOnCancel) {
+          usePlaybackStore.getState().resume();
+        }
+        return;
+      }
+
+      externalDispatchLatch.current = true;
+      externalRequestController.current?.abort();
+      const controller = new AbortController();
+      externalRequestController.current = controller;
+      const parentSignal = active.current?.controller.signal;
+      const abortFromParent = () => controller.abort();
+      parentSignal?.addEventListener("abort", abortFromParent, { once: true });
+      const requestId = generateVoiceSessionId();
+      externalVoice.beginRequest();
+      useVoiceStore.getState().setVoice({
+        state: "resolving",
+        message:
+          action.kind === "confirm"
+            ? "Searching Hear!…"
+            : "Resolving your choice…",
+        choices: [],
+        prompt: "",
+      });
+
+      let responseHandled = false;
+      try {
+        const response = await withDelayedExternalProgress(
+          requestId,
+          controller.signal,
+          () =>
+            externalVoiceResolver.continue({
+              interactionToken: pending.interactionToken,
+              voiceSessionId: pending.voiceSessionId,
+              requestId,
+              installationId: pending.installationId,
+              action:
+                action.kind === "select"
+                  ? { kind: "select", candidateId: action.candidateId }
+                  : { kind: "confirm", approved: true },
+              signal: controller.signal,
+            }),
+        );
+        if (!controller.signal.aborted) {
+          responseHandled = true;
+          await handleExternalResponse(
+            response,
+            {
+              voiceSessionId: pending.voiceSessionId,
+              installationId: pending.installationId,
+              resumePlaybackOnCancel: pending.resumePlaybackOnCancel,
+            },
+            controller.signal,
+          );
+        }
+      } finally {
+        if (controller.signal.aborted && !responseHandled) {
+          useExternalVoiceStore.getState().cancelRequest();
+        }
+        parentSignal?.removeEventListener("abort", abortFromParent);
+        if (externalRequestController.current === controller) {
+          externalRequestController.current = undefined;
+        }
+        externalDispatchLatch.current = false;
+      }
+    },
+    [handleExternalResponse],
+  );
+
   const resolve = useCallback(
     async (id: string, hypotheses: VoiceHypothesis[]) => {
       const session = active.current;
@@ -478,6 +759,56 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         transcript: cleanHypotheses[0]?.transcript ?? "",
         message: "Finding the best match.",
       });
+
+      const externalVoice = useExternalVoiceStore.getState();
+      const pendingExternal = externalVoice.getPending();
+      const pendingExternalDecision =
+        externalVoice.interpretPending(primaryTranscript);
+      if (pendingExternalDecision) {
+        if (pendingExternalDecision.kind === "cancel") {
+          externalVoice.clearPending();
+          active.current = undefined;
+          useVoiceStore.getState().resetVoice();
+          triggerVoiceCloseFeedback("cancel");
+          await voiceAnnounce(copy.closedAnnounce, "voice:external-cancel");
+          if (
+            pendingExternal?.resumePlaybackOnCancel ||
+            session.playbackWasPlaying
+          ) {
+            usePlaybackStore.getState().resume();
+          }
+          return;
+        }
+        if (
+          pendingExternalDecision.kind === "repeat" ||
+          pendingExternalDecision.kind === "invalid"
+        ) {
+          active.current = undefined;
+          useVoiceStore.getState().setVoice({
+            state: "clarifying",
+            prompt: pendingExternalDecision.prompt,
+            message: pendingExternalDecision.prompt,
+            choices: pendingExternalDecision.choices,
+          });
+          await voiceAnnounce(
+            pendingExternalDecision.prompt,
+            `voice:external-repeat:${id}`,
+          );
+          if (useExternalVoiceStore.getState().getPending()) {
+            voiceEvents.trigger("contextualAction", false);
+          }
+          return;
+        }
+        await continueExternalInteraction(
+          pendingExternalDecision.kind === "select"
+            ? {
+                kind: "select",
+                candidateId: pendingExternalDecision.candidateId,
+              }
+            : { kind: "confirm", approved: true },
+        );
+        return;
+      }
 
       const timeout = setTimeout(() => {
         session.controller.abort();
@@ -569,34 +900,49 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           active.current = undefined;
           useVoiceStore.getState().resetVoice();
         } else if (routeResult.kind === "remote") {
-          useVoiceStore.getState().setVoice({ externalResolving: true });
-          const externalResult = await externalVoiceResolver.resolve({
-            transcript: cleanHypotheses[0]?.transcript ?? "",
-            screenContext: {
-              pathname: snapshotPath ?? "",
-              playback: {
-                current: playback.current,
-                playing: playback.playing,
-                progress: playback.progress,
-                speed: playback.speed,
-              },
-              preferences,
-            },
-            appSummary: {
-              currentPath: snapshotPath ?? "",
-              playingTitle: playback.current?.title,
-              isPlaying: playback.playing,
-            },
+          const installationId = await getVoiceInstallationId();
+          if (
+            active.current?.id !== id ||
+            session.controller.signal.aborted
+          ) {
+            return;
+          }
+          const requestId = generateVoiceSessionId();
+          useExternalVoiceStore.getState().beginRequest();
+          useVoiceStore.getState().setVoice({
+            originalTranscript: routeResult.originalTranscript,
+            preparedTranscript: routeResult.preparedTranscript,
+            transcript: routeResult.originalTranscript,
+            message: "Resolving your Hear! search…",
           });
-          useVoiceStore.getState().setVoice({ externalResolving: false });
-
-          if (externalResult.handled && externalResult.spokenResponse) {
-            finish(externalResult.spokenResponse, "success");
-          } else {
-            finish(
-              "I could not match that command. Shake device to try again.",
-              "unrecognised",
+          const externalResult = await withDelayedExternalProgress(
+            requestId,
+            session.controller.signal,
+            () =>
+              externalVoiceResolver.resolve({
+                originalTranscript: routeResult.originalTranscript,
+                preparedTranscript: routeResult.preparedTranscript,
+                locale: "en-GB",
+                timezone: "Europe/London",
+                country: "gb",
+                voiceSessionId: id,
+                requestId,
+                installationId,
+                signal: session.controller.signal,
+              }),
+          );
+          if (!session.controller.signal.aborted) {
+            await handleExternalResponse(
+              externalResult,
+              {
+                voiceSessionId: id,
+                installationId,
+                resumePlaybackOnCancel: session.playbackWasPlaying,
+              },
+              session.controller.signal,
             );
+          } else {
+            useExternalVoiceStore.getState().cancelRequest();
           }
         } else {
           finish(
@@ -614,7 +960,14 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         }
       }
     },
-    [clearTimers, execute, finish, waitForMicrophoneClose],
+    [
+      clearTimers,
+      continueExternalInteraction,
+      execute,
+      finish,
+      handleExternalResponse,
+      waitForMicrophoneClose,
+    ],
   );
 
   const resetActivityWatchdog = useCallback(
@@ -642,7 +995,10 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       const purpose = resolveRecognitionPurpose({
         expectation: session?.screenSnapshot?.recognitionExpectation,
         clarifying: useVoiceStore.getState().state === "clarifying",
-        pendingAmbiguity: Boolean(ambiguityController.getPending()),
+        pendingAmbiguity: Boolean(
+          ambiguityController.getPending() ||
+            useExternalVoiceStore.getState().getPending(),
+        ),
         pendingFeedback: Boolean(feedbackVoiceController.getTarget()),
       });
       recognitionPurposeRef.current = purpose;
@@ -666,22 +1022,51 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         capabilities,
       );
 
+      const activeSession = active.current;
+      if (!activeSession || activeSession.id !== id) return;
+
+      const startedAt = Date.now();
+      const deadlineAt = startedAt + VOICE_TIMING.preSpeechTimeout;
+      activeSession.startedAt = startedAt;
+      activeSession.deadlineAt = deadlineAt;
+      activeSession.speechDetected = false;
+      useVoiceStore.getState().setVoice({
+        state: "listening",
+        message: "Speak now.",
+        listeningStartedAt: startedAt,
+        listeningDeadlineAt: deadlineAt,
+        speechDetected: false,
+      });
+      void playListeningStartTone();
+      void appHaptics.listening();
+
+      noSpeechHapticTimer.current = setTimeout(() => {
+        if (active.current?.speechDetected || active.current?.controller.signal.aborted) return;
+        void appHaptics.listening();
+        useVoiceStore.getState().setVoice({
+          message: "Still listening. 4 seconds remaining.",
+        });
+      }, VOICE_TIMING.noSpeechHapticReminder);
+
+      preSpeechTimer.current = setTimeout(() => {
+        if (active.current?.speechDetected || active.current?.controller.signal.aborted) return;
+        try {
+          ExpoSpeechRecognitionModule.stop();
+        } catch { }
+        finish(
+          "I didn't hear anything. Listening is closed. Shake device when you're ready to speak again.",
+          "no-speech-timeout",
+        );
+      }, VOICE_TIMING.preSpeechTimeout);
+
       try {
         await ExpoSpeechRecognitionModule.start(options);
       } catch { }
 
-      asrStartTimeoutTimer.current = setTimeout(() => {
-        if (active.current?.id !== id || active.current.asrConfirmed) return;
-        finishWithoutResume(
-          "I couldn't start voice recognition. Shake device to try again.",
-          "asr-start-failed",
-        );
-      }, 6000);
-
       resetActivityWatchdog(id);
 
     },
-    [finishWithoutResume, resetActivityWatchdog],
+    [finish, resetActivityWatchdog],
   );
 
   const announceListeningPrompt = useCallback(async () => {
@@ -724,6 +1109,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         finish(
           "Voice isn't supported on this device. You can still browse and listen by touch.",
           "service-not-allowed",
+          { includeRetryGuidance: false, retryable: false },
         );
         return;
       }
@@ -764,8 +1150,36 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           finishWithoutResume(
             message,
             permission.failureReason ?? "permission-denied",
+            permission.failureReason === "speech-restricted"
+              ? { includeRetryGuidance: false, retryable: false }
+              : undefined,
           );
           return;
+        }
+
+        if (capabilities.platform === "android") {
+          useSpeechCapabilityStore.getState().setModelState("checking");
+          const modelState = await speechModelManager.checkEnGbModel(capabilities);
+          useSpeechCapabilityStore.getState().setModelState(modelState);
+          if (modelState === "missing") {
+            const message =
+              "English UK speech recognition needs to be downloaded. I will open the download now. When it finishes, shake device to try your voice command again.";
+            speechCoordinator.exitQuietMode();
+            await voiceAnnounce(
+              message,
+              `voice:language-model-download:${id}`,
+            );
+            if (active.current?.id !== id) return;
+            const downloadState =
+              await speechModelManager.requestEnGbModelDownload(capabilities);
+            useSpeechCapabilityStore.getState().setModelState(downloadState);
+            finishWithoutResume(
+              message,
+              "language-model-downloading",
+              { announce: false },
+            );
+            return;
+          }
         }
 
         if (announceLocation) {
@@ -786,7 +1200,11 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   );
 
   const cancel = useCallback(() => {
-    endSession();
+    useExternalVoiceStore.getState().resetExternalVoice();
+    externalRequestController.current?.abort();
+    externalRequestController.current = undefined;
+    externalDispatchLatch.current = false;
+    endSession(undefined, true);
   }, [endSession]);
 
   const stop = useCallback(() => {
@@ -804,58 +1222,37 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   }, [finish, resolve]);
 
   const close = useCallback(() => {
-    endSession();
+    useExternalVoiceStore.getState().resetExternalVoice();
+    externalRequestController.current?.abort();
+    externalRequestController.current = undefined;
+    externalDispatchLatch.current = false;
+    endSession(undefined, true);
+  }, [endSession]);
+
+  const dismiss = useCallback(() => {
+    useExternalVoiceStore.getState().resetExternalVoice();
+    externalRequestController.current?.abort();
+    externalRequestController.current = undefined;
+    externalDispatchLatch.current = false;
+    endSession(copy.closedAnnounce, true);
   }, [endSession]);
 
   const choose = useCallback(
     async (choice: VoiceChoice) => {
+      if (choice.externalAction) {
+        await continueExternalInteraction(choice.externalAction);
+        return;
+      }
       if (choice.invocation) {
         await execute(choice.invocation, choice.alias, choice.label);
       }
     },
-    [execute],
+    [continueExternalInteraction, execute],
   );
 
   useSpeechRecognitionEvent("start", () => {
     if (active.current) {
       active.current.asrConfirmed = true;
-      if (asrStartTimeoutTimer.current) clearTimeout(asrStartTimeoutTimer.current);
-      asrStartTimeoutTimer.current = undefined;
-
-      const startedAt = Date.now();
-      const deadlineAt = startedAt + VOICE_TIMING.preSpeechTimeout;
-      active.current.startedAt = startedAt;
-      active.current.deadlineAt = deadlineAt;
-      active.current.speechDetected = false;
-
-      useVoiceStore.getState().setVoice({
-        state: "listening",
-        message: "Speak now.",
-        listeningStartedAt: startedAt,
-        listeningDeadlineAt: deadlineAt,
-        speechDetected: false,
-      });
-      void playListeningStartTone();
-      void appHaptics.listening();
-
-      noSpeechHapticTimer.current = setTimeout(() => {
-        if (active.current?.speechDetected || active.current?.controller.signal.aborted) return;
-        void appHaptics.listening();
-        useVoiceStore.getState().setVoice({
-          message: "Still listening. 4 seconds remaining.",
-        });
-      }, VOICE_TIMING.noSpeechHapticReminder);
-
-      preSpeechTimer.current = setTimeout(() => {
-        if (active.current?.speechDetected || active.current?.controller.signal.aborted) return;
-        try {
-          ExpoSpeechRecognitionModule.stop();
-        } catch { }
-        finish(
-          "I didn't hear anything. Listening is closed. Shake device when you're ready to speak again.",
-          "no-speech-timeout",
-        );
-      }, VOICE_TIMING.preSpeechTimeout);
     }
   });
 
@@ -879,11 +1276,6 @@ export function VoiceProvider({ children }: PropsWithChildren) {
         if (postSpeechSilenceTimer.current)
           clearTimeout(postSpeechSilenceTimer.current);
         void resolve(session.id, [{ transcript: full, confidence: 0.85, rank: 0 }]);
-      } else {
-        finish(
-          "I didn't hear anything. Listening is closed. Shake device when you're ready to speak again.",
-          "no-speech",
-        );
       }
     }
   });
@@ -1066,6 +1458,9 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
   useSpeechRecognitionEvent("error", (event) => {
     if (event.error === "aborted" || !active.current) return;
+    if (event.error === "no-speech" || event.error === "speech-timeout") {
+      return;
+    }
     try {
       ExpoSpeechRecognitionModule.stop();
     } catch {}
@@ -1080,6 +1475,12 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       return;
     } else if (errorCode === "audio-capture") {
       message = "Microphone capture failed. Please check your microphone.";
+    } else if (errorCode === "language-not-supported") {
+      finishWithoutResume(
+        "English UK speech recognition is not installed on this device. Download the language model, then try again.",
+        "language-model-missing",
+      );
+      return;
     } else if (errorCode === "network") {
       message =
         "Network error during speech recognition. Please check your connection.";
@@ -1096,6 +1497,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           useVoiceStore.getState().setVoice({
             state: "error",
             message: "The voice database needs to be restored.",
+            retryable: false,
           });
         }
       })
@@ -1104,6 +1506,11 @@ export function VoiceProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const sub = AppState.addEventListener("change", (state) => {
+      if (state !== "active") {
+        useExternalVoiceStore.getState().resetExternalVoice();
+        externalRequestController.current?.abort();
+        externalRequestController.current = undefined;
+      }
       if (state !== "active" && active.current) endSession();
       if (state !== "active") return;
       const capabilityState = useSpeechCapabilityStore.getState();
@@ -1146,6 +1553,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       retry: () => start("contextualAction", true),
       cancel,
       close,
+      dismiss,
       choose,
     }),
     [
@@ -1156,6 +1564,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       stop,
       cancel,
       close,
+      dismiss,
       choose,
     ],
   );

@@ -5,13 +5,13 @@ describe("Onboarding Spec Verification", () => {
   describe("ONBOARDING_SPEECH copy compliance with Section 47", () => {
     it("has exact welcome speech matching Spec §47", () => {
       expect(ONBOARDING_SPEECH.welcome).toBe(
-        "Welcome to Hear. Step 1 of 3. Shake device to continue.",
+        "Welcome to Hear!. Step 1 of 3. Shake device to continue.",
       );
     });
 
     it("has exact permission intro speech matching Spec §47", () => {
       expect(ONBOARDING_SPEECH.permissionIntro).toBe(
-        "Voice access. Step 2 of 3. Hear listens only when you ask. The microphone stops after each command. Shake device to continue and your phone will ask for microphone permission.",
+        "Voice access. Step 2 of 3. Hear! listens only when you ask. The microphone stops after each command. Shake device to continue and your phone will ask for microphone permission.",
       );
     });
 
@@ -23,10 +23,10 @@ describe("Onboarding Spec Verification", () => {
 
     it("has exact permission denied speech matching Spec §47", () => {
       expect(ONBOARDING_SPEECH.permissionDenied).toBe(
-        "Voice access. Step 2 of 3. Microphone access is off. Shake device to open Settings.",
+        "Voice access. Step 2 of 3. Microphone access is off. Shake device to request microphone permission again.",
       );
       expect(ONBOARDING_SPEECH.permissionStillDenied).toBe(
-        "Microphone access is still off. Shake device to open Settings.",
+        "Microphone access is still off. Shake device to open Hear! microphone settings.",
       );
     });
 
@@ -68,10 +68,10 @@ describe("Onboarding Spec Verification", () => {
 
     it("has exact completion speech variants", () => {
       expect(ONBOARDING_SPEECH.complete).toBe(
-        "Setup complete. Hear is ready.",
+        "Setup complete. Hear! is ready.",
       );
       expect(ONBOARDING_SPEECH.completeWithoutVoice).toBe(
-        "Setup complete. Hear is ready. You can enable voice access later in Settings.",
+        "Setup complete. Hear! is ready. You can enable voice access later in Settings.",
       );
     });
   });

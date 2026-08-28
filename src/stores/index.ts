@@ -6,3 +6,6 @@ export * from "./account-store";
 export * from "./content-store";
 export * from "./kinetic-store";
 export * from "./speech-capability-store";
+export * from "./external-voice-store";
+export * from "./ambiguity-store";
+export * from "./feedback-voice-store";

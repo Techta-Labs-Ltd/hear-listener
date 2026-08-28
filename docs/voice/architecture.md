@@ -15,30 +15,55 @@ speech-model-manager (src/services/voice/speech-model-manager.ts)
 recognition-profile (src/services/voice/recognition-profile.ts)
   purpose -> platform-specific recognition options
 
-recognition-dictionary (src/services/voice/recognition-dictionary.ts)
-  local command dictionary, filler phrases, bias-term ranking
+voice-dictionary + recognition-dictionary
+  immutable command/filler config in constants + pure bias ranking in utils
 
 pending-interaction-router (src/services/voice/pending-interaction-router.ts)
   ambiguity / feedback / confirmation input ownership
 
 local-command-router (src/services/voice/local-command-router.ts)
-  deterministic app/device commands, zero resolver calls
+  local-first orchestration; deterministic matching lives in
+  src/utils/voice/local-command-matcher.ts
 
 asr-hypotheses + transcript-preparation + profanity-filter
   transcript sanitization before routing
 
-semantic-parser (src/services/voice/matching/semantic-parser.ts)
+semantic-parser (src/utils/voice/matching/semantic-parser.ts)
   generic command/modifier/relation grammar
 
-resolver (src/services/voice/resolver.ts)
-  pure orchestrator; returns resolved / ambiguous / unresolved
+external-transcript-preparer
+  high-confidence SQLite canonicalisation without local content execution
 
-repository (src/services/voice/repository.ts)
+external-resolver + external-voice-store
+  typed resolver + Hear search client (src/services/voice/external-resolver-service.ts)
+  + Zustand-owned request and in-memory interaction state
+
+external-interaction
+  pure ambiguity/confirmation transition functions
+
+external-voice types + constants
+  shared API/dialogue contracts in src/types/external-voice.ts;
+  endpoint, expiry, installation, and phrase data in src/constants
+
+voice-repository (src/services/voice/voice-repository.ts)
   sole SQLite boundary: exact + FTS5 + trigram + phonetic
 
-ambiguity-controller / feedback-controller / executor
-  canonical-ID interaction state and execution
+ambiguity-store / feedback-voice-store + controllers / executor
+  observable interaction state with side effects kept in services
 ```
+
+## Source ownership
+
+- `src/constants` owns immutable dictionaries, intent sets, and resolver tuning.
+- `src/utils/voice` owns deterministic text, matching, ranking, and playback
+  transformations. Utilities do not import React Native or Expo runtime APIs.
+- `src/services/voice` owns native capabilities, persistence, network, speech,
+  routing orchestration, and side-effect controllers.
+- `src/stores` owns observable cross-component state. Store actions remain pure;
+  native feedback and network effects stay in services and providers.
+- `src/types` owns exported domain and boundary contracts. Service modules do
+  not declare parallel API, persistence, or routing types.
+- `src/navigation` owns the screen registry and route metadata.
 
 ## Flow
 
@@ -70,10 +95,10 @@ ASR ALTERNATIVES (max 5)
 SANITIZE (profanity + fillers)
       |
       v
-PENDING INTERACTION -> LOCAL COMMAND -> SEMANTIC RESOLVER
+PENDING INTERACTION -> LOCAL COMMAND -> FTS5 PREPARATION
       |
       v
-resolved / ambiguous / unresolved
+EXTERNAL RESOLVER -> AMBIGUITY -> CONFIRMATION -> HEAR SEARCH -> PLAYBACK
 ```
 
 ## State machine
@@ -83,9 +108,11 @@ Voice session state (interaction): `idle -> preparing -> listening -> resolving 
 Separate stores that must not be conflated:
 
 - `voice-store` — interaction state (session, transcript, choices)
+- `external-voice-store` — non-persisted API status, typed response, local
+  interaction expiry, and invalid-answer state
 - `speech-capability-store` — device capability state (platform, permission state, Android model state)
-- `ambiguity-controller` — pending canonical candidates
-- `feedback-controller` — active feedback target
+- `ambiguity-store` — pending canonical candidates and selected option
+- `feedback-voice-store` — active feedback target and rating
 
 ## 8-second invariant
 
@@ -94,4 +121,4 @@ native recognizer reports `start`. Speech start cancels it permanently.
 A separate absolute guard (`VOICE_TIMING.recognitionActivityWatchdog`, 45s)
 protects against a stuck recognizer; it is reset on speech activity.
 
-See [architecture.md](./architecture.md) details and [testing.md](./testing.md).
+See [testing.md](./testing.md) for the corresponding verification strategy.

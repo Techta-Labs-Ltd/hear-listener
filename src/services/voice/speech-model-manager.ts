@@ -5,8 +5,7 @@ import type {
   PlatformSpeechCapabilities,
 } from "@/types";
 import { UK_ASR_LOCALE } from "./speech-recognition-bootstrap";
-
-const MIN_RETRIGGER_INTERVAL_MS = 60_000;
+import { ANDROID_SPEECH_MODEL_RETRIGGER_MS } from "@/constants/voice-recognition";
 
 function isEnGb(locale: string): boolean {
   return locale.toLowerCase().startsWith("en-gb");
@@ -38,7 +37,10 @@ class SpeechModelManager {
     if (capabilities.platform !== "android") return "unsupported";
     if ((capabilities.apiLevel ?? 0) < 33) return "unsupported";
     const now = Date.now();
-    if (now - this.lastTriggeredAt < MIN_RETRIGGER_INTERVAL_MS) {
+    if (
+      now - this.lastTriggeredAt <
+      ANDROID_SPEECH_MODEL_RETRIGGER_MS
+    ) {
       const current = await this.checkEnGbModel(capabilities);
       return current === "installed" ? "installed" : "download-scheduled";
     }

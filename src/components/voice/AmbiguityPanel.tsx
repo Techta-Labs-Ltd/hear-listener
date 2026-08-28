@@ -2,6 +2,7 @@ import { AppText } from "@/components/ui/AppText";
 import { Pressable, View } from "@/tw";
 import type { VoiceChoice } from "@/types";
 import { ambiguityController } from "@/services/voice/ambiguity-controller";
+import { useAmbiguityStore } from "@/stores/ambiguity-store";
 
 export function AmbiguityPanel({
   prompt,
@@ -14,8 +15,9 @@ export function AmbiguityPanel({
   onSelect?: (choice: VoiceChoice) => void;
   onCancel?: () => void;
 }) {
-  const pending = ambiguityController.getPending();
-  const selectedIndex = pending?.selectedIndex ?? 0;
+  const selectedIndex = useAmbiguityStore(
+    (state) => state.pending?.selectedIndex ?? 0,
+  );
 
   return (
     <View className="gap-3">
@@ -42,7 +44,7 @@ export function AmbiguityPanel({
                 if (onSelect) {
                   onSelect(choice);
                 } else {
-                  ambiguityController.confirm();
+                  ambiguityController.selectIndex(index);
                 }
               }}
               className={`min-h-12 w-full flex-row items-center justify-between rounded-xl px-4 py-3 ${

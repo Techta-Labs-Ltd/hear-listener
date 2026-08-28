@@ -25,7 +25,9 @@ export function VoiceAccessStep({
 }: VoiceAccessStepProps) {
   const insets = useSafeAreaInsets();
   const isWeb = Platform.OS === "web";
-  const isDenied = phase === "permissionDenied" || phase === "permissionBlocked";
+  const isRetryablePermissionDenied = phase === "permissionDenied";
+  const isPermissionBlocked = phase === "permissionBlocked";
+  const isDenied = isRetryablePermissionDenied || isPermissionBlocked;
   const isVoiceTest =
     phase === "voiceTestListening" ||
     phase === "voiceTestError" ||
@@ -33,27 +35,29 @@ export function VoiceAccessStep({
     phase === "voiceTestReady";
 
   const handleAction = isDenied
-    ? isWeb
-      ? onRequestPermission || onOpenSettings
-      : onOpenSettings
+    ? isPermissionBlocked
+      ? onOpenSettings
+      : onRequestPermission || (() => {})
     : isVoiceTest
       ? onRetryVoiceTest
       : onRequestPermission || onEnableVoice || (() => {});
 
   const accessibilityLabel = isDenied
-    ? isWeb
-      ? ONBOARDING_SPEECH.permissionDeniedWeb
-      : ONBOARDING_SPEECH.permissionDenied
+    ? isPermissionBlocked
+      ? ONBOARDING_SPEECH.permissionBlocked
+      : isWeb
+        ? ONBOARDING_SPEECH.permissionDeniedWeb
+        : ONBOARDING_SPEECH.permissionDenied
     : isVoiceTest
       ? voiceState === "error"
         ? ONBOARDING_SPEECH.voiceTestNoSpeech
-        : "Hear is listening. Say: Play my local news."
+        : "Hear! is listening. Say: Play my local news."
       : ONBOARDING_SPEECH.permissionIntro;
 
   const accessibilityHint = isDenied
-    ? isWeb
-      ? "Shake device to request microphone permission."
-      : "Shake device to open Settings."
+    ? isPermissionBlocked
+      ? "Shake device to open Settings."
+      : "Shake device to request microphone permission again."
     : isVoiceTest
       ? "Shake device to try the voice command again."
       : "Shake device to request microphone permission.";
@@ -94,14 +98,16 @@ export function VoiceAccessStep({
               <AppText tone="muted" className="mt-3 text-[16px] leading-[22px]">
                 {isWeb
                   ? "Microphone access is off. Allow microphone access in your browser address bar to continue."
-                  : "Microphone access is off. Open Settings to enable microphone."}
+                  : isPermissionBlocked
+                    ? "Microphone access is off. Shake to open Hear! settings and enable Microphone."
+                    : "Microphone access is off. Shake again to ask for microphone access."}
               </AppText>
               <View className="my-6 h-[1px] bg-border" />
               <VoiceStatusBadge label="HEAR IS SPEAKING" className="mb-3" />
               <AppText className="font-display text-[22px] leading-[28px] text-ink">
-                {isWeb
-                  ? "“Microphone access is off.\nAllow microphone access in your browser.”"
-                  : "“Microphone access is off.\nShake device or tap to open Settings.”"}
+                {isPermissionBlocked
+                  ? "“Microphone access is off.\nShake device to open Hear! microphone settings.”"
+                  : "“Microphone access is off.\nShake device to ask for microphone access again.”"}
               </AppText>
             </>
           ) : isVoiceTest ? (
@@ -113,7 +119,7 @@ export function VoiceAccessStep({
                 Let’s try one command
               </AppText>
               <AppText tone="muted" className="mt-2 text-[16px] leading-[22px]">
-                Hear started listening after permission was allowed.
+                Hear! started listening after permission was allowed.
               </AppText>
               <PromptCard
                 label="SAY THIS"
@@ -128,7 +134,7 @@ export function VoiceAccessStep({
                 accessibilityRole="header"
                 className="mt-4 font-display text-[34px] leading-[40px] text-ink"
               >
-                Hear listens only after{"\n"}you call it.
+                Hear! listens only after{"\n"}you call it.
               </AppText>
               <AppText tone="muted" className="mt-3 text-[16px] leading-[22px]">
                 Permission first. Listening only when invited. The microphone stops after each command.
@@ -166,16 +172,16 @@ export function VoiceAccessStep({
               ONE GESTURE
             </AppText>
             <AppText className="mt-2 font-display text-[32px] sm:text-[38px] leading-[36px] sm:leading-[44px] text-white">
-              Tap anywhere{"\n"}to continue.
+              Shake device{"\n"}to continue.
             </AppText>
             <AppText className="mt-2 text-[15px] sm:text-[16px] leading-[20px] sm:leading-[21px] text-voice-muted">
               {isDenied
-                ? isWeb
-                  ? "We’ll request microphone access. Allow microphone in your browser to continue by voice."
-                  : "We’ll open Settings. Allow Microphone, then return here to continue by voice."
+                ? isPermissionBlocked
+                  ? "We’ll open Hear! settings. Turn on Microphone, then return here to continue by voice."
+                  : "We’ll ask for microphone access again. Allow it in the system dialog to continue by voice."
                 : "Your phone will ask for microphone permission next."}
             </AppText>
-            {isDenied && (
+            {isPermissionBlocked && (
               <View className="mt-5 border-t border-voice-track pt-4">
                 <AppText variant="overline" className="text-voice-muted tracking-[0.4px]">
                   WHEN YOU RETURN

@@ -10,7 +10,7 @@ export function VoiceReadyBanner({ className }: VoiceReadyBannerProps) {
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`${homeCopy.voiceReadyEyebrow}. ${homeCopy.voiceReadyTitle}, then ${homeCopy.voiceReadyExample}`}
-      accessibilityHint="Tap to start voice control."
+      accessibilityHint="Shake device to start voice control."
       onPress={() => triggerVoice("contextualAction")}
       className={cn(
         "rounded-[16px] bg-primary-soft p-4 sm:p-5 active:opacity-90",

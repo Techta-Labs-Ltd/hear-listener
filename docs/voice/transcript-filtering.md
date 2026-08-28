@@ -29,8 +29,8 @@ processing, and diagnostic persistence.
 
 ## Profanity filtering
 
-- `src/services/voice/profanity-filter.ts` — shared Android + iOS sanitizer.
-- Dictionary: `src/services/voice/dictionaries/profanity-en-GB.ts` (British
+- `src/utils/voice/profanity-filter.ts` — shared Android + iOS sanitizer.
+- Dictionary: `src/constants/profanity-en-gb.ts` (British
   spellings, contractions, ASR spacing variants, inflections).
 - Whole-token/phrase matching only; never substring replacement.
 - Modes: `remove` (command pipeline) and `mask`.
@@ -47,7 +47,7 @@ is advisory and iOS has no equivalent.
 
 ## Filler removal
 
-`stripSafeFillers` in `src/services/voice/transcript-preparation.ts` removes
+`stripSafeFillers` in `src/utils/voice/transcript-preparation.ts` removes
 conversational noise (`um`, `please`, `can you`, ...) on token/phrase
 boundaries, never inside protected entity spans, preserving spacing.
 

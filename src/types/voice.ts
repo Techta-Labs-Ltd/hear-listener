@@ -87,18 +87,14 @@ export type ActiveVoiceSession = {
   screenSnapshot?: ScreenVoiceContext | null;
 };
 
-export type ExternalResolverStatus =
-  | "idle"
-  | "resolving"
-  | "success"
-  | "error";
-
 export type VoiceStore = {
   state: VoiceState;
   isVoiceActive: boolean;
   isDockVisible: boolean;
   sessionId?: string;
   transcript: string;
+  originalTranscript?: string;
+  preparedTranscript?: string;
   message: string;
   prompt: string;
   choices: VoiceChoice[];
@@ -109,10 +105,6 @@ export type VoiceStore = {
   speechDetected?: boolean;
   activeScreenId?: string | null;
   activeScreenTitle?: string | null;
-  externalResolving: boolean;
-  externalStatus: ExternalResolverStatus;
-  externalError?: string | null;
-  lastExternalResponse?: ExternalResolverResponse | null;
   setVoice: (
     change: Partial<Omit<VoiceStore, "setVoice" | "resetVoice">>,
   ) => void;
@@ -127,34 +119,6 @@ export type SpeechStore = {
   setSpeechState: (state: "idle" | "speaking" | "paused") => void;
   resetSpeech: () => void;
 };
-
-export type ExternalResolverRequest = {
-  transcript: string;
-  screenContext: VoiceScreenContext;
-  appSummary?: {
-    currentPath: string;
-    playingTitle?: string;
-    isPlaying: boolean;
-  };
-  signal?: AbortSignal;
-};
-
-export type ExternalResolverResponse = {
-  handled: boolean;
-  spokenResponse?: string;
-  displayText?: string;
-  action?: {
-    type: string;
-    payload?: Record<string, unknown>;
-  };
-  choices?: VoiceChoice[];
-  confidence?: number;
-  error?: string;
-};
-
-export interface ExternalVoiceResolver {
-  resolve(request: ExternalResolverRequest): Promise<ExternalResolverResponse>;
-}
 
 export type PlayMode =
   | "current"
@@ -320,7 +284,11 @@ export type VoiceChoice = {
   detail?: string;
   invocation?: VoiceInvocation;
   alias?: string;
-  command: VoiceCommand;
+  command?: VoiceCommand;
+  externalCandidateId?: string;
+  externalAction?:
+    | { kind: "select"; candidateId: string }
+    | { kind: "confirm"; approved: boolean };
 };
 export type VoiceResolution =
   | { kind: "invocation"; invocation: VoiceInvocation }
@@ -408,8 +376,16 @@ export type VoiceContextValue = {
   retry: () => Promise<void>;
   cancel: () => void;
   close: () => void;
+  dismiss: () => void;
   choose: (choice: VoiceChoice) => Promise<void>;
 };
+
+export type VoiceFailureOptions = {
+  announce?: boolean;
+  includeRetryGuidance?: boolean;
+  retryable?: boolean;
+};
+
 export type PanelPhase = "initializing" | "listening" | "working";
 
 export type ListeningCountdownProps = {
@@ -457,47 +433,15 @@ export interface ListeningTimerResult {
 export type LocalRoutingResult =
   | { kind: "execute"; invocation: VoiceInvocation }
   | { kind: "ambiguity"; prompt: string; choices: VoiceChoice[] }
-  | { kind: "remote"; transcript: string }
+  | {
+      kind: "remote";
+      originalTranscript: string;
+      preparedTranscript: string;
+    }
   | { kind: "cancelled" }
   | { kind: "selected" }
   | { kind: "feedback"; prompt: string }
   | { kind: "unrecognised"; reason: string };
-
-export interface ExternalResolverOptions {
-  baseUrl?: string;
-  endpoint?: string;
-  timeoutMs?: number;
-}
-
-export type DoubleMetaphoneCodes = {
-  primary: string;
-  secondary: string;
-};
-
-export type TranscriptPreparationResult = {
-  original: string;
-  sanitized: string;
-  removedFillerCount: number;
-};
-
-export type ProfanityDictionaryEntry = {
-  canonical: string;
-  variants: string[];
-  severity: "mild" | "strong";
-};
-
-export type ProfanityFilterMode = "remove" | "mask";
-
-export type ProfanityFilterResult = {
-  original: string;
-  sanitized: string;
-  removedCount: number;
-  matchedTerms: string[];
-};
-
-export interface ProfanityFilter {
-  sanitize(text: string, mode?: ProfanityFilterMode): ProfanityFilterResult;
-}
 
 export type PendingRouterContext = {
   playback?: {
@@ -506,21 +450,3 @@ export type PendingRouterContext = {
   };
   state?: string;
 };
-
-export type BiasTermSource =
-  | "active-entity"
-  | "ambiguity-candidate"
-  | "current-publication"
-  | "current-organization"
-  | "current-creator"
-  | "visible-result"
-  | "recently-played"
-  | "recently-searched"
-  | "popular";
-
-export type BiasTermInput = {
-  term: string;
-  source: BiasTermSource;
-};
-
-

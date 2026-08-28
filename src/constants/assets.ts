@@ -9,7 +9,6 @@ export const appAssets = {
     voiceSeed: require("@/assets/database/hear-voice-seed.db"),
   },
   audio: {
-    demoStory: require("@/assets/audio/demo-story.wav"),
     click: require("@/assets/audio/click.wav"),
     splash: require("@/assets/audio/splash.wav"),
   },
@@ -18,7 +17,6 @@ export const appAssets = {
 export const ALL_APP_ASSETS = [
   appAssets.images.logo,
   appAssets.database.voiceSeed,
-  appAssets.audio.demoStory,
   appAssets.audio.click,
   appAssets.audio.splash,
 ];

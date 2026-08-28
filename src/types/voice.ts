@@ -1,6 +1,10 @@
 import type { LibrarySection } from "./content";
 import type { Preferences } from "./preferences";
-import type { PlaybackSnapshot, SpeedMultiplier } from "./playback";
+import type {
+  PlaybackQueueMode,
+  PlaybackSnapshot,
+  SpeedMultiplier,
+} from "./playback";
 import type { ScreenVoicePhase } from "./interaction";
 
 export type VoiceState =
@@ -440,13 +444,26 @@ export type LocalRoutingResult =
     }
   | { kind: "cancelled" }
   | { kind: "selected" }
-  | { kind: "feedback"; prompt: string }
+  | {
+      kind: "feedback";
+      prompt: string;
+      reopenListening?: boolean;
+      resumePlaybackOnClose?: boolean;
+    }
   | { kind: "unrecognised"; reason: string };
 
 export type PendingRouterContext = {
   playback?: {
-    current?: { id: string; title?: string } | null;
+    current?: {
+      id: string;
+      title?: string;
+      publicationId?: string;
+    } | null;
     playing?: boolean;
+    queueMode?: PlaybackQueueMode;
+    queue?: { id: string }[];
+    playbackSessionId?: string;
   };
+  playbackWasPlaying?: boolean;
   state?: string;
 };

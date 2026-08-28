@@ -20,7 +20,6 @@ import {
 } from "@/constants/voice-execution";
 import { onboardingVoiceBridge } from "@/stores/onboarding-voice-store";
 import { accountVoiceBridge } from "@/stores/account-command-store";
-import { searchCatalogue } from "@/utils/search";
 
 export function runPlayCommand(
   command: PlayCommandInput,
@@ -153,13 +152,30 @@ export function runCommand(
       s.preferences.update({ town: command.name });
       return `Local area set to ${command.name}`;
     case "search": {
-      const results = searchCatalogue(command.query);
-      const story = results.audio[0];
+      const query = command.query.trim().toLocaleLowerCase("en-GB");
+      const terms = query.split(/\s+/).filter(Boolean);
+      const story = s.data.stories.find((item) => {
+        const haystack = [
+          item.title,
+          item.description,
+          item.creator,
+          item.organization,
+          item.publication,
+          item.category,
+          ...(item.tags ?? []),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLocaleLowerCase("en-GB");
+        return terms.every((term) => haystack.includes(term));
+      });
       if (story) {
         s.playback.play(story);
         return `Playing ${story.title}`;
       }
-      const entity = results.shows[0];
+      const entity = s.data.entities.find((item) =>
+        item.name.toLocaleLowerCase("en-GB").includes(query),
+      );
       if (entity) {
         const match = s.data.stories.find(
           (item) =>

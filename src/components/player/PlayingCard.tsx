@@ -1,10 +1,9 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { SymbolView } from "@/components/ui/AppIcon";
 import { AppText } from "@/components/ui/AppText";
-import { artworkGradient } from "@/utils/artwork";
+import { artworkGradient, artworkIndexForId } from "@/utils/artwork";
 import { View } from "@/tw";
 import { usePlayback } from "@/stores";
-import { stories } from "@/data/catalogue";
 import type { ContentItem } from "@/types";
 import { formatClock } from "@/utils/text";
 import { icons } from "@/utils/icons/app-icons";
@@ -14,8 +13,7 @@ export function PlayingCard({ item }: { item: ContentItem }) {
   const remaining = formatClock(
     Math.max(0, (1 - playback.progress) * playback.durationSeconds),
   );
-  const index = stories.findIndex((story) => story.id === item.id);
-  const gradient = artworkGradient(Math.max(0, index));
+  const gradient = artworkGradient(artworkIndexForId(item.id));
 
   return (
     <View className="mt-[21px] flex-row items-center gap-[14px] rounded-[20px] bg-voice-panel p-3">

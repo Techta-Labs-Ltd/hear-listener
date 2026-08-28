@@ -74,7 +74,10 @@ export function useOnboardingSetup() {
       onboardingVersion: 4,
       spokenGuidanceEnabled: true,
     });
-    accessibility.announce(ONBOARDING_SPEECH.complete, "onboarding:complete", true);
+    accessibility.announceGuidedInstruction(
+      ONBOARDING_SPEECH.complete,
+      "onboarding:complete",
+    );
   }, [accessibility, clearIdleTimers, router, updatePreferences, voice]);
 
   useLayoutEffect(() => {
@@ -217,16 +220,14 @@ export function useOnboardingSetup() {
     prevPhase.current = phase;
 
     if (phase === "welcome") {
-      accessibility.announce(
+      accessibility.announceGuidedInstruction(
         ONBOARDING_SPEECH.welcomeLong,
         "onboarding:welcome",
-        true,
       );
     } else if (phase === "permissionIntro") {
-      accessibility.announce(
+      accessibility.announceGuidedInstruction(
         ONBOARDING_SPEECH.permissionIntro,
         "onboarding:permissionIntro",
-        true,
       );
     } else if (phase === "permissionDenied") {
       void appHaptics.clarification();
@@ -234,18 +235,25 @@ export function useOnboardingSetup() {
         Platform.OS === "web"
           ? ONBOARDING_SPEECH.permissionDeniedWeb
           : ONBOARDING_SPEECH.permissionDenied;
-      accessibility.announce(msg, "onboarding:permissionDenied", true);
+      accessibility.announceGuidedInstruction(
+        msg,
+        "onboarding:permissionDenied",
+      );
     } else if (phase === "permissionBlocked") {
       void appHaptics.clarification();
       const msg =
         Platform.OS === "web"
           ? ONBOARDING_SPEECH.permissionDeniedWeb
           : ONBOARDING_SPEECH.permissionBlocked;
-      accessibility.announce(msg, "onboarding:permissionBlocked", true);
+      accessibility.announceGuidedInstruction(
+        msg,
+        "onboarding:permissionBlocked",
+      );
     } else if (phase === "voiceTestError") {
       void appHaptics.error();
       const isNoSpeech =
-        voice.errorCode === "no-speech" || voice.errorCode === "no-speech-timeout";
+        voice.errorCode === "no-speech" ||
+        voice.errorCode === "no-speech-timeout";
       const isUnrecognised =
         voice.errorCode === "unrecognised" || voice.errorCode === "no_match";
       const msg = isNoSpeech
@@ -253,7 +261,10 @@ export function useOnboardingSetup() {
         : isUnrecognised
           ? ONBOARDING_SPEECH.voiceTestNotRecognised
           : ONBOARDING_SPEECH.voiceTestError;
-      accessibility.announce(msg, "onboarding:voiceTestError", true);
+      accessibility.announceGuidedInstruction(
+        msg,
+        "onboarding:voiceTestError",
+      );
     } else if (phase === "account") {
       if (!isTransitioning.current) {
         const accountIntro =
@@ -284,78 +295,68 @@ export function useOnboardingSetup() {
     ) {
       idleTimer1.current = setTimeout(() => {
         if (phase === "welcome") {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             ONBOARDING_IDLE_HINTS.welcome,
             "idle1:welcome",
-            true,
           );
         } else if (phase === "permissionIntro") {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             ONBOARDING_IDLE_HINTS.permissionIntro,
             "idle1:permissionIntro",
-            true,
           );
         } else if (
           phase === "permissionDenied" ||
           phase === "permissionBlocked"
         ) {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             ONBOARDING_IDLE_HINTS.permissionDenied,
             "idle1:permissionDenied",
-            true,
           );
         } else if (phase === "voiceTestError") {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             ONBOARDING_IDLE_HINTS.voiceTestError,
             "idle1:voiceTestError",
-            true,
           );
         } else if (phase === "account" && !isAccountListening.current) {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             Platform.OS === "ios"
               ? ONBOARDING_IDLE_HINTS.accountIos
               : ONBOARDING_IDLE_HINTS.accountOther,
             "idle1:account",
-            true,
           );
         }
       }, SCREEN_IDLE_TIMEOUT_1);
 
       idleTimer2.current = setTimeout(() => {
         if (phase === "welcome") {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             ONBOARDING_IDLE_HINTS_2.welcome,
             "idle2:welcome",
-            true,
           );
         } else if (phase === "permissionIntro") {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             ONBOARDING_IDLE_HINTS_2.permissionIntro,
             "idle2:permissionIntro",
-            true,
           );
         } else if (
           phase === "permissionDenied" ||
           phase === "permissionBlocked"
         ) {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             ONBOARDING_IDLE_HINTS_2.permissionDenied,
             "idle2:permissionDenied",
-            true,
           );
         } else if (phase === "voiceTestError") {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             ONBOARDING_IDLE_HINTS_2.voiceTestError,
             "idle2:voiceTestError",
-            true,
           );
         } else if (phase === "account" && !isAccountListening.current) {
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             Platform.OS === "ios"
               ? ONBOARDING_IDLE_HINTS_2.accountIos
               : ONBOARDING_IDLE_HINTS_2.accountOther,
             "idle2:account",
-            true,
           );
         }
       }, SCREEN_IDLE_TIMEOUT_2);
@@ -394,10 +395,9 @@ export function useOnboardingSetup() {
     try {
       await Linking.openSettings();
     } catch {
-      accessibility.announce(
+      accessibility.announceGuidedInstruction(
         "Unable to open Hear! settings. Open your phone Settings, select Hear!, then enable Microphone.",
         "onboarding:openSettingsFailed",
-        true,
       );
     }
   }, [accessibility, clearIdleTimers, requestPermission]);
@@ -423,7 +423,10 @@ export function useOnboardingSetup() {
                   : status.canAskAgain === false
                     ? ONBOARDING_SPEECH.permissionStillDenied
                     : ONBOARDING_SPEECH.permissionDenied;
-              accessibility.announce(msg, "onboarding:stillDenied", true);
+              accessibility.announceGuidedInstruction(
+                msg,
+                "onboarding:stillDenied",
+              );
             }
           });
         }
@@ -475,10 +478,9 @@ export function useOnboardingSetup() {
             retryable: true,
             choices: [],
           });
-          accessibility.announce(
+          accessibility.announceGuidedInstruction(
             result.speechText,
             "onboarding:voiceTestError",
-            true,
           );
         }
       }
@@ -503,13 +505,13 @@ export function useOnboardingSetup() {
                 const signedIn = await account.signIn("apple");
                 if (signedIn) complete();
                 else {
-                  accessibility.announce(cancelMsg, undefined, true);
+                  accessibility.announceGuidedInstruction(cancelMsg, undefined);
                 }
               } else if (result.choice === "google") {
                 const signedIn = await account.signIn("google");
                 if (signedIn) complete();
                 else {
-                  accessibility.announce(cancelMsg, undefined, true);
+                  accessibility.announceGuidedInstruction(cancelMsg, undefined);
                 }
               } else {
                 complete();
@@ -547,13 +549,13 @@ export function useOnboardingSetup() {
                 const signedIn = await account.signIn("apple");
                 if (signedIn) complete();
                 else {
-                  accessibility.announce(cancelMsg, undefined, true);
+                  accessibility.announceGuidedInstruction(cancelMsg, undefined);
                 }
               } else if (result.choice === "google") {
                 const signedIn = await account.signIn("google");
                 if (signedIn) complete();
                 else {
-                  accessibility.announce(cancelMsg, undefined, true);
+                  accessibility.announceGuidedInstruction(cancelMsg, undefined);
                 }
               } else {
                 complete();
@@ -570,10 +572,9 @@ export function useOnboardingSetup() {
               retryable: true,
               choices: [],
             });
-            accessibility.announce(
+            accessibility.announceGuidedInstruction(
               result.speechText,
               "onboarding:accountError",
-              true,
             );
           }
         }

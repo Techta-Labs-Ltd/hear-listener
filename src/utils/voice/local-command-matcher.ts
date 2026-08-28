@@ -151,6 +151,13 @@ export function matchLocalCommand(
     if (spec.onboardingOnly && !onboarding) continue;
     const phrases = LOCAL_COMMAND_DICTIONARY[spec.id] ?? [];
     if (!phrases.includes(normalized)) continue;
+    if (
+      spec.id === "resume" &&
+      normalized === "play" &&
+      !hasCurrentPlayback(context)
+    ) {
+      continue;
+    }
     const command =
       spec.build?.(sessionId, normalized) ??
       ({ type: spec.executorKey } as VoiceCommand);
@@ -172,6 +179,16 @@ export function matchLocalCommand(
     executorKey: prefixed.id as VoiceInvocation["executorKey"],
     command: prefixed.command,
   });
+}
+
+function hasCurrentPlayback(context?: Record<string, unknown>): boolean {
+  const playback = context?.playback;
+  return (
+    typeof playback === "object" &&
+    playback !== null &&
+    "current" in playback &&
+    Boolean(playback.current)
+  );
 }
 
 function matchStop(

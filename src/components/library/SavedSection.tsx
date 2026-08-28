@@ -6,8 +6,7 @@ import { AppText } from "@/components/ui/AppText";
 import { Pressable, View } from "@/tw";
 import { colors } from "@/constants/theme";
 import { useVoice } from "@/hooks/useVoice";
-import { usePreferences } from "@/stores";
-import { stories } from "@/data/catalogue";
+import { useContent, usePreferences } from "@/stores";
 import { libraryCopy, librarySectionCopy } from "@/utils/copy/library";
 import { icons } from "@/utils/icons/app-icons";
 import { safeBack } from "@/utils/navigation";
@@ -16,6 +15,7 @@ export function SavedSection() {
   const router = useRouter();
   const voice = useVoice();
   const { preferences } = usePreferences();
+  const { stories } = useContent();
   const copy = librarySectionCopy.saved;
   const saved = stories.filter((item) => preferences.savedIds.includes(item.id));
 

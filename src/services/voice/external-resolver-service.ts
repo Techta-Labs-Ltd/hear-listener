@@ -198,7 +198,7 @@ export class HttpExternalVoiceResolver implements ExternalVoiceResolver {
       "search",
     );
     if (!response.ok) return response.error;
-    const searchResult = parseHearSearchResponse(response.value);
+    const searchResult = parseHearSearchResponse(response.value, 3);
     if (!searchResult) return malformedExternalResponse("search");
     if (searchResult.tracks.length === 0) {
       return {

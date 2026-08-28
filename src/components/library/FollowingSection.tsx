@@ -5,9 +5,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { SectionPageHeader } from "@/components/library/SectionPageHeader";
 import { AppText } from "@/components/ui/AppText";
 import { Pressable, View } from "@/tw";
-import { usePreferences } from "@/stores";
-import { entities, stories } from "@/data/catalogue";
-import type { Entity } from "@/types";
+import { useContent, usePreferences } from "@/stores";
+import type { ContentItem, Entity } from "@/types";
 import { libraryCopy, librarySectionCopy } from "@/utils/copy/library";
 import { icons } from "@/utils/icons/app-icons";
 import { safeBack } from "@/utils/navigation";
@@ -21,6 +20,7 @@ const GRADIENTS = [
 export function FollowingSection() {
   const router = useRouter();
   const { preferences } = usePreferences();
+  const { entities, stories } = useContent();
   const copy = librarySectionCopy.following;
   const followed = entities.filter((entity) =>
     preferences.followingIds.includes(entity.id),
@@ -38,7 +38,12 @@ export function FollowingSection() {
       {followed.length ? (
         <View className="mt-[19px] gap-[12px]">
           {followed.map((entity, index) => (
-            <FollowingRow key={entity.id} entity={entity} index={index} />
+            <FollowingRow
+              key={entity.id}
+              entity={entity}
+              stories={stories}
+              index={index}
+            />
           ))}
           <VoiceTip eyebrow={copy.voiceEyebrow} text={copy.voiceText} className="mt-[15px]" />
         </View>
@@ -53,7 +58,15 @@ export function FollowingSection() {
   );
 }
 
-function FollowingRow({ entity, index }: { entity: Entity; index: number }) {
+function FollowingRow({
+  entity,
+  stories,
+  index,
+}: {
+  entity: Entity;
+  stories: ContentItem[];
+  index: number;
+}) {
   const { preferences, updatePreferences } = usePreferences();
   const gradient = GRADIENTS[index % GRADIENTS.length];
   const storyCount = stories.filter((item) => item.creator === entity.name).length;

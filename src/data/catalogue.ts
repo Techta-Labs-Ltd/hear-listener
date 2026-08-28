@@ -1,7 +1,4 @@
-import { appAssets } from "@/constants/assets";
 import type { ContentItem, Entity, Topic } from "@/types";
-
-const DEMO_DURATION = 30;
 
 const baseStories: ContentItem[] = [
   {
@@ -128,8 +125,7 @@ const baseStories: ContentItem[] = [
 
 export const stories: ContentItem[] = baseStories.map((item) => ({
   ...item,
-  audioUrl: appAssets.audio.demoStory,
-  audioDurationSeconds: DEMO_DURATION,
+  origin: "catalogue",
 }));
 
 export const topics: Topic[] = [

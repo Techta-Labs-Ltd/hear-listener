@@ -6,7 +6,6 @@ import {
   VOICE_LANGUAGE,
   VOICE_TIMING,
 } from "@/constants/voice";
-import { entities, stories, topics } from "@/data/catalogue";
 import { playListeningStartTone } from "@/lib/audio/one-shots";
 import { appHaptics } from "@/lib/haptics";
 import { routes, topicRoute } from "@/navigation/routes";
@@ -24,6 +23,7 @@ import { externalVoiceResolver } from "@/services/voice/external-resolver-servic
 import { getVoiceInstallationId } from "@/services/voice/installation-id";
 import {
   remotePlaybackAnnouncement,
+  remotePlaybackQueue,
   toRemoteContentItems,
 } from "@/utils/voice/external-playback";
 import { ukSpeech } from "@/services/voice/speech";
@@ -51,6 +51,7 @@ import {
 import {
   usePlaybackStore,
   usePreferencesStore,
+  useContentStore,
   useSpeechCapabilityStore,
   useExternalVoiceStore,
   useVoiceStore,
@@ -304,6 +305,7 @@ export function VoiceProvider({ children }: PropsWithChildren) {
   const services = useCallback(() => {
     const playback = usePlaybackStore.getState();
     const preferences = usePreferencesStore.getState();
+    const content = useContentStore.getState();
     return {
       navigate: {
         replace: router.replace,
@@ -328,7 +330,11 @@ export function VoiceProvider({ children }: PropsWithChildren) {
           `${current.title || "Current screen"}. Shake device to speak.`
         );
       },
-      data: { stories, topics, entities },
+      data: {
+        stories: content.stories,
+        topics: content.topics,
+        entities: content.entities,
+      },
       voiceData: {
         resetVoiceCorrections: () =>
           voiceTermRepository.resetLearnedAliases?.() ?? Promise.resolve(),
@@ -614,7 +620,10 @@ export function VoiceProvider({ children }: PropsWithChildren) {
       active.current = undefined;
       useVoiceStore.getState().resetVoice();
       void appHaptics.success();
-      usePlaybackStore.getState().playQueue(items);
+      const playbackQueue = remotePlaybackQueue(items);
+      usePlaybackStore
+        .getState()
+        .playQueue(playbackQueue.items, { mode: playbackQueue.mode });
     },
     [clearTimers, finish],
   );

@@ -12,9 +12,14 @@ export type ContentItem = {
   id: string;
   title: string;
   creator: string;
+  creatorId?: string;
   publication: string;
+  publicationId?: string;
+  publicationTrackIndex?: number;
+  publicationTrackCount?: number;
   duration: string;
   category: string;
+  categoryId?: string;
   color: string;
   description?: string;
   topicIds?: string[];
@@ -24,9 +29,15 @@ export type ContentItem = {
   audioDurationSeconds?: number;
   origin?: "catalogue" | "hear-search";
   organization?: string;
+  organizationId?: string;
   tags?: string[];
   publishedAt?: string;
   playbackSpeedUrls?: { speed: number; url: string }[];
+};
+
+export type HearCataloguePage = {
+  items: ContentItem[];
+  total: number;
 };
 export type LibrarySection = "saved" | "following" | "downloads" | "history";
 

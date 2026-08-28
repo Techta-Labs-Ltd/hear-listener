@@ -287,6 +287,7 @@ export function buildConfirmationPrompt(
 
 export function parseHearSearchResponse(
   value: unknown,
+  maxTracks = Number.POSITIVE_INFINITY,
 ): { tracks: ExternalPlaybackTrack[]; total: number } | undefined {
   if (!isRecord(value) || !Array.isArray(value.results)) return undefined;
   const expanded = value.results.flatMap(expandPublication);
@@ -295,7 +296,7 @@ export function parseHearSearchResponse(
     return track ? [track] : [];
   });
   return {
-    tracks: tracks.slice(0, 3),
+    tracks: tracks.slice(0, maxTracks),
     total: finiteNumber(value.total) ? value.total : tracks.length,
   };
 }
@@ -514,6 +515,7 @@ function expandPublication(value: unknown): Record<string, unknown>[] {
             tracks: undefined,
             isPublication: true,
             trackIndex: index,
+            trackCount: value.tracks.length,
             publication: {
               id: publicationId,
               title: publicationTitle,
@@ -577,14 +579,29 @@ function parseSearchTrack(
     ...(category ? { category } : {}),
     ...(tags.length ? { tags } : {}),
     ...(publication ? { publication } : {}),
-    ...(durationSeconds !== undefined && durationSeconds >= 0
+    ...(value.isPublication === true && integer(value.trackIndex)
+      ? { publicationTrackIndex: value.trackIndex }
+      : {}),
+    ...(value.isPublication === true && integer(value.trackCount)
+      ? { publicationTrackCount: value.trackCount }
+      : {}),
+    ...(durationSeconds !== undefined && durationSeconds > 0
       ? { durationSeconds }
       : {}),
-    ...(nonEmptyString(value.publishedAt)
-      ? { publishedAt: value.publishedAt }
-      : {}),
+    ...publishedAtField(value.publishedAt),
     ...(playbackSpeedUrls.length ? { playbackSpeedUrls } : {}),
   };
+}
+
+function publishedAtField(value: unknown): { publishedAt?: string } {
+  const timestamp =
+    finiteNumber(value) && value >= 0
+      ? value * 1000
+      : nonEmptyString(value)
+        ? Date.parse(value)
+        : Number.NaN;
+  if (!Number.isFinite(timestamp)) return {};
+  return { publishedAt: new Date(timestamp).toISOString() };
 }
 
 function readableTitle(

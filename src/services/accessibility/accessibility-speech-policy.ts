@@ -8,9 +8,10 @@ class AccessibilitySpeechPolicyManager {
   private voiceCaptureActive = false;
   private lastCriticalAnnouncementAt = 0;
   private lastCriticalText = "";
+  private readonly screenReaderStatusReady: Promise<void>;
 
   constructor() {
-    void AccessibilityInfo.isScreenReaderEnabled()
+    this.screenReaderStatusReady = AccessibilityInfo.isScreenReaderEnabled()
       .then((enabled) => {
         this.setScreenReaderEnabled(Boolean(enabled));
       })
@@ -63,6 +64,23 @@ class AccessibilitySpeechPolicyManager {
       key,
       text: message,
       priority: "screen",
+    });
+  }
+
+  async announceGuidedInstruction(
+    message: string,
+    key = `instruction:${message}`,
+  ): Promise<void> {
+    if (!message.trim()) return;
+
+    await this.screenReaderStatusReady;
+    if (this.screenReaderEnabled) return;
+
+    await speechCoordinator.announce({
+      key,
+      text: message,
+      priority: "screen",
+      force: true,
     });
   }
 

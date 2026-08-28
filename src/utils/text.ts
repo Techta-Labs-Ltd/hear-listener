@@ -1,3 +1,5 @@
+import type { ContentItem } from "@/types";
+
 export function pluralize(
   count: number,
   singular: string,
@@ -34,4 +36,16 @@ export function formatClock(totalSeconds: number) {
   const minutes = Math.floor(safeSeconds / 60);
   const seconds = safeSeconds % 60;
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
+export function contentByline(item: ContentItem): string {
+  const seen = new Set<string>();
+  return [item.creator, item.publication, item.category]
+    .filter((value) => {
+      const key = value.trim().toLocaleLowerCase("en-GB");
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .join(" · ");
 }

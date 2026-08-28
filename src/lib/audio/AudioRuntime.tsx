@@ -5,7 +5,7 @@ import {
   type AudioSource,
 } from "expo-audio";
 import { useEffect, useRef } from "react";
-import { usePlaybackStore } from "@/stores";
+import { usePlaybackStore, useSpeechStore } from "@/stores";
 
 export function AudioRuntime() {
   const player = useAudioPlayer(null);
@@ -15,12 +15,14 @@ export function AudioRuntime() {
   const speed = usePlaybackStore((state) => state.speed);
   const repeat = usePlaybackStore((state) => state.repeat);
   const seekToken = usePlaybackStore((state) => state.seekToken);
+  const isSpeaking = useSpeechStore((state) => state.isSpeaking);
   const lastSource = useRef<AudioSource | null>(null);
   const lastSeekToken = useRef(seekToken);
 
   useEffect(() => {
     void setAudioModeAsync({
       playsInSilentMode: true,
+      shouldPlayInBackground: true,
       interruptionMode: "doNotMix",
     });
   }, []);
@@ -29,12 +31,18 @@ export function AudioRuntime() {
     const source = current?.audioUrl ?? null;
     if (source === lastSource.current) return;
     lastSource.current = source;
-    if (source == null) {
+    if (source == null || !current) {
       if (!player.paused) player.pause();
+      player.setActiveForLockScreen(false);
       return;
     }
     player.replace(source);
     player.setPlaybackRate(usePlaybackStore.getState().speed);
+    player.setActiveForLockScreen(true, {
+      title: current.title,
+      artist: current.creator,
+      albumTitle: current.publication,
+    });
   }, [current, player]);
 
   useEffect(() => {
@@ -44,9 +52,10 @@ export function AudioRuntime() {
 
   useEffect(() => {
     if (!status.isLoaded) return;
-    if (playing && !status.playing) player.play();
-    if (!playing && status.playing) player.pause();
-  }, [playing, status.isLoaded, status.playing, player]);
+    const shouldPlay = playing && !isSpeaking;
+    if (shouldPlay && !status.playing) player.play();
+    if (!shouldPlay && status.playing) player.pause();
+  }, [isSpeaking, playing, status.isLoaded, status.playing, player]);
 
   useEffect(() => {
     player.setPlaybackRate(speed);
@@ -68,7 +77,9 @@ export function AudioRuntime() {
   }, [status.currentTime, status.duration]);
 
   useEffect(() => {
-    if (status.didJustFinish) usePlaybackStore.getState().next();
+    if (status.didJustFinish) {
+      usePlaybackStore.getState().handleTrackFinished();
+    }
   }, [status.didJustFinish]);
 
   return null;

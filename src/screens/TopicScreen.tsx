@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SymbolView } from "@/components/ui/AppIcon";
 import { PromoCard } from "@/components/content/PromoCard";
@@ -17,11 +18,17 @@ export function TopicScreen() {
   const router = useRouter();
   const playback = usePlayback();
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const { stories, topics, loading } = useContent();
+  const { stories, topics, loading, fetchCatalogue } = useContent();
+
+  useEffect(() => {
+    void fetchCatalogue();
+  }, [fetchCatalogue]);
 
   const topic = topics.find((item) => item.id === id) ?? topics[0];
-  const items = stories.filter((item) => item.topicIds?.includes(topic.id));
-  const briefing = stories[0];
+  const items = topic
+    ? stories.filter((item) => item.topicIds?.includes(topic.id))
+    : [];
+  const briefing = items[0] ?? stories[0];
 
   return (
     <AppScreen
@@ -60,10 +67,10 @@ export function TopicScreen() {
               accessibilityRole="header"
               className="mt-[13px] font-display text-[30px] leading-9 text-ink"
             >
-              {topic.name}
+              {topic?.name ?? "Hear! audio"}
             </AppText>
             <AppText tone="muted" className="mt-[9px] text-[13px] leading-4">
-              {topic.description}
+              {topic?.description ?? "Latest audio from the Hear! catalogue."}
             </AppText>
             {briefing ? (
               <PromoCard

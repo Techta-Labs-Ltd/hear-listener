@@ -1,64 +1,148 @@
 import { create } from "zustand";
-import { stories as initialStories, topics as initialTopics, entities as initialEntities } from "@/data/catalogue";
-import { defaultHistoryGroups } from "@/data/history";
-import type { ContentState } from "@/types";
+import { searchHearCatalogue } from "@/services/content/hear-catalogue-service";
+import type { ContentItem, ContentState, Entity, Topic } from "@/types";
+
+let activeCatalogueRequest: Promise<ContentItem[]> | undefined;
+
+async function loadLatestHearContent(): Promise<ContentItem[]> {
+  activeCatalogueRequest ??= searchHearCatalogue({
+    sort: "latest",
+    page: 0,
+    limit: 20,
+  })
+    .then((page) => page.items)
+    .finally(() => {
+      activeCatalogueRequest = undefined;
+    });
+  return activeCatalogueRequest;
+}
 
 export const useContentStore = create<ContentState>((set, get) => ({
-  stories: initialStories,
-  topics: initialTopics,
-  entities: initialEntities,
-  history: defaultHistoryGroups,
+  stories: [],
+  topics: [],
+  entities: [],
+  history: [],
   loading: false,
   refreshing: false,
   error: null,
 
   fetchCatalogue: async () => {
+    if (get().loading || get().stories.length > 0) return;
     set({ loading: true, error: null });
     try {
-      await new Promise((resolve) => setTimeout(resolve, 350));
+      const stories = await loadLatestHearContent();
       set({
-        stories: initialStories,
-        topics: initialTopics,
-        entities: initialEntities,
-        history: defaultHistoryGroups,
+        stories,
+        topics: topicsFrom(stories),
+        entities: entitiesFrom(stories),
         loading: false,
       });
-    } catch {
-      set({ loading: false, error: "Failed to load catalogue" });
+    } catch (error) {
+      set({
+        loading: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to load Hear! audio.",
+      });
     }
   },
 
   refresh: async () => {
-    set({ refreshing: true });
+    if (get().refreshing) return;
+    set({ refreshing: true, error: null });
     try {
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      const stories = await loadLatestHearContent();
       set({
-        stories: initialStories,
-        topics: initialTopics,
-        entities: initialEntities,
+        stories,
+        topics: topicsFrom(stories),
+        entities: entitiesFrom(stories),
         refreshing: false,
       });
-    } catch {
-      set({ refreshing: false });
+    } catch (error) {
+      set({
+        refreshing: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to refresh Hear! audio.",
+      });
     }
   },
 
-  clearHistory: () => {
-    set({ history: [] });
-  },
+  clearHistory: () => set({ history: [] }),
 
-  getStoryById: (id: string) => {
-    return get().stories.find((item) => item.id === id);
-  },
+  getStoryById: (id) => get().stories.find((item) => item.id === id),
 
-  getStoriesByTopic: (topicId: string) => {
-    return get().stories.filter((item) => item.topicIds?.includes(topicId));
-  },
+  getStoriesByTopic: (topicId) =>
+    get().stories.filter((item) => item.topicIds?.includes(topicId)),
 
-  getStoriesByEntity: (entityName: string) => {
-    return get().stories.filter((item) => item.creator === entityName);
-  },
+  getStoriesByEntity: (entityName) =>
+    get().stories.filter(
+      (item) =>
+        item.creator === entityName || item.organization === entityName,
+    ),
 }));
+
+function topicsFrom(stories: ContentItem[]): Topic[] {
+  const topics = new Map<string, Topic>();
+  for (const story of stories) {
+    const id = story.categoryId ?? story.topicIds?.[0];
+    if (!id || topics.has(id)) continue;
+    topics.set(id, {
+      id,
+      name: story.category,
+      description: `Latest ${story.category.toLocaleLowerCase("en-GB")} audio`,
+    });
+  }
+  return [...topics.values()];
+}
+
+function entitiesFrom(stories: ContentItem[]): Entity[] {
+  const entities = new Map<string, Entity>();
+  for (const story of stories) {
+    addEntity(
+      entities,
+      story.creatorId,
+      story.creator,
+      "creator",
+      story.category,
+    );
+    addEntity(
+      entities,
+      story.organizationId,
+      story.organization,
+      "organisation",
+      story.category,
+    );
+    addEntity(
+      entities,
+      story.publicationId,
+      story.publication,
+      "publication",
+      story.category,
+    );
+  }
+  return [...entities.values()];
+}
+
+function addEntity(
+  entities: Map<string, Entity>,
+  id: string | undefined,
+  name: string | undefined,
+  kind: Entity["kind"],
+  category: string,
+): void {
+  if (!name) return;
+  const key = id ?? `${kind}:${name.toLocaleLowerCase("en-GB")}`;
+  if (entities.has(key)) return;
+  entities.set(key, {
+    id: key,
+    name,
+    kind,
+    description: `${category} audio`,
+  });
+}
 
 export function useContent() {
   return useContentStore();

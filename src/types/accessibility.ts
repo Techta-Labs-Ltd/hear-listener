@@ -17,6 +17,7 @@ export type AccessibilityContextValue = {
   spokenNavigationEnabled: boolean;
   setSpokenNavigationEnabled: (enabled: boolean) => void;
   announce: (message: string, key?: string, force?: boolean) => void;
+  announceGuidedInstruction: (message: string, key?: string) => void;
   stopSpeaking: () => void;
 };
 

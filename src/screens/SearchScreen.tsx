@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StoryRow } from "@/components/content/StoryRow";
-import { ShowResult } from "@/components/content/ShowResult";
 import { SearchSkeleton } from "@/components/content/SearchSkeleton";
 import { SymbolView } from "@/components/ui/AppIcon";
 import { AppScreen } from "@/components/ui/AppScreen";
@@ -9,40 +8,56 @@ import { AppText } from "@/components/ui/AppText";
 import { VoiceTip } from "@/components/voice/VoiceTip";
 import { colors } from "@/constants/theme";
 import { routes } from "@/navigation/routes";
-import { usePlayback } from "@/stores";
 import { useVoice } from "@/hooks/useVoice";
+import { searchHearCatalogue } from "@/services/content/hear-catalogue-service";
 import { Pressable, ScrollView, View } from "@/tw";
 import { icons } from "@/utils/icons/app-icons";
 import { safeBack } from "@/utils/navigation";
-import { firstStoryForEntity, searchCatalogue } from "@/utils/search";
+import type { ContentItem } from "@/types";
 
 export function SearchScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ q?: string }>();
-  const playback = usePlayback();
   const voice = useVoice();
-  const [query] = useState(params.q ?? "technology podcasts");
+  const [query] = useState(params.q?.trim() ?? "");
   const [searching, setSearching] = useState(true);
+  const [results, setResults] = useState<ContentItem[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setSearching(false), 200);
-    return () => clearTimeout(timer);
+    const controller = new AbortController();
+    void searchHearCatalogue({
+      query,
+      sort: query ? undefined : "latest",
+      limit: 20,
+      signal: controller.signal,
+    })
+      .then((page) => {
+        if (!controller.signal.aborted) setResults(page.items);
+      })
+      .catch((requestError: unknown) => {
+        if (controller.signal.aborted) return;
+        setResults([]);
+        setError(
+          requestError instanceof Error
+            ? requestError.message
+            : "Hear! search is unavailable.",
+        );
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setSearching(false);
+      });
+    return () => controller.abort();
   }, [query]);
 
-  const results = useMemo(() => searchCatalogue(query), [query]);
-
-  const resultsSummary = useMemo(() => {
-    const audioCount = results.audio.length;
-    const showCount = results.shows.length;
-    const audioLabel = audioCount === 1 ? "audio story" : "audio stories";
-    const showLabel = showCount === 1 ? "show" : "shows";
-    return `${audioCount} ${audioLabel} and ${showCount} ${showLabel}`;
-  }, [results]);
+  const resultsSummary = `${results.length} ${
+    results.length === 1 ? "audio result" : "audio results"
+  }`;
 
   return (
     <AppScreen
       screenTitle="Search Results"
-      screenOrientation={`Search results for ${query}. Say play the first result, search for something else, or go back.`}
+      screenOrientation={`Hear! search results${query ? ` for ${query}` : ""}. Say play the first result, search for something else, or go back.`}
       voiceCommands={[
         "play the first result",
         "search for local news",
@@ -67,7 +82,7 @@ export function SearchScreen() {
           </Pressable>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`Search query: ${query}. Shake device to speak a new search.`}
+            accessibilityLabel={`Search query: ${query || "latest Hear! audio"}. Shake device to speak a new search.`}
             accessibilityHint="Starts voice listening to speak a search query."
             onPress={() =>
               void voice.startVoiceSession({ source: "contextualAction" })
@@ -75,7 +90,7 @@ export function SearchScreen() {
             className="h-[52px] flex-1 flex-row items-center justify-between rounded-full border border-border/50 bg-surface px-5 shadow-sm active:opacity-85"
           >
             <AppText className="font-body text-[15px] leading-[18px] text-ink">
-              {query}
+              {query || "Latest Hear! audio"}
             </AppText>
           </Pressable>
         </View>
@@ -93,23 +108,16 @@ export function SearchScreen() {
         ) : (
           <>
             <View className="mt-5 sm:mt-[24px] gap-3 sm:gap-[14px]">
-              {results.shows.map((entity) => (
-                <ShowResult
-                  key={entity.id}
-                  entity={entity}
-                  onPlay={() => {
-                    const story = firstStoryForEntity(entity);
-                    if (!story) return;
-                    playback.play(story);
-                    router.push(routes.player);
-                  }}
-                />
-              ))}
-              {results.audio.map((item) => (
+              {results.map((item) => (
                 <StoryRow key={item.id} item={item} thumbSize="md" showPlay />
               ))}
             </View>
-            {results.audio.length === 0 && results.shows.length === 0 ? (
+            {error ? (
+              <AppText tone="muted" className="mt-8 text-center">
+                {error}
+              </AppText>
+            ) : null}
+            {!error && results.length === 0 ? (
               <AppText tone="muted" className="mt-8 text-center">
                 Nothing matched. Try a topic, creator, or show instead.
               </AppText>

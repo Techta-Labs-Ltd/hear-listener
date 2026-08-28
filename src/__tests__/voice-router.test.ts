@@ -164,6 +164,47 @@ describe("LocalCommandRouter", () => {
     });
   });
 
+  it.each([
+    "play local news",
+    "play the latest news",
+    "play bible study",
+    "play recommended audio",
+    "play trending",
+    "search for church news",
+  ])("routes content discovery through the external Hear search for %s", async (phrase) => {
+    jest.spyOn(externalTranscriptPreparer, "prepare").mockResolvedValue({
+      originalTranscript: phrase,
+      preparedTranscript: phrase,
+      corrections: [],
+    });
+
+    await expect(router.route("s1", hypotheses(phrase))).resolves.toMatchObject({
+      kind: "remote",
+      originalTranscript: phrase,
+      preparedTranscript: phrase,
+    });
+  });
+
+  it("uses bare play only to resume an existing track", async () => {
+    jest.spyOn(externalTranscriptPreparer, "prepare").mockResolvedValue({
+      originalTranscript: "play",
+      preparedTranscript: "play",
+      corrections: [],
+    });
+
+    await expect(router.route("s1", hypotheses("play"))).resolves.toMatchObject({
+      kind: "remote",
+    });
+    await expect(
+      router.route("s1", hypotheses("play"), undefined, {
+        playback: { current: { id: "remote-track" } },
+      }),
+    ).resolves.toMatchObject({
+      kind: "execute",
+      invocation: { executorKey: "resume" },
+    });
+  });
+
   it("lets pending ambiguity own left, right and select follow-ups", async () => {
     const resolveSpy = jest.spyOn(voiceResolver, "resolve");
     const choiceInvocation = makeInvocation({

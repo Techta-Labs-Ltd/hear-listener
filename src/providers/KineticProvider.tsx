@@ -8,7 +8,7 @@ import {
   useState,
   type PropsWithChildren,
 } from "react";
-import { AppState, Platform, Pressable, Text, View } from "react-native";
+import { AppState, Platform, View } from "react-native";
 import { Accelerometer, Gyroscope } from "expo-sensors";
 import { KineticGestureEngine } from "@/services/kinetic/kinetic-engine";
 import { triggerKineticFeedback } from "@/services/kinetic/kinetic-feedback";
@@ -257,31 +257,7 @@ export function KineticProvider({
 
   return (
     <KineticContext.Provider value={value}>
-      <View style={{ flex: 1 }}>
-        {children}
-        {__DEV__ ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Test shake gesture"
-            accessibilityHint="Runs the development shake-to-voice test"
-            onPress={() => void handleGesture("SHAKE")}
-            style={{
-              position: "absolute",
-              right: 16,
-              top: 64,
-              zIndex: 9999,
-              borderRadius: 999,
-              backgroundColor: "#3E1475",
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-            }}
-          >
-            <Text style={{ color: "#FFFFFF", fontWeight: "700" }}>
-              Test shake
-            </Text>
-          </Pressable>
-        ) : null}
-      </View>
+      <View style={{ flex: 1 }}>{children}</View>
     </KineticContext.Provider>
   );
 }

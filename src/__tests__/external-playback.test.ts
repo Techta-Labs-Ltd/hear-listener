@@ -62,4 +62,36 @@ describe("remote playback queue", () => {
       }).current,
     ).toBeUndefined();
   });
+
+  it("drops persisted bundled demo content during the version-four migration", () => {
+    expect(
+      migratePlayback({
+        current: {
+          id: "local-voices",
+          title: "How the city is changing after dark",
+          creator: "Street Stories",
+          audioUrl: 37,
+        },
+        queue: [],
+      }),
+    ).toMatchObject({ current: undefined, queue: [] });
+  });
+
+  it("refuses to make catalogue placeholders the active playback source", () => {
+    usePlaybackStore.getState().play({
+      id: "demo",
+      title: "Demo",
+      creator: "Demo creator",
+      publication: "Demo publication",
+      duration: "1:00",
+      category: "Demo",
+      color: "#000000",
+      audioUrl: 37,
+      origin: "catalogue",
+    });
+    expect(usePlaybackStore.getState()).toMatchObject({
+      current: undefined,
+      playing: false,
+    });
+  });
 });

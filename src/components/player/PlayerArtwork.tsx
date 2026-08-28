@@ -1,8 +1,7 @@
 import { AppText } from "@/components/ui/AppText";
-import { stories } from "@/data/catalogue";
 import { View } from "@/tw";
 import type { PlayerArtworkProps } from "@/types";
-import { artworkGradient } from "@/utils/artwork";
+import { artworkGradient, artworkIndexForId } from "@/utils/artwork";
 import { cn } from "@/utils/styles";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -11,8 +10,7 @@ export function PlayerArtwork({
   size = "player",
   className,
 }: PlayerArtworkProps) {
-  const index = stories.findIndex((story) => story.id === item.id);
-  const gradient = artworkGradient(Math.max(0, index));
+  const gradient = artworkGradient(artworkIndexForId(item.id));
 
   return (
     <View

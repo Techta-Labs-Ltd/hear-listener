@@ -42,6 +42,7 @@ export class KineticGestureEngine {
   private shakeNeutralStartTime = 0;
   private shakeArmed = false;
   private shakeRequiresNeutral = false;
+  private shakePeakLatched = false;
 
   constructor(
     config: Partial<KineticConfig> = {},
@@ -77,6 +78,7 @@ export class KineticGestureEngine {
     this.shakeRequiresNeutral = true;
     this.shakeArmed = false;
     this.shakeNeutralStartTime = 0;
+    this.shakePeakLatched = false;
     this.clearShakeCandidates();
   }
 
@@ -104,6 +106,7 @@ export class KineticGestureEngine {
     this.shakeNeutralStartTime = 0;
     this.shakeArmed = false;
     this.shakeRequiresNeutral = false;
+    this.shakePeakLatched = false;
     this.clearShakeCandidates();
   }
 
@@ -238,14 +241,41 @@ export class KineticGestureEngine {
     linearMagnitude: number,
     now: number,
   ): void {
-    if (!this.canCollectShake(now) || linearMagnitude < this.config.shakeThresholdG) {
+    if (linearMagnitude <= this.config.shakeReleaseThresholdG) {
+      this.shakePeakLatched = false;
       return;
     }
 
-    const peak = this.getDominantPeak(linearX, linearY, linearZ, linearMagnitude, now);
+    if (!this.canCollectShake(now)) {
+      if (linearMagnitude >= this.config.shakeThresholdG) {
+        this.shakePeakLatched = true;
+      }
+      return;
+    }
+
+    if (linearMagnitude < this.config.shakeThresholdG) {
+      return;
+    }
+
+    const peak = this.getDominantPeak(
+      linearX,
+      linearY,
+      linearZ,
+      linearMagnitude,
+      now,
+    );
     if (!peak) return;
 
     const previous = this.shakePeaks.at(-1);
+    if (
+      this.shakePeakLatched &&
+      (!previous ||
+        (peak.axis === previous.axis && peak.sign === previous.sign))
+    ) {
+      return;
+    }
+
+    this.shakePeakLatched = true;
     if (!previous) {
       this.shakePeaks = [peak];
       return;
@@ -257,17 +287,16 @@ export class KineticGestureEngine {
       return;
     }
 
-    if (peak.axis !== previous.axis || elapsed < this.config.shakePeakMinGapMs) {
-      this.shakeRequiresNeutral = true;
-      this.shakeArmed = false;
-      this.shakeNeutralStartTime = 0;
-      this.clearShakeCandidates();
+    if (
+      peak.axis !== previous.axis ||
+      elapsed < this.config.shakePeakMinGapMs ||
+      peak.sign === previous.sign
+    ) {
+      this.shakePeaks = [peak];
       return;
     }
 
-    if (peak.sign !== previous.sign) {
-      this.shakePeaks.push(peak);
-    }
+    this.shakePeaks.push(peak);
   }
 
   private evaluateShake(now: number): void {

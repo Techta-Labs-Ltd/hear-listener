@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
-import { usePlaybackStore, useVoiceStore } from "@/stores";
+import { usePlaybackStore } from "@/stores";
 import { appHaptics } from "@/lib/haptics";
-import { ukSpeech } from "@/services/voice/speech";
 
 export function PlaybackRuntime() {
   const playing = usePlaybackStore((state) => state.playing);
@@ -13,19 +12,6 @@ export function PlaybackRuntime() {
   useEffect(() => {
     if (previousPlaying.current !== playing) {
       void appHaptics.changed();
-      const voiceActive = !["idle", "cancelled"].includes(
-        useVoiceStore.getState().state,
-      );
-      if (!voiceActive) {
-        const story = usePlaybackStore.getState().current;
-        if (story)
-          void ukSpeech.speak(
-            playing
-              ? `Playing ${story.title}, by ${story.creator}.`
-              : `Paused ${story.title}.`,
-            { interrupt: false },
-          );
-      }
       previousPlaying.current = playing;
     }
   }, [playing]);

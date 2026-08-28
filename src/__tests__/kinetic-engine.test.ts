@@ -14,8 +14,8 @@ describe("KineticGestureEngine", () => {
         tiltHoldDurationMs: 60,
         neutralVelocityThreshold: 0.5,
         cooldownDurationMs: 350,
-        shakeThresholdG: 0.45,
-        shakeWindowMs: 650,
+        shakeThresholdG: 0.75,
+        shakeWindowMs: 450,
         filterWindowSize: 3,
       },
       (gesture) => {
@@ -140,7 +140,9 @@ describe("KineticGestureEngine", () => {
 
     function performShake(now: number) {
       sample(now, 1.5, 1.2);
+      sample(now + 40, 0, 0);
       sample(now + 80, -1.5, -1.2);
+      sample(now + 120, 0, 0);
       sample(now + 160, 1.5, 1.2);
       return now + 180;
     }
@@ -151,6 +153,19 @@ describe("KineticGestureEngine", () => {
 
       expect(firedGestures).toEqual(["SHAKE"]);
       expect(engine.getState()).toBe("LOCKED");
+    });
+
+    it("treats sustained samples as one physical peak until acceleration releases", () => {
+      const now = settleEngine();
+      sample(now, 1.5, 1.2);
+      sample(now + 20, 1.7, 1.2);
+      sample(now + 40, 0, 0);
+      sample(now + 80, -1.5, -1.2);
+      sample(now + 100, -1.7, -1.2);
+      sample(now + 120, 0, 0);
+      sample(now + 160, 1.5, 1.2);
+
+      expect(firedGestures).toEqual(["SHAKE"]);
     });
 
     it("rejects vibration-like alternating acceleration without rotational motion", () => {
@@ -166,20 +181,25 @@ describe("KineticGestureEngine", () => {
     it("rejects two peaks, cross-axis reversals, and stale peaks", () => {
       let now = settleEngine();
       sample(now, 1.5, 1.2);
+      sample(now + 40, 0, 0);
       sample(now + 80, -1.5, -1.2);
       expect(firedGestures).toHaveLength(0);
 
       engine.reset();
       now = settleEngine(now + 200);
       sample(now, 1.5, 1.2);
+      sample(now + 40, 0, 0);
       sample(now + 80, 0, -1.2, -1.5);
+      sample(now + 120, 0, 0);
       sample(now + 160, 0, 1.2, 1.5);
       expect(firedGestures).toHaveLength(0);
 
       engine.reset();
       now = settleEngine(now + 200);
       sample(now, 1.5, 1.2);
+      sample(now + 40, 0, 0);
       sample(now + 300, -1.5, -1.2);
+      sample(now + 340, 0, 0);
       sample(now + 600, 1.5, 1.2);
       expect(firedGestures).toHaveLength(0);
     });

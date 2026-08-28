@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
-import { stories } from "@/data/catalogue";
-import { usePlaybackStore, usePreferencesStore } from "@/stores";
+import {
+  useContentStore,
+  usePlaybackStore,
+  usePreferencesStore,
+} from "@/stores";
 import {
   checkAndNotifyFollowedReleases,
   requestNotificationPermissionsSafely,
@@ -25,7 +28,7 @@ export function NotificationRuntime() {
 
   useEffect(() => {
     const cleanup = setupNotificationResponseListener((storyId) => {
-      const story = stories.find((s) => s.id === storyId);
+      const story = useContentStore.getState().getStoryById(storyId);
       if (story) {
         usePlaybackStore.getState().play(story);
         router.push("/player");
@@ -49,6 +52,7 @@ export function NotificationRuntime() {
       const newlyNotified = await checkAndNotifyFollowedReleases(
         followingIds,
         notifiedReleaseIds,
+        useContentStore.getState(),
       );
 
       if (isMounted && newlyNotified.length > 0) {

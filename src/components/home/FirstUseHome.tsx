@@ -1,8 +1,7 @@
 import { useRouter } from "expo-router";
 import { Button } from "@/components/ui/Button";
 import { AppText } from "@/components/ui/AppText";
-import { stories } from "@/data/catalogue";
-import { usePlayback } from "@/stores";
+import { useContent, usePlayback } from "@/stores";
 import { routes } from "@/navigation/routes";
 import { homeCopy } from "@/utils/copy/home";
 import { VoiceReadyBanner } from "@/components/home/VoiceReadyBanner";
@@ -12,6 +11,8 @@ import { Pressable, View } from "@/tw";
 export function FirstUseHome({ onDismiss }: { onDismiss: () => void }) {
   const router = useRouter();
   const playback = usePlayback();
+  const { stories, loading } = useContent();
+  const firstTrack = stories[0];
 
   return (
     <>
@@ -43,8 +44,11 @@ export function FirstUseHome({ onDismiss }: { onDismiss: () => void }) {
       </View>
       <Button
         label={homeCopy.quickStartAction}
+        loading={loading}
+        disabled={!firstTrack}
         onPress={() => {
-          playback.play(stories[1]);
+          if (!firstTrack) return;
+          playback.play(firstTrack);
           router.push(routes.player);
         }}
         className="mt-5 sm:mt-[25px] h-[50px] sm:h-[54px] rounded-full bg-voice-canvas"

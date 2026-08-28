@@ -8,7 +8,7 @@ import { Pressable, ScrollView, View } from "@/tw";
 import { colors } from "@/constants/theme";
 import { usePlayback, usePreferences } from "@/stores";
 import { useKineticGestures } from "@/hooks/useKineticGestures";
-import { formatClock } from "@/utils/text";
+import { contentByline, formatClock } from "@/utils/text";
 import { routes } from "@/navigation/routes";
 import { playerCopy as copy, queueCopy } from "@/utils/copy/player";
 import { icons } from "@/utils/icons/app-icons";
@@ -30,6 +30,7 @@ export function PlayingPlayer({ current }: { current: ContentItem }) {
   const elapsed = formatClock(playback.progress * durationSeconds);
   const total = formatClock(durationSeconds);
   const progressWidth = `${Math.min(100, playback.progress * 100)}%` as `${number}%`;
+  const byline = contentByline(current);
 
   return (
     <AppScreen
@@ -69,7 +70,7 @@ export function PlayingPlayer({ current }: { current: ContentItem }) {
             {current.title}
           </AppText>
           <AppText tone="muted" className="text-[12px] sm:text-[13px] leading-4">
-            {current.creator} · {current.publication}
+            {byline}
           </AppText>
         </View>
         <View className="gap-[10px]">

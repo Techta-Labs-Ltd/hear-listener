@@ -1,9 +1,10 @@
-import { entities, stories } from "@/data/catalogue";
-import type { CreatorRelease } from "@/types";
+import type { ContentItem, CreatorRelease, Entity } from "@/types";
 
 export function findReleasesForFollowedCreators(
   followingIds: string[],
   alreadyNotifiedIds: string[] = [],
+  entities: Entity[] = [],
+  stories: ContentItem[] = [],
 ): CreatorRelease[] {
   if (followingIds.length === 0) return [];
 

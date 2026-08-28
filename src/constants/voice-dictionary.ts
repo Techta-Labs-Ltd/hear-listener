@@ -35,6 +35,7 @@ export const LOCAL_COMMAND_DICTIONARY: Record<string, string[]> = {
   resume: [
     "resume",
     "continue",
+    "continue listening",
     "carry on",
     "keep playing",
     "keep going",

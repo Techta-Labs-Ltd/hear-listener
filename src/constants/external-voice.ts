@@ -3,7 +3,7 @@ export const EXTERNAL_VOICE_CONFIG = {
   resolverEndpoint: "/resolve",
   searchBaseUrl: "https://alexa.hear.media",
   searchEndpoint: "/api/v1/alexa/search",
-  apiKey: process.env.EXPO_PUBLIC_HEAR_SERVICE_KEY || "",
+  apiKey: process.env.EXPO_PUBLIC_HEAR_SERVICE_KEY?.trim() || "",
   timeoutMs: 15_000,
   delayedProgressMs: 4_000,
   clientName: "hear-listener",

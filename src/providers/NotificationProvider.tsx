@@ -8,8 +8,11 @@ import React, {
   useState,
 } from "react";
 import { useRouter } from "expo-router";
-import { stories } from "@/data/catalogue";
-import { usePlaybackStore, usePreferencesStore } from "@/stores";
+import {
+  useContentStore,
+  usePlaybackStore,
+  usePreferencesStore,
+} from "@/stores";
 import {
   checkAndNotifyFollowedReleases,
   notifyNewRelease,
@@ -52,7 +55,7 @@ export function NotificationProvider({
   // Setup response listener for tap-to-open story playback
   useEffect(() => {
     const cleanup = setupNotificationResponseListener((storyId) => {
-      const story = stories.find((s) => s.id === storyId);
+      const story = useContentStore.getState().getStoryById(storyId);
       if (story) {
         usePlaybackStore.getState().play(story);
         router.push("/player");
@@ -87,6 +90,7 @@ export function NotificationProvider({
     const newlyNotified = await checkAndNotifyFollowedReleases(
       followingIds,
       notifiedReleaseIds,
+      useContentStore.getState(),
     );
 
     if (newlyNotified.length > 0) {

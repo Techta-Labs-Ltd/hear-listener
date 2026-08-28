@@ -39,12 +39,31 @@ describe("Zustand stores", () => {
     expect(usePreferencesStore.getState()).toMatchObject(initialPreferences);
   });
   it("restores playback-friendly state while keeping actions functional", () => {
-    usePlaybackStore.getState().play();
+    usePlaybackStore.getState().play({
+      id: "remote-story",
+      title: "Remote story",
+      creator: "Hear! creator",
+      publication: "Hear!",
+      duration: "2:00",
+      category: "News",
+      color: "#5B3B82",
+      audioUrl: "https://cdn.hear.media/remote-story.mp3",
+      audioDurationSeconds: 120,
+      origin: "hear-search",
+    });
     expect(usePlaybackStore.getState().playing).toBe(true);
     usePlaybackStore.getState().seekBy(15);
     expect(usePlaybackStore.getState().progress).toBeGreaterThan(0);
     usePlaybackStore.getState().pause();
     expect(usePlaybackStore.getState().playing).toBe(false);
+  });
+
+  it("does not invent playback when no Hear! result is loaded", () => {
+    usePlaybackStore.getState().play();
+    expect(usePlaybackStore.getState()).toMatchObject({
+      current: undefined,
+      playing: false,
+    });
   });
   it("resets voice sessions completely", () => {
     useVoiceStore

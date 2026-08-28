@@ -46,18 +46,33 @@ describe("notifications service", () => {
   ];
 
   it("finds new releases matching followed creator IDs", () => {
-    const releases = findReleasesForFollowedCreators(["hear-daily"]);
+    const releases = findReleasesForFollowedCreators(
+      ["hear-daily"],
+      [],
+      [sampleCreator],
+      sampleStory,
+    );
     expect(releases.length).toBeGreaterThan(0);
     expect(releases[0]?.creator.id).toBe("hear-daily");
   });
 
   it("excludes creators that are not followed", () => {
-    const releases = findReleasesForFollowedCreators(["non-existent-creator"]);
+    const releases = findReleasesForFollowedCreators(
+      ["non-existent-creator"],
+      [],
+      [sampleCreator],
+      sampleStory,
+    );
     expect(releases).toEqual([]);
   });
 
   it("excludes already notified story IDs to avoid duplicate alerts", () => {
-    const releases = findReleasesForFollowedCreators(["hear-daily"], ["daily", "morning-headlines"]);
+    const releases = findReleasesForFollowedCreators(
+      ["hear-daily"],
+      ["daily", "morning-headlines"],
+      [sampleCreator],
+      sampleStory,
+    );
     const hasDaily = releases.some((r) => r.story.id === "daily" || r.story.id === "morning-headlines");
     expect(hasDaily).toBe(false);
   });

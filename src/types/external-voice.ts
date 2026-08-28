@@ -126,6 +126,8 @@ export type ExternalPlaybackTrack = {
   category?: { slug?: string; name: string };
   tags?: string[];
   publication?: { id?: string; title: string };
+  publicationTrackIndex?: number;
+  publicationTrackCount?: number;
   durationSeconds?: number;
   publishedAt?: string;
   playbackSpeedUrls?: ExternalPlaybackSpeedSource[];

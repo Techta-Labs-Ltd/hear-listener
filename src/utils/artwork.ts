@@ -6,3 +6,11 @@ export function getArtworkGradient(index: number): readonly [string, string] {
 }
 
 export const artworkGradient = getArtworkGradient;
+
+export function artworkIndexForId(id: string): number {
+  let hash = 0;
+  for (let index = 0; index < id.length; index += 1) {
+    hash = (hash * 31 + id.charCodeAt(index)) >>> 0;
+  }
+  return hash;
+}

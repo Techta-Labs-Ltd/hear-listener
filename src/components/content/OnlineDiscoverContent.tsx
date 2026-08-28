@@ -3,9 +3,8 @@ import { PromoCard } from "@/components/content/PromoCard";
 import { StoryRow } from "@/components/content/StoryRow";
 import { TopicChip } from "@/components/content/TopicChip";
 import { AppText } from "@/components/ui/AppText";
-import { stories, topics } from "@/data/catalogue";
 import { routes, topicRoute } from "@/navigation/routes";
-import { usePlayback } from "@/stores";
+import { useContent, usePlayback } from "@/stores";
 import { ScrollView } from "@/tw";
 import type { ContentItem } from "@/types";
 import { discoverCopy } from "@/utils/copy/discover";
@@ -21,6 +20,7 @@ export function OnlineDiscoverContent({
 }) {
   const router = useRouter();
   const playback = usePlayback();
+  const { stories, topics } = useContent();
 
   return (
     <>

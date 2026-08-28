@@ -5,8 +5,7 @@ import { VoiceTip } from "@/components/voice/VoiceTip";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { SectionPageHeader } from "@/components/library/SectionPageHeader";
 import { View } from "@/tw";
-import { usePreferences } from "@/stores";
-import { stories } from "@/data/catalogue";
+import { useContent, usePreferences } from "@/stores";
 import type { ContentItem } from "@/types";
 import { libraryCopy, librarySectionCopy } from "@/utils/copy/library";
 import { icons } from "@/utils/icons/app-icons";
@@ -15,6 +14,7 @@ import { safeBack } from "@/utils/navigation";
 export function DownloadsSection() {
   const router = useRouter();
   const { preferences } = usePreferences();
+  const { stories } = useContent();
   const copy = librarySectionCopy.downloads;
   const downloads = stories.filter(
     (item) => item.downloaded || preferences.downloadedIds.includes(item.id),

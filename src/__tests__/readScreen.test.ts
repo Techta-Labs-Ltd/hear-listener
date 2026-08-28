@@ -33,11 +33,11 @@ function context(pathname: string, extra: object = {}) {
 }
 
 describe("buildScreenReadout", () => {
-  it("reads Home with continue listening and local news", () => {
+  it("reads Home without inventing demo stories", () => {
     const readout = buildScreenReadout(context("/"));
     expect(readout).toContain("Home.");
-    expect(readout).toContain("Continue listening:");
-    expect(readout).toContain("Your local news:");
+    expect(readout).toContain("live catalogue");
+    expect(readout).not.toContain("Your local news:");
     expect(readout).toContain("Tilt right for next, tilt left for previous, or shake to speak.");
   });
 
@@ -53,7 +53,7 @@ describe("buildScreenReadout", () => {
       }),
     );
     expect(readout).toContain("Now playing: The stories shaping your evening");
-    expect(readout).toContain("by Hear! Daily");
+    expect(readout).toContain("Hear! Daily · Today · Continue");
     expect(readout).toContain("speed 1 times");
   });
 
@@ -81,9 +81,10 @@ describe("buildScreenReadout", () => {
     expect(readout).toContain("1 downloads");
   });
 
-  it("reads a topic page with its stories", () => {
+  it("reads a topic page without hard-coded catalogue stories", () => {
     const readout = buildScreenReadout(context("/topic/local"));
-    expect(readout).toContain("Topic: Local news");
-    expect(readout).toContain("What changed in London, UK today");
+    expect(readout).toContain("Topic: local");
+    expect(readout).toContain("Hear! catalogue results are shown on screen");
+    expect(readout).not.toContain("What changed in London, UK today");
   });
 });

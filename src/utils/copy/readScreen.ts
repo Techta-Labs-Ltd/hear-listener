@@ -1,7 +1,6 @@
-import { stories, topics } from "@/data/catalogue";
 import type { ReadoutContext } from "@/types";
 import { parseLibrarySection } from "@/navigation/routes";
-import { formatClock } from "@/utils/text";
+import { contentByline, formatClock } from "@/utils/text";
 
 const KINETIC_VOICE_HINT = "Tilt right for next, tilt left for previous, or shake to speak.";
 const SCREEN_READER_HINT =
@@ -33,29 +32,18 @@ function routeReadout(context: ReadoutContext): string {
 }
 
 function homeReadout(context: ReadoutContext): string {
-  const continueStory = stories.find((item) => item.progress !== undefined);
-  const localStories = stories.filter((item) =>
-    item.topicIds?.includes("local"),
-  );
   const parts = ["Home."];
-  if (continueStory)
+  if (context.playback.current)
     parts.push(
-      `Continue listening: ${continueStory.title} by ${continueStory.creator}, ${formatClock((continueStory.progress ?? 0) * 1080)} listened.`,
+      `Continue listening: ${context.playback.current.title} by ${context.playback.current.creator}.`,
     );
-  parts.push(
-    `Your local news: ${localStories
-      .slice(0, 3)
-      .map((item) => item.title)
-      .join(". Next, ")}.`,
-  );
-  parts.push("Say play local news, or open Discover.");
+  parts.push("Latest Hear! audio is loaded from the live catalogue.");
+  parts.push("Say play local news, play a topic, or open Discover.");
   return parts.join(" ");
 }
 
 function discoverReadout(): string {
-  return `Discover. ${topics.length} topics available: ${topics
-    .map((item) => item.name)
-    .join(", ")}. Say a topic name to browse it, or say play trending.`;
+  return "Discover. Browse live Hear! audio by topic, or say play trending.";
 }
 
 function libraryReadout(context: ReadoutContext): string {
@@ -89,22 +77,15 @@ function playerReadout(context: ReadoutContext): string {
   const { playback } = context;
   if (!playback.current)
     return "Player. Nothing is playing yet. Say play local news to start.";
-  return `Now playing: ${playback.current.title}, by ${playback.current.creator}, published by ${playback.current.publication}. ${
+  return `Now playing: ${playback.current.title}. ${contentByline(playback.current)}. ${
     playback.playing ? "Playing" : "Paused"
   } at ${formatClock(playback.progress * 1080)}, speed ${playback.speed} times. Say pause, next, rewind 15 seconds, or describe this story.`;
 }
 
 function topicReadout(context: ReadoutContext): string {
   const id = context.pathname.split("/").at(-1);
-  const topic = topics.find((item) => item.id === id);
-  const topicStories = stories.filter((item) =>
-    item.topicIds?.includes(id ?? ""),
-  );
-  return `Topic: ${topic?.name ?? "browse"}. ${
-    topicStories.length
-  } stories available: ${topicStories
-    .map((item) => item.title)
-    .join(". Next, ")}. Say play a title, or go back.`;
+  const topic = id?.replace(/[-_]+/g, " ") ?? "browse";
+  return `Topic: ${topic}. Hear! catalogue results are shown on screen. Say play a title, or go back.`;
 }
 
 function onboardingReadout(context: ReadoutContext): string {

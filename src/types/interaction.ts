@@ -101,12 +101,14 @@ export type FeedbackTarget =
       trackId: string;
       publicationId?: string;
       playbackSessionId: string;
+      resumePlaybackOnClose?: boolean;
     }
   | {
       kind: "publication";
       publicationId: string;
       playbackSessionId: string;
       listenedTrackIds: string[];
+      resumePlaybackOnClose?: boolean;
     };
 
 export type FeedbackVoiceStore = {

@@ -3,7 +3,6 @@ import { ContinueListeningCard } from "@/components/content/ContinueListeningCar
 import { StoryTile } from "@/components/content/StoryTile";
 import { IconButton } from "@/components/ui/IconButton";
 import { AppText } from "@/components/ui/AppText";
-import { stories } from "@/data/catalogue";
 import { formatDateLabel, greetingForTime } from "@/utils/text";
 import { routes } from "@/navigation/routes";
 import { homeCopy } from "@/utils/copy/home";
@@ -11,9 +10,13 @@ import { icons } from "@/utils/icons/app-icons";
 import { colors } from "@/constants/theme";
 import { VoiceReadyBanner } from "@/components/home/VoiceReadyBanner";
 import { Pressable, View } from "@/tw";
+import { useContent, usePlayback } from "@/stores";
 
 export function ReturningHome() {
   const router = useRouter();
+  const { stories } = useContent();
+  const playback = usePlayback();
+  const continueListening = playback.current;
 
   return (
     <>
@@ -39,7 +42,9 @@ export function ReturningHome() {
         />
       </View>
       <VoiceReadyBanner className="mt-4 sm:mt-5" />
-      <ContinueListeningCard item={stories[0]} className="mt-4 sm:mt-5" />
+      {continueListening ? (
+        <ContinueListeningCard item={continueListening} className="mt-4 sm:mt-5" />
+      ) : null}
       <View className="mt-5 sm:mt-[23px] flex-row items-center justify-between">
         <AppText
           accessibilityRole="header"
@@ -59,10 +64,13 @@ export function ReturningHome() {
           </AppText>
         </Pressable>
       </View>
-      <View className="mt-3.5 sm:mt-[19px] flex-row gap-2.5 sm:gap-[14px]">
-        <StoryTile item={stories[1]} />
-        <StoryTile item={stories[2]} />
-      </View>
+      {stories.length > 0 ? (
+        <View className="mt-3.5 sm:mt-[19px] flex-row gap-2.5 sm:gap-[14px]">
+          {stories.slice(0, 2).map((story) => (
+            <StoryTile key={story.id} item={story} />
+          ))}
+        </View>
+      ) : null}
     </>
   );
 }

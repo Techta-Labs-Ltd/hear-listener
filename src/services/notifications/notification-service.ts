@@ -89,10 +89,16 @@ export async function notifyNewRelease(
 export async function checkAndNotifyFollowedReleases(
   followingIds: string[],
   alreadyNotifiedIds: string[] = [],
+  catalogue: { entities: Entity[]; stories: ContentItem[] } = {
+    entities: [],
+    stories: [],
+  },
 ): Promise<string[]> {
   const releases = findReleasesForFollowedCreators(
     followingIds,
     alreadyNotifiedIds,
+    catalogue.entities,
+    catalogue.stories,
   );
   const notifiedStoryIds: string[] = [];
 
@@ -117,4 +123,3 @@ export function setupNotificationResponseListener(
 }
 
 export { findReleasesForFollowedCreators };
-

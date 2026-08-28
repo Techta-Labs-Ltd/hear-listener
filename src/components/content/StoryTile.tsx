@@ -9,7 +9,7 @@ import { cn } from "@/utils/styles";
 export function StoryTile({ item, className }: StoryTileProps) {
   const router = useRouter();
   const playback = usePlayback();
-  const topic = (item.topicIds?.[0] ?? item.category).toUpperCase();
+  const topic = item.category.toUpperCase();
 
   return (
     <Pressable
@@ -31,7 +31,12 @@ export function StoryTile({ item, className }: StoryTileProps) {
         className="h-[105px] sm:h-[120px] w-full items-center justify-center rounded-[14px]"
         style={{ backgroundColor: item.color || "#0F7B7A" }}
       >
-        <AppText className="font-display text-[20px] sm:text-[22px] font-bold tracking-wider text-white">
+        <AppText
+          className="px-2 text-center font-display text-[20px] sm:text-[22px] font-bold tracking-wider text-white"
+          numberOfLines={2}
+          adjustsFontSizeToFit
+          minimumFontScale={0.65}
+        >
           {topic}
         </AppText>
       </View>

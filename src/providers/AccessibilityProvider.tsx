@@ -79,6 +79,13 @@ export function AccessibilityProvider({ children }: PropsWithChildren) {
     [screenReaderEnabled, spokenNavigationEnabled],
   );
 
+  const announceGuidedInstruction = useCallback(
+    (message: string, key = `instruction:${message}`) => {
+      void accessibilitySpeechPolicy.announceGuidedInstruction(message, key);
+    },
+    [],
+  );
+
   const value = useMemo<AccessibilityContextValue>(
     () => ({
       screenReaderEnabled,
@@ -86,10 +93,12 @@ export function AccessibilityProvider({ children }: PropsWithChildren) {
       spokenNavigationEnabled,
       setSpokenNavigationEnabled,
       announce,
+      announceGuidedInstruction,
       stopSpeaking,
     }),
     [
       announce,
+      announceGuidedInstruction,
       reduceMotionEnabled,
       screenReaderEnabled,
       spokenNavigationEnabled,

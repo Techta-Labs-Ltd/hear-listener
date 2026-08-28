@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { RefreshControl } from "react-native";
 import { useRouter } from "expo-router";
 import { OfflineNotice } from "@/components/content/OfflineNotice";
@@ -6,18 +7,21 @@ import { DiscoverSkeleton } from "@/components/content/DiscoverSkeleton";
 import { StoryRow } from "@/components/content/StoryRow";
 import { AppScreen } from "@/components/ui/AppScreen";
 import { AppText } from "@/components/ui/AppText";
-import { SearchBar } from "@/components/ui/SearchBar";
 import { SkeletonBlock } from "@/components/ui/SkeletonBlock";
 import { useContent } from "@/stores";
 import { useNetworkState } from "@/hooks/useNetworkState";
-import { librarySectionRoute, routes } from "@/navigation/routes";
+import { librarySectionRoute } from "@/navigation/routes";
 import { ScrollView, View } from "@/tw";
 import { discoverCopy } from "@/utils/copy/discover";
 
 export function DiscoverScreen() {
   const router = useRouter();
   const { isOnline } = useNetworkState();
-  const { stories, loading, refreshing, refresh } = useContent();
+  const { stories, loading, refreshing, refresh, fetchCatalogue } = useContent();
+
+  useEffect(() => {
+    void fetchCatalogue();
+  }, [fetchCatalogue]);
 
   const editorPick = stories[2];
   const tonight = stories[3];
@@ -26,21 +30,28 @@ export function DiscoverScreen() {
   return (
     <AppScreen
       screenTitle="Discover"
-      screenOrientation="Discover. Say a topic, play trending, search for audio, or read this screen."
-      voiceCommands={["open technology", "play trending", "search for local news", "read this screen"]}
+      screenOrientation="Discover. Say a topic, play trending, or read this screen."
+      voiceCommands={["open technology", "play trending", "read this screen"]}
     >
       <ScrollView
         contentContainerClassName="px-4 sm:px-5 pt-4 sm:pt-8 pb-[140px]"
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => void refresh()}
+          />
         }
       >
         {loading ? (
           <DiscoverSkeleton />
         ) : (
           <>
-            <AppText variant="overline" tone="primary" className="tracking-[0.4px]">
+            <AppText
+              variant="overline"
+              tone="primary"
+              className="tracking-[0.4px]"
+            >
               {discoverCopy.eyebrow}
             </AppText>
             <AppText
@@ -49,13 +60,11 @@ export function DiscoverScreen() {
             >
               {discoverCopy.title}
             </AppText>
-            <SearchBar
-              label={discoverCopy.searchLabel}
-              onPress={() => router.push(routes.search)}
-              className="mt-5"
-            />
             {isOnline ? (
-              <OnlineDiscoverContent editorPick={editorPick} tonight={tonight} />
+              <OnlineDiscoverContent
+                editorPick={editorPick}
+                tonight={tonight}
+              />
             ) : (
               <>
                 <View

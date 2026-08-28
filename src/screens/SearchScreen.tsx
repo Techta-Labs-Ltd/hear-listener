@@ -11,7 +11,6 @@ import { colors } from "@/constants/theme";
 import { routes } from "@/navigation/routes";
 import { useHearCatalogueSearch } from "@/hooks/useHearCatalogueSearch";
 import { useLoadMoreOnScroll } from "@/hooks/useLoadMoreOnScroll";
-import { useVoice } from "@/hooks/useVoice";
 import { Pressable, ScrollView, View } from "@/tw";
 import { icons } from "@/utils/icons/app-icons";
 import { safeBack } from "@/utils/navigation";
@@ -19,7 +18,6 @@ import { safeBack } from "@/utils/navigation";
 export function SearchScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ q?: string }>();
-  const voice = useVoice();
   const query = params.q?.trim() ?? "";
   const search = useHearCatalogueSearch({
     query,
@@ -40,11 +38,11 @@ export function SearchScreen() {
 
   return (
     <AppScreen
-      screenTitle="Search Results"
-      screenOrientation={`Hear! search results${query ? ` for ${query}` : ""}. Say play the first result, search for something else, or go back.`}
+      screenTitle="Voice results"
+      screenOrientation={`Hear! audio${query ? ` for ${query}` : ""}. Say play the first result, ask for different audio, or go back.`}
       voiceCommands={[
         "play the first result",
-        "search for local news",
+        "find local news",
         "go back",
         "read this screen",
       ]}
@@ -55,7 +53,7 @@ export function SearchScreen() {
         onScroll={onScroll}
         scrollEventThrottle={200}
       >
-        <View className="mt-2 flex-row items-center gap-2">
+        <View className="mt-2 flex-row items-start gap-2">
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Back to Discover"
@@ -66,30 +64,22 @@ export function SearchScreen() {
           >
             <SymbolView name={icons.back} size={24} tintColor={colors.text} />
           </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={`Search query: ${query || "latest Hear! audio"}. Shake device to speak a new search.`}
-            accessibilityHint="Starts voice listening to speak a search query."
-            onPress={() =>
-              void voice.startVoiceSession({ source: "contextualAction" })
-            }
-            className="h-[52px] flex-1 flex-row items-center justify-between rounded-full border border-border/50 bg-surface px-5 shadow-sm active:opacity-85"
-          >
-            <AppText className="font-body text-[15px] leading-[18px] text-ink">
-              {query || "Latest Hear! audio"}
+          <View className="min-h-[52px] flex-1 justify-center pr-2">
+            <AppText variant="overline" tone="primary" className="tracking-[0.4px]">
+              VOICE RESULTS
             </AppText>
-          </Pressable>
+            <AppText
+              accessibilityRole="header"
+              className="mt-1 font-display text-[26px] leading-[31px] text-ink"
+            >
+              {query ? `Audio for “${query}”` : "Latest Hear! audio"}
+            </AppText>
+          </View>
         </View>
-        <AppText
-          accessibilityRole="header"
-          className="mt-6 font-display text-[26px] sm:text-2xl leading-[30px] sm:leading-[29px] text-ink"
-        >
-          Results
-        </AppText>
         <AppText
           accessibilityLiveRegion="polite"
           tone="muted"
-          className="mt-2 sm:mt-[11px] text-xs sm:text-[13px] leading-[15px]"
+          className="mt-4 text-xs sm:text-[13px] leading-[15px]"
         >
           {resultsSummary}
         </AppText>
@@ -97,10 +87,10 @@ export function SearchScreen() {
           <SearchSkeleton />
         ) : search.error ? (
           <EmptyState
-            icon={icons.search}
-            title="Search could not load"
+            icon={icons.audioOutput}
+            title="Audio could not load"
             description={search.error}
-            actionLabel="Try search again"
+            actionLabel="Try loading again"
             onAction={search.retry}
           />
         ) : (
@@ -112,7 +102,8 @@ export function SearchScreen() {
             </View>
             {search.items.length === 0 ? (
               <AppText tone="muted" className="mt-8 text-center">
-                Nothing matched. Try a topic, creator, or show instead.
+                No matching audio is available. Shake device and ask for a
+                different topic, creator, or publication.
               </AppText>
             ) : null}
             <CataloguePaginationFooter
@@ -126,7 +117,7 @@ export function SearchScreen() {
         )}
         <VoiceTip
           eyebrow="VOICE SHORTCUT"
-          text="Say “Play the first result.”"
+          text="Shake device and say “Play the first result” or ask for different audio."
           className="mt-6 sm:mt-[33px]"
         />
       </ScrollView>

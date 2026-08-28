@@ -1,7 +1,6 @@
 export const discoverCopy = {
   eyebrow: "DISCOVER",
   title: "Find your next listen.",
-  searchLabel: "Search audio, topics, creators",
   editorEyebrow: "EDITOR’S PICK",
   browseTitle: "Browse topics",
   tonightTitle: "For tonight",

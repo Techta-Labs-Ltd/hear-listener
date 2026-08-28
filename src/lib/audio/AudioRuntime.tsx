@@ -10,6 +10,7 @@ import {
   usePlaybackStore,
   useSpeechStore,
 } from "@/stores";
+import { speechCoordinator } from "@/services/voice/speech-coordinator";
 
 export function AudioRuntime() {
   const player = useAudioPlayer(null);
@@ -31,6 +32,30 @@ export function AudioRuntime() {
       shouldPlayInBackground: true,
       interruptionMode: "doNotMix",
     });
+  }, []);
+
+  useEffect(() => {
+    const syncPlaybackSpeechGate = () => {
+      const playback = usePlaybackStore.getState();
+      speechCoordinator.setContentPlaybackActive(
+        Boolean(playback.current && playback.playing),
+      );
+    };
+    syncPlaybackSpeechGate();
+    const unsubscribe = usePlaybackStore.subscribe(
+      (next, previous) => {
+        if (
+          next.current !== previous.current ||
+          next.playing !== previous.playing
+        ) {
+          syncPlaybackSpeechGate();
+        }
+      },
+    );
+    return () => {
+      unsubscribe();
+      speechCoordinator.setContentPlaybackActive(false);
+    };
   }, []);
 
   useEffect(() => {

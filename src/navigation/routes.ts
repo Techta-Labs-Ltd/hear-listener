@@ -10,7 +10,6 @@ export const routes = {
   player: "/player",
   queue: "/player/queue",
   sleepTimer: "/player/sleep-timer",
-  search: "/search",
   settings: "/settings",
 } as const satisfies Record<string, Href>;
 

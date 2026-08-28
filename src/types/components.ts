@@ -198,12 +198,6 @@ export type StoryRowProps = {
   className?: string;
 };
 
-export type SearchBarProps = {
-  label: string;
-  onPress: () => void;
-  className?: string;
-};
-
 export type OfflineNoticeProps = {
   onOpenDownloads: () => void;
   className?: string;

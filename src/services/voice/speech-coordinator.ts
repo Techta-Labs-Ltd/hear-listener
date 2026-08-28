@@ -2,18 +2,18 @@ import type { SpeechPriority, SpeechRequest, VoiceAudioGate } from "@/types";
 import { ukSpeech } from "./speech";
 
 class AudioGateService implements VoiceAudioGate {
-  private quiet = false;
+  private readonly quietScopes = new Set<string>();
 
-  async enterQuietMode(): Promise<void> {
-    this.quiet = true;
+  async enterQuietMode(scope = "voice"): Promise<void> {
+    this.quietScopes.add(scope);
   }
 
-  exitQuietMode(): void {
-    this.quiet = false;
+  exitQuietMode(scope = "voice"): void {
+    this.quietScopes.delete(scope);
   }
 
   isQuiet(): boolean {
-    return this.quiet;
+    return this.quietScopes.size > 0;
   }
 }
 
@@ -27,7 +27,7 @@ const priorityRank: Record<SpeechPriority, number> = {
 
 class SpeechCoordinator {
   private active?: { key: string; priority: SpeechPriority };
-  private quietMode = false;
+  private readonly quietScopes = new Set<string>();
   private screenReaderEnabled = false;
   lastCompletion: "DONE" | "INTERRUPTED" | "ERROR" | "TIMEOUT" = "DONE";
 
@@ -43,20 +43,28 @@ class SpeechCoordinator {
     return this.screenReaderEnabled;
   }
 
-  enterQuietMode(): void {
-    this.quietMode = true;
-    void voiceAudioGate.enterQuietMode();
+  enterQuietMode(scope = "voice"): void {
+    this.quietScopes.add(scope);
+    void voiceAudioGate.enterQuietMode(scope);
     void ukSpeech.stop();
     this.active = undefined;
   }
 
-  exitQuietMode(): void {
-    this.quietMode = false;
-    voiceAudioGate.exitQuietMode();
+  exitQuietMode(scope = "voice"): void {
+    this.quietScopes.delete(scope);
+    voiceAudioGate.exitQuietMode(scope);
+  }
+
+  setContentPlaybackActive(active: boolean): void {
+    if (active) {
+      this.enterQuietMode("content-playback");
+    } else {
+      this.exitQuietMode("content-playback");
+    }
   }
 
   isQuiet(): boolean {
-    return this.quietMode || voiceAudioGate.isQuiet();
+    return this.quietScopes.size > 0 || voiceAudioGate.isQuiet();
   }
 
   async speak(request: SpeechRequest): Promise<void> {

@@ -423,8 +423,8 @@ export type MicrophonePermissionStatus = {
 };
 
 export type VoiceAudioGate = {
-  enterQuietMode(): Promise<void>;
-  exitQuietMode(): void;
+  enterQuietMode(scope?: string): Promise<void>;
+  exitQuietMode(scope?: string): void;
   isQuiet(): boolean;
 };
 

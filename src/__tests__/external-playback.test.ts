@@ -42,7 +42,7 @@ describe("remote playback queue", () => {
     });
   });
 
-  it("plays only the first ordinary search result and stops when it finishes", () => {
+  it("keeps ordinary search results available for manual next-story playback", () => {
     const items = toRemoteContentItems(tracks);
     const queue = remotePlaybackQueue(items);
     usePlaybackStore.getState().playQueue(queue.items, { mode: queue.mode });
@@ -50,14 +50,20 @@ describe("remote playback queue", () => {
     expect(usePlaybackStore.getState()).toMatchObject({
       playing: true,
       current: { id: "remote-1", title: "First readable story" },
-      queueMode: "single",
-      queue: [{ id: "remote-1" }],
+      queueMode: "results",
+      queue: [{ id: "remote-1" }, { id: "remote-2" }],
+    });
+    usePlaybackStore.getState().next();
+    expect(usePlaybackStore.getState()).toMatchObject({
+      current: { id: "remote-2" },
+      playing: true,
+      progress: 0,
     });
     usePlaybackStore.getState().handleTrackFinished();
     expect(usePlaybackStore.getState()).toMatchObject({
       playing: false,
       progress: 1,
-      current: { id: "remote-1" },
+      current: { id: "remote-2" },
       completion: undefined,
     });
   });

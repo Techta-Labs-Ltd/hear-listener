@@ -54,7 +54,7 @@ export function remotePlaybackQueue(items: ContentItem[]): {
   const first = items[0];
   if (!first) return { items: [], mode: "single" };
   if (first.publicationTrackIndex === undefined) {
-    return { items: [first], mode: "single" };
+    return { items, mode: "results" };
   }
   const publicationItems = items
     .filter(

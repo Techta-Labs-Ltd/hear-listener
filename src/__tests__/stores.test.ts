@@ -88,6 +88,23 @@ describe("Zustand stores", () => {
       playing: false,
     });
   });
+
+  it("plays the next catalogue story from the finished-player button", () => {
+    const first = remoteItem("first");
+    const second = remoteItem("second");
+    usePlaybackStore.getState().play(first);
+    usePlaybackStore.setState({ progress: 1, playing: false });
+
+    expect(usePlaybackStore.getState().nextFromCatalogue([first, second])).toBe(
+      true,
+    );
+    expect(usePlaybackStore.getState()).toMatchObject({
+      current: { id: "second" },
+      queueMode: "single",
+      playing: true,
+      progress: 0,
+    });
+  });
   it("keeps listening history empty until real remote audio starts", () => {
     expect(useContentStore.getState().history).toEqual([]);
     const item = {

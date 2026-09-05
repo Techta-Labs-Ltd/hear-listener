@@ -45,7 +45,7 @@ export const usePlaybackStore = create<PlaybackStore>()(
         const first = playable[0];
         if (!first) return;
         const mode = options?.mode ?? "single";
-        const queue = mode === "publication" ? playable : [first];
+        const queue = mode === "single" ? [first] : playable;
         set((state) => ({
           current: first,
           queue,
@@ -84,6 +84,31 @@ export const usePlaybackStore = create<PlaybackStore>()(
       setTiming: (progress, durationSeconds) =>
         set({ progress, durationSeconds }),
       next: () => stepStory(1, get, set),
+      nextFromCatalogue: (items) => {
+        if (stepStory(1, get, set)) return true;
+
+        const current = get().current;
+        if (!current) return false;
+        const currentIndex = items.findIndex((item) => item.id === current.id);
+        const candidates = items
+          .slice(currentIndex >= 0 ? currentIndex + 1 : 0)
+          .filter((item) => item.id !== current.id && isRemotePlayable(item));
+        const next = candidates[0];
+        if (!next) return false;
+
+        set((state) => ({
+          current: next,
+          queue: candidates,
+          queueMode: candidates.length > 1 ? "results" : "single",
+          playbackSessionId: createPlaybackSessionId(),
+          completion: undefined,
+          progress: 0,
+          durationSeconds: playableDuration(next),
+          playing: true,
+          seekToken: state.seekToken + 1,
+        }));
+        return true;
+      },
       previous: () => stepStory(-1, get, set),
       handleTrackFinished: () =>
         set((state) => {
@@ -194,16 +219,16 @@ function stepStory(
   direction: 1 | -1,
   get: () => PlaybackStore,
   set: (change: Partial<PlaybackStore>) => void,
-) {
+): boolean {
   const queue = get().queue;
-  if (queue.length === 0) return;
+  if (queue.length === 0) return false;
   const current = get().current;
   const source = queue;
   const index = current
     ? source.findIndex((story) => story.id === current.id)
     : -1;
   const nextIndex = Math.max(0, Math.min(source.length - 1, index + direction));
-  if (nextIndex === index) return;
+  if (nextIndex === index) return false;
   const next = source[nextIndex];
   set({
     current: next,
@@ -212,6 +237,7 @@ function stepStory(
     playing: true,
     seekToken: get().seekToken + 1,
   });
+  return true;
 }
 
 export function migratePlayback(stored: unknown): Partial<PlaybackStore> {
@@ -235,7 +261,10 @@ export function migratePlayback(stored: unknown): Partial<PlaybackStore> {
     speed,
     repeat: stored.repeat === true,
     queue,
-    queueMode: stored.queueMode === "publication" ? "publication" : "single",
+    queueMode:
+      stored.queueMode === "publication" || stored.queueMode === "results"
+        ? stored.queueMode
+        : "single",
     playbackSessionId:
       typeof stored.playbackSessionId === "string"
         ? stored.playbackSessionId

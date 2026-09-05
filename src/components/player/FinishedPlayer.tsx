@@ -5,7 +5,7 @@ import { AppScreen } from "@/components/ui/AppScreen";
 import { IconButton } from "@/components/ui/IconButton";
 import { AppText } from "@/components/ui/AppText";
 import { Pressable, View } from "@/tw";
-import { usePlayback } from "@/stores";
+import { useContent, usePlayback } from "@/stores";
 import { playerCopy as copy } from "@/utils/copy/player";
 import { icons } from "@/utils/icons/app-icons";
 import type { ContentItem } from "@/types";
@@ -13,6 +13,7 @@ import type { ContentItem } from "@/types";
 export function FinishedPlayer({ current }: { current: ContentItem }) {
   const router = useRouter();
   const playback = usePlayback();
+  const { stories } = useContent();
 
   return (
     <AppScreen
@@ -52,7 +53,7 @@ export function FinishedPlayer({ current }: { current: ContentItem }) {
             accessibilityRole="button"
             accessibilityLabel={copy.finishedNext}
             accessibilityHint="Plays the next story."
-            onPress={playback.next}
+            onPress={() => playback.nextFromCatalogue(stories)}
             className="h-[52px] w-full items-center justify-center rounded-full bg-voice-canvas active:opacity-70"
           >
             <AppText className="font-body-bold text-sm leading-[17px] text-white">
